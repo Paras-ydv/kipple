@@ -179,10 +179,12 @@ fn hard_rule(item: &Item, facts: &ItemFacts, ctx: &SafetyContext) -> Option<Reas
     }
     if let Some(mtime) = facts.newest_mtime {
         let now = SystemTime::UNIX_EPOCH + Duration::from_secs(ctx.now.as_second().max(0) as u64);
+        // `now` has whole seconds, so a file written during this second
+        // looks a little newer than `now`. Any mtime after `now` counts as
+        // just written.
         if now
             .duration_since(mtime)
-            .is_ok_and(|age| age < RECENT_WRITE)
-            || mtime > now + Duration::from_secs(60)
+            .map_or(true, |age| age < RECENT_WRITE)
         {
             return Some(reason(ReasonCode::RecentlyWritten));
         }
@@ -429,6 +431,19 @@ mod tests {
         fa.newest_mtime = Some(SystemTime::now() - Duration::from_secs(30));
         eval(&f, &mut it, fa, &ProcessSnapshot::default());
         assert_eq!(it.reasons[0].code, ReasonCode::RecentlyWritten);
+    }
+
+    #[test]
+    fn written_this_second_is_keep() {
+        let f = fixture();
+        let p = f.home.mkdir("code/app/node_modules").unwrap();
+        let mut it = item(p, Safety::Safe);
+        let mut fa = facts(&f);
+        // Sub-second mtimes are newer than the engine's whole-second `now`.
+        fa.newest_mtime = Some(SystemTime::now() + Duration::from_millis(900));
+        eval(&f, &mut it, fa, &ProcessSnapshot::default());
+        assert_eq!(it.reasons[0].code, ReasonCode::RecentlyWritten);
+        assert_eq!(it.safety, Safety::Keep);
     }
 
     #[test]
