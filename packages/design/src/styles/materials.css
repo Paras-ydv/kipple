@@ -1,0 +1,117 @@
+/* Glass materials (docs/UI.md §2.6). Apply as classes: .k-glass, .k-clear, … */
+
+.k-window {
+  background: rgba(15, 17, 29, 0.56);
+  -webkit-backdrop-filter: blur(48px) saturate(170%);
+  backdrop-filter: blur(48px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 60px 140px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.k-glass {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.045));
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.17);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42), inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+    0 14px 40px rgba(0, 0, 0, 0.26);
+}
+
+.k-clear {
+  background: rgba(255, 255, 255, 0.07);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 0 14px rgba(255, 255, 255, 0.05),
+    0 6px 18px rgba(0, 0, 0, 0.22);
+}
+
+.k-tint {
+  background: linear-gradient(180deg, #5ba9ff 0%, #1677ff 100%);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -3px 8px rgba(0, 50, 150, 0.35),
+    0 10px 28px rgba(22, 119, 255, 0.45);
+  color: #fff;
+}
+
+.k-warm {
+  background: linear-gradient(180deg, #ffd29a 0%, #ff9f4d 100%);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 -3px 8px rgba(150, 60, 0, 0.3),
+    0 10px 30px rgba(255, 150, 70, 0.35);
+  color: #2a1404;
+}
+
+.k-sel {
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.32), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.k-lens {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 -1px 0 rgba(255, 255, 255, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.k-chip {
+  background: rgba(12, 14, 26, 0.42);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.k-popover {
+  background: linear-gradient(180deg, rgba(30, 34, 56, 0.5), rgba(18, 20, 34, 0.58));
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 30px 80px rgba(0, 0, 0, 0.5);
+}
+
+.k-amber {
+  background: linear-gradient(180deg, rgba(255, 176, 60, 0.2), rgba(255, 140, 40, 0.08));
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 196, 107, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 220, 160, 0.45), 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.k-tube {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -6px 12px rgba(255, 255, 255, 0.04);
+}
+
+.k-liquid {
+  background: linear-gradient(180deg, #c3abff 0%, #8b5cf6 45%, #5b2fd6 100%);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.55), inset 4px 0 6px rgba(0, 0, 0, 0.25),
+    inset -4px 0 6px rgba(0, 0, 0, 0.3), 0 0 18px rgba(139, 92, 246, 0.45);
+}
+
+.k-pill {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* Opaque fallbacks when transparency is reduced, unsupported, or more contrast is asked for. */
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .k-window { background: #141726; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .k-glass { background: #24283a; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .k-clear { background: #2a2e40; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .k-chip { background: #1a1d2c; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .k-popover { background: #1c1f30; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .k-amber { background: #3a2a14; -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+
+@media (prefers-contrast: more) {
+  .k-glass, .k-clear, .k-chip, .k-popover, .k-window { border-color: rgba(255, 255, 255, 0.35); }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .k-window { background: #141726; }
+  .k-glass { background: #24283a; }
+  .k-clear { background: #2a2e40; }
+  .k-chip { background: #1a1d2c; }
+  .k-popover { background: #1c1f30; }
+}

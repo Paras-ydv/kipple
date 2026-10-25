@@ -1,0 +1,104 @@
+/* Design tokens (docs/UI.md §2). Mirrors src/tokens.ts; keep both in sync. */
+:root {
+  color-scheme: dark;
+
+  /* §2.1 ink and surfaces */
+  --k-text: #f5f6fa;
+  --k-text-sub: rgba(255, 255, 255, 0.88);
+  --k-text-2: rgba(255, 255, 255, 0.72);
+  --k-text-3: rgba(255, 255, 255, 0.62);
+  --k-text-4: rgba(255, 255, 255, 0.55);
+  --k-line: rgba(255, 255, 255, 0.09);
+  --k-line-soft: rgba(255, 255, 255, 0.08);
+  --k-line-strong: rgba(255, 255, 255, 0.12);
+  --k-track: rgba(255, 255, 255, 0.07);
+  --k-accent: #1677ff;
+  --k-accent-top: #5ba9ff;
+  --k-accent-icon: #7fb8ff;
+  --k-accent-text: #9fcbff;
+  --k-positive: #8cf0a6;
+  --k-growth: #ffc46b;
+  --k-secret: #ffd597;
+  --k-secret-body: rgba(255, 236, 210, 0.82);
+  --k-stage: #06080f;
+  --k-traffic-close: #ff5f57;
+  --k-traffic-min: #febc2e;
+  --k-traffic-zoom: #28c840;
+  --k-focus: #9fcbff;
+
+  --k-wall: radial-gradient(70% 55% at 18% 92%, rgba(255, 132, 84, 0.62), rgba(255, 132, 84, 0) 62%),
+    radial-gradient(60% 50% at 88% 86%, rgba(178, 92, 255, 0.6), rgba(178, 92, 255, 0) 62%),
+    radial-gradient(80% 60% at 55% -8%, rgba(52, 124, 255, 0.75), rgba(52, 124, 255, 0) 62%),
+    linear-gradient(180deg, #0c1d52 0%, #1a2462 46%, #3a2662 76%, #62305a 100%);
+
+  /* §2.2 categories */
+  --k-cat-container: #2f6bff;
+  --k-cat-ai-history: #8b5cf6;
+  --k-cat-package-cache: #ffb020;
+  --k-cat-project-artifact: #3ccb5a;
+  --k-cat-mobile: #12c8c2;
+  --k-cat-model: #ff5c8a;
+  --k-cat-toolchain: #ff7a45;
+  --k-cat-build-cache: #a3d635;
+  --k-cat-ide-cache: #4cc9f0;
+  --k-cat-logs: #b0b8c8;
+  --k-cat-system: #7b8591;
+  --k-kipple-swatch: linear-gradient(90deg, #2f6bff, #8b5cf6, #ffb020, #3ccb5a);
+
+  /* §2.3 safety */
+  --k-safe-bg: rgba(60, 203, 90, 0.18);
+  --k-safe-fg: #7de89a;
+  --k-review-bg: rgba(255, 176, 32, 0.18);
+  --k-review-fg: #ffc46b;
+  --k-keep-bg: rgba(255, 95, 87, 0.18);
+  --k-keep-fg: #ff9c96;
+
+  /* §2.4 typography */
+  --k-font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, 'Segoe UI', Roboto, 'Helvetica Neue',
+    sans-serif;
+  --k-font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --k-font-brand: 'Mona Sans', -apple-system, system-ui, sans-serif;
+  --k-font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  --k-fs-hero: 132px;
+  --k-fs-hero-unit: 44px;
+  --k-fs-display-l: 64px;
+  --k-fs-display-m: 54px;
+  --k-fs-display-s: 46px;
+  --k-fs-number-l: 34px;
+  --k-fs-subhead: 24px;
+  --k-fs-title: 20px;
+  --k-fs-wordmark: 17px;
+  --k-fs-body-l: 15px;
+  --k-fs-body: 13px;
+  --k-fs-small: 12px;
+  --k-fs-caption: 11px;
+
+  /* §2.5 radius */
+  --k-r-bar: 7px;
+  --k-r-row: 9px;
+  --k-r-thumb: 16px;
+  --k-r-sidebar: 17px;
+  --k-r-panel: 20px;
+  --k-r-figure: 22px;
+  --k-r-popover: 24px;
+  --k-r-window: 26px;
+  --k-r-pill: 999px;
+
+  /* §2.6 shadows */
+  --k-shadow-figure: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 30px 60px rgba(0, 0, 0, 0.35);
+  --k-shadow-figure-sm: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 24px 50px rgba(0, 0, 0, 0.35);
+  --k-rim-figure: inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+
+  /* §2.7 motion */
+  --k-ease-grow: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --k-dur-grow: 240ms;
+  --k-dur-response: 150ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --k-dur-grow: 0ms;
+    --k-dur-response: 0ms;
+  }
+}
