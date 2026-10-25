@@ -49,18 +49,25 @@
   );
 
   // Before and after stacks.
-  const today = $derived(data.categories.slice(0, 6));
+  const result = $derived(planStore.phase === 'done' ? planStore.result : null);
+  const today = $derived((result && planStore.before ? planStore.before.categories : data.categories).slice(0, 6));
   const removedByCat = $derived.by(() => {
     const m = new Map<Category, number>();
     for (const e of plan?.entries ?? []) m.set(e.item.category, (m.get(e.item.category) ?? 0) + entryBytes(e.item, e.action));
     return m;
   });
-  const total = $derived(data.total);
-  const after = $derived(Math.max(0, total - (totals?.reclaimable ?? 0)));
+  const total = $derived(result && planStore.before ? planStore.before.total : data.total);
+  const after = $derived(result ? data.total : Math.max(0, total - (totals?.reclaimable ?? 0)));
   const stacks = $derived.by(() => {
     const before: StackLayer[] = today.map((c) => ({ key: c.category, color: categoryColor(c.category), value: c.reclaimable }));
     const rest: StackLayer[] = today
-      .map((c) => ({ key: c.category, color: categoryColor(c.category), value: Math.max(0, c.reclaimable - (removedByCat.get(c.category) ?? 0)) }))
+      .map((c) => ({
+        key: c.category,
+        color: categoryColor(c.category),
+        value: result
+          ? (data.categories.find((d) => d.category === c.category)?.reclaimable ?? 0)
+          : Math.max(0, c.reclaimable - (removedByCat.get(c.category) ?? 0)),
+      }))
       .filter((l) => l.value > 1e8);
     const scale = sharedScale([total, after], [before.length, Math.max(1, rest.length)], W, FLOOR - 120);
     return {
@@ -74,7 +81,6 @@
   const held = $derived(totals && !planStore.skipQuarantine ? totals.held_in_quarantine : 0);
 
   // Result view.
-  const result = $derived(planStore.phase === 'done' ? planStore.result : null);
   const releaseDay = $derived(formatDay(new Date(Date.now() + keepDays * 86_400_000)));
   let undoing = $state(false);
 
@@ -114,7 +120,7 @@
     {#snippet overlay()}
       <div class="tag" style:left="calc({LEFT} * var(--sx))" style:top="calc({stacks.before.top - 70} * var(--sy))">
         <Chip radius={16} padding="7px 14px">
-          <span class="tag-in"><span class="cap">Today</span><span class="val">{formatBytes(total)}</span></span>
+          <span class="tag-in"><span class="cap">{result ? 'Before' : 'Today'}</span><span class="val">{formatBytes(total)}</span></span>
         </Chip>
       </div>
       <div class="tag" style:left="calc({RIGHT} * var(--sx))" style:top="calc({stacks.after.top - 70} * var(--sy))">
@@ -122,12 +128,12 @@
           <span class="tag-in"><span class="cap">{result ? 'Now' : 'After this plan'}</span><span class="val">{formatBytes(after)}</span></span>
         </Chip>
       </div>
-      {#if totals}
+      {#if totals || result}
         <div class="arrow" style:left="calc(300 * var(--sx))" style:top="calc(330 * var(--sy))">
           <svg width="54" height="14" viewBox="0 0 54 14" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
             <path d="M2 7h48M44 2l6 5-6 5" />
           </svg>
-          <Chip radius={14} padding="6px 12px"><span class="out">{formatBytes(totals.reclaimable)} out</span></Chip>
+          <Chip radius={14} padding="6px 12px"><span class="out">{formatBytes(result ? result.freed_now + result.held_in_quarantine : (totals?.reclaimable ?? 0))} out</span></Chip>
         </div>
       {/if}
     {/snippet}

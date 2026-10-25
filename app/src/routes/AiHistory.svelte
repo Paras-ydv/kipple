@@ -137,6 +137,8 @@
 
   async function run() {
     if (!picked.length) return;
+    // Keep this tool's tab after the sizes change.
+    if (tool !== current) router.go({ name: 'ai', tool: current }, { replace: true });
     await planStore.runItems(
       picked.map((i) => i.id),
       actionLabel.replace(/ \(.*\)$/, ''),

@@ -1,7 +1,7 @@
 // The review plan: which items are selected, the plan the core makes from them,
 // and running it (SPEC §8).
 
-import { KippleError, type Confirmation, type ExecReport, type Plan } from '@kipple/client';
+import { KippleError, type CategorySummary, type Confirmation, type ExecReport, type Plan } from '@kipple/client';
 import { formatBytes } from '@kipple/design';
 import { client } from '../client.ts';
 import { data } from './data.svelte.ts';
@@ -23,6 +23,8 @@ class PlanStore {
   phase: RunPhase = $state('idle');
   progress = $state({ index: 0, total: 0, title: '' });
   result: ExecReport | null = $state.raw(null);
+  /** Categories as they were before the last run, for the before and after stacks. */
+  before: { categories: CategorySummary[]; total: number } | null = $state.raw(null);
   private abort: AbortController | null = null;
   private buildSeq = 0;
 
@@ -126,8 +128,10 @@ class PlanStore {
       confirm = { kind: 'click', purge_now: false };
     }
     if (!confirm) return;
+    const before = { categories: data.categories, total: data.total };
     const report = await this.execute(plan, confirm);
     if (report) {
+      this.before = before;
       this.result = report;
       this.phase = 'done';
       this.selection = new Set();
