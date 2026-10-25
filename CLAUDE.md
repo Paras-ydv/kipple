@@ -22,6 +22,7 @@ kipple is an open-source, cross-platform tool that finds and safely reclaims dis
 
 ## Safety rules (never break these)
 - **Never run kipple, its tests or ad-hoc scripts against the real home directory or real tool data.** Use the `TestHome` helper / temp dirs and fixtures. No `rm -rf` outside a temp dir. Ever.
+- Development builds (`cargo test`, `cargo run`, `tauri dev`, `tauri build --debug`) refuse every change outside a `KIPPLE_TEST_SANDBOX` (`platform::fsx::change_guard`). Don't weaken this, and don't set `KIPPLE_ALLOW_REAL_DATA` while developing. Launch any build you test, release or debug, with a sandbox environment (`cargo xtask fixtures`).
 - Read-only commands must not modify anything outside kipple's data dir.
 - Every destructive code path goes through the executor (revalidation + journal + quarantine). No shortcuts in adapters.
 - Third-party databases (Cursor, Codex, Antigravity) are opened read-only during discovery. Never edit rows in them unless a spec section explicitly says so.

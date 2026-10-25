@@ -157,6 +157,16 @@ impl Run<'_> {
 
     fn act(&self, entry: &PlanEntry) -> (Outcome, Option<QuarantineId>) {
         let item = &entry.item;
+        // Covers actions that never reach a path guard (native commands,
+        // Docker removals): development builds don't change real data.
+        if let Err(e) = fsx::change_guard(&self.k.platform().env) {
+            return (
+                Outcome::Skipped {
+                    reason: e.to_string(),
+                },
+                None,
+            );
+        }
         match &entry.action {
             ActionKind::Quarantine => {
                 match self

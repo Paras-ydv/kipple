@@ -67,11 +67,38 @@ pub fn same_volume(_a: &Path, _b: &Path) -> bool {
 #[error("refusing to change {0} outside the test sandbox")]
 pub struct SandboxViolation(pub String);
 
-/// When `KIPPLE_TEST_SANDBOX` is set, refuses filesystem changes outside it.
-/// Every destructive operation calls this first (SPEC §18).
+/// Opt-in that lets a development build change real data.
+pub const ALLOW_REAL_DATA: &str = "KIPPLE_ALLOW_REAL_DATA";
+
+/// Whether this process may change anything outside a test sandbox.
+///
+/// Development builds (`cargo test`, `cargo run`, `tauri dev`) never change
+/// real data unless `KIPPLE_ALLOW_REAL_DATA=1`; they only act inside a
+/// `KIPPLE_TEST_SANDBOX`. Release builds may (after the user confirms a plan).
+pub fn may_change_real_data(env: &Env) -> bool {
+    !cfg!(debug_assertions) || env.get_str(ALLOW_REAL_DATA) == Some("1")
+}
+
+/// Refuses any change at all when there is no sandbox and real data is off
+/// limits. Called before every action, including ones that don't touch the
+/// filesystem directly (native commands, Docker removals).
+pub fn change_guard(env: &Env) -> Result<(), SandboxViolation> {
+    if env.get("KIPPLE_TEST_SANDBOX").is_some() || may_change_real_data(env) {
+        Ok(())
+    } else {
+        Err(SandboxViolation(
+            "real data: development builds of kipple only change files inside a test sandbox"
+                .into(),
+        ))
+    }
+}
+
+/// Refuses filesystem changes outside `KIPPLE_TEST_SANDBOX` when it is set,
+/// and any change to real data from a development build. Every destructive
+/// operation calls this first (SPEC §18).
 pub fn sandbox_guard(env: &Env, path: &Path) -> Result<(), SandboxViolation> {
     let Some(root) = env.get_path("KIPPLE_TEST_SANDBOX") else {
-        return Ok(());
+        return change_guard(env);
     };
     let resolved = paths::canonicalize_parent(path);
     if paths::is_within(&resolved, &root) || paths::is_within(path, &root) {
@@ -108,6 +135,21 @@ pub fn allocated(meta: &Metadata) -> u64 {
 mod tests {
     use super::*;
     use crate::testing::TestHome;
+
+    #[test]
+    fn development_builds_never_touch_real_data() {
+        // No sandbox: a debug build (this test) refuses every change.
+        let env = Env::from_pairs([("HOME", "/h")]);
+        let p = std::env::temp_dir().join("kipple-real");
+        if cfg!(debug_assertions) {
+            assert!(change_guard(&env).is_err());
+            assert!(sandbox_guard(&env, &p).is_err());
+            let allowed = Env::from_pairs([("HOME", "/h"), (ALLOW_REAL_DATA, "1")]);
+            assert!(change_guard(&allowed).is_ok());
+            let wrong = Env::from_pairs([("HOME", "/h"), (ALLOW_REAL_DATA, "yes")]);
+            assert!(change_guard(&wrong).is_err(), "only exactly 1 opts in");
+        }
+    }
 
     #[test]
     fn sandbox_guard_rejects_outside_paths() {

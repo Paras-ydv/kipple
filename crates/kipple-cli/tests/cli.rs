@@ -198,3 +198,31 @@ fn share_writes_a_png() {
         .success();
     assert_eq!(&std::fs::read(out).unwrap()[1..4], b"PNG");
 }
+
+/// A development build without a test sandbox never changes anything, even
+/// when the user confirms (the user's standing rule: no real data, ever).
+#[test]
+fn debug_build_refuses_real_data_without_sandbox() {
+    let mut home = TestHome::new().unwrap();
+    kipple_core::testing::Fixture::named("rust-target")
+        .unwrap()
+        .generate(&mut home)
+        .unwrap();
+    home.env_mut().remove("KIPPLE_TEST_SANDBOX");
+    kipple(&home).arg("scan").assert().success();
+    kipple(&home)
+        .args(["clean", "--safe-only", "--yes"])
+        .assert()
+        .code(3)
+        .stderr(predicate::str::contains(
+            "only change files inside a test sandbox",
+        ));
+    assert!(home.join("code/tool/target/debug/tool").exists());
+    assert!(
+        !home.join(".local/share/kipple/quarantine").exists()
+            || std::fs::read_dir(home.join(".local/share/kipple/quarantine"))
+                .unwrap()
+                .next()
+                .is_none()
+    );
+}
