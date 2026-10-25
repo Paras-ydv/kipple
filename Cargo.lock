@@ -2093,6 +2093,7 @@ dependencies = [
 name = "kipple-adapters"
 version = "0.1.0-alpha.0"
 dependencies = [
+ "filetime",
  "globset",
  "insta",
  "jiff",

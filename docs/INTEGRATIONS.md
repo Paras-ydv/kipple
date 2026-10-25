@@ -222,12 +222,12 @@ Commands are argv arrays (no shell), may reference only pack vars. They run with
 ### 4.10 `claude-code` (adapter)
 - Root: `CLAUDE_CONFIG_DIR` → `~/.claude` (`%USERPROFILE%\.claude` on Windows).
 - Sessions: `<root>/projects/<encoded-cwd>/<session-uuid>.jsonl`. **Do not decode the folder name** to get the project path; read the `cwd` field from the first lines of the JSONL that contain it. Title = first user message text, truncated (60 chars) and secret-masked. `last_used` = last line timestamp or file mtime.
-- Item per session (`Review`, `CHAT_HISTORY`, `MAY_CONTAIN_SECRETS`); grouped per project; orphan flag when `cwd` no longer exists (`ORPHANED_PROJECT`).
-- Other subdirectories under the root (e.g. `todos`, `shell-snapshots`, `debug`, `file-history` — verify per version): report sizes as separate items, `Review`, until each is documented as safe.
-- Never touch `settings.json`, `CLAUDE.md`, `agents/`, `commands/`, `skills/`, `plugins/`, credentials.
-- In use: `claude` process running → sessions modified in the last 24 h are `Keep`; others unaffected. Any session file written in the last 10 min → `Keep`.
-- Actions: `quarantine` (whole `.jsonl` file; never edit lines), `archive` [v1].
-- Retention [v1]: `set_retention` writes `cleanupPeriodDays` in `<root>/settings.json`, preserving other keys and formatting (use a JSON editor that preserves order), shows a diff, requires confirmation. **Never write `0`** (reported to disable transcript writing entirely rather than meaning "keep forever"); minimum 1.
+- Item per session (`Review`, `CHAT_HISTORY`, `MAY_CONTAIN_SECRETS`); grouped per project; orphan flag when `cwd` no longer exists (`ORPHANED_PROJECT`). The item includes the session's companion folder `projects/<encoded-cwd>/<session-uuid>/` (subagent transcripts, `tool-results/`, `mcp-tasks/`) so it moves as one unit. Set-aside copies (`<uuid>.jsonl.superseded-<ts>`, `<uuid>.orphaned-<ts>-<suffix>.jsonl`) are separate items (decision 0010).
+- Other subdirectories under the root: `file-history`, `plans`, `paste-cache`, `debug`, `shell-snapshots`, `session-env`, `image-cache`, `uploads`, `usage-data`, and the legacy `todos`, `statsig`, `logs` (verified 2026-10-25, see `docs/integrations/claude-code.md`): report sizes as separate items, `Review`, until each is documented as safe.
+- Never touch `settings.json`, `settings.local.json`, `CLAUDE.md`, `agents/`, `commands/`, `skills/`, `plugins/`, `rules/`, `output-styles/`, `workflows/`, `agent-memory/`, auto memory (`projects/<p>/memory/`), `history.jsonl`, `backups/`, `sessions/`, `tasks/`, `jobs/`, `daemon/`, credentials (`.credentials.json`).
+- In use: `claude` process running → sessions modified in the last 24 h are `Keep`; others unaffected (so the integration declares no blanket `in_use_processes`). Any session file written in the last 10 min → `Keep`.
+- Actions: `quarantine` (whole `.jsonl` file plus its companion folder; never edit lines), `archive` [v1].
+- Retention [v1]: `set_retention` writes `cleanupPeriodDays` in `<root>/settings.json`, preserving other keys and formatting (use a JSON editor that preserves order), shows a diff, requires confirmation. **Never write `0`** (current Claude Code rejects it in settings validation; older versions reportedly disabled transcript writing); minimum 1.
 - Note for users (shown in `explain`): Claude Code deletes transcripts older than `cleanupPeriodDays` (default 30) itself.
 
 ### 4.11 `codex` (adapter)

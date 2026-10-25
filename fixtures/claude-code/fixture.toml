@@ -1,0 +1,107 @@
+# Claude Code data under CLAUDE_CONFIG_DIR (~/.claude in TestHome).
+# Generated, fake content only. Transcript lines follow the fields Claude
+# Code writes (type, uuid, parentUuid, sessionId, timestamp, cwd, version,
+# message), see docs/integrations/claude-code.md.
+days_ago = 45
+
+# A live project with two sessions.
+[[file]]
+path = "code/webapp/package.json"
+content = '{"name": "webapp"}'
+[[git]]
+path = "code/webapp"
+days_ago = 20
+
+[[file]]
+path = ".claude/projects/-home-code-webapp/0b5a7c1e-1111-4222-8333-944455556666.jsonl"
+content = '''
+{"type":"summary","summary":"Fake summary","leafUuid":"u2"}
+{"parentUuid":null,"isSidechain":false,"userType":"external","cwd":"{home}/code/webapp","sessionId":"0b5a7c1e-1111-4222-8333-944455556666","version":"2.1.300","gitBranch":"main","type":"user","message":{"role":"user","content":"<command-name>/clear</command-name>"},"uuid":"u0","timestamp":"2026-01-10T09:00:00.000Z"}
+{"parentUuid":"u0","isSidechain":false,"userType":"external","cwd":"{home}/code/webapp","sessionId":"0b5a7c1e-1111-4222-8333-944455556666","version":"2.1.300","gitBranch":"main","type":"user","message":{"role":"user","content":"Deploy the staging stack with key AKIAIOSFODNN7EXAMPLE and then fix the flaky login test that fails on CI"},"uuid":"u1","timestamp":"2026-01-10T09:00:01.000Z"}
+{"parentUuid":"u1","isSidechain":false,"cwd":"{home}/code/webapp","sessionId":"0b5a7c1e-1111-4222-8333-944455556666","version":"2.1.300","type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"Fake assistant reply."}]},"uuid":"u2","timestamp":"2026-01-10T09:05:00.000Z"}
+'''
+[[file]]
+path = ".claude/projects/-home-code-webapp/0b5a7c1e-1111-4222-8333-944455556666/subagents/agent-a1.jsonl"
+size = 3000
+[[file]]
+path = ".claude/projects/-home-code-webapp/0b5a7c1e-1111-4222-8333-944455556666/tool-results/t1.txt"
+size = 5000
+
+[[file]]
+path = ".claude/projects/-home-code-webapp/2c3d4e5f-aaaa-4bbb-8ccc-ddddeeeeffff.jsonl"
+content = '''
+{"parentUuid":null,"isSidechain":false,"cwd":"{home}/code/webapp","sessionId":"2c3d4e5f-aaaa-4bbb-8ccc-ddddeeeeffff","version":"2.1.300","type":"user","message":{"role":"user","content":[{"type":"text","text":"Add a dark mode toggle"}]},"uuid":"v1","timestamp":"2026-02-01T12:00:00.000Z"}
+{"parentUuid":"v1","isSidechain":false,"cwd":"{home}/code/webapp","sessionId":"2c3d4e5f-aaaa-4bbb-8ccc-ddddeeeeffff","version":"2.1.300","type":"user","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"t1","content":"fake output"}]},"uuid":"v2","timestamp":"2026-02-01T12:01:00.000Z"}
+'''
+
+# Auto memory: never offered.
+[[file]]
+path = ".claude/projects/-home-code-webapp/memory/MEMORY.md"
+content = "fake memory"
+
+# A session whose project folder was deleted, plus a set-aside copy.
+[[file]]
+path = ".claude/projects/-home-code-deleted-app/3f3f3f3f-0000-4000-8000-000000000003.jsonl"
+content = '''
+{"parentUuid":null,"isSidechain":false,"cwd":"{home}/code/deleted-app","sessionId":"3f3f3f3f-0000-4000-8000-000000000003","version":"2.0.10","type":"user","message":{"role":"user","content":"Write a README for this prototype"},"uuid":"w1","timestamp":"2025-11-02T08:00:00.000Z"}
+'''
+[[file]]
+path = ".claude/projects/-home-code-deleted-app/3f3f3f3f-0000-4000-8000-000000000003.jsonl.superseded-1762070400"
+content = '''
+{"parentUuid":null,"cwd":"{home}/code/deleted-app","sessionId":"3f3f3f3f-0000-4000-8000-000000000003","version":"2.0.10","type":"user","message":{"role":"user","content":"Write a README for this prototype"},"uuid":"w1","timestamp":"2025-11-02T08:00:00.000Z"}
+'''
+
+# Not a transcript kipple understands: kept.
+[[file]]
+path = ".claude/projects/-home-other/4a4a4a4a-0000-4000-8000-000000000004.jsonl"
+content = "this is not json\n"
+
+# Written just now: kept.
+[[file]]
+path = ".claude/projects/-home-code-webapp/5b5b5b5b-0000-4000-8000-000000000005.jsonl"
+content = '''
+{"parentUuid":null,"cwd":"{home}/code/webapp","sessionId":"5b5b5b5b-0000-4000-8000-000000000005","version":"2.1.300","type":"user","message":{"role":"user","content":"Still running"},"uuid":"x1","timestamp":"2026-03-01T08:00:00.000Z"}
+'''
+days_ago = 0
+
+# Other data folders, reported separately.
+[[file]]
+path = ".claude/file-history/0b5a7c1e-1111-4222-8333-944455556666/abc@v1"
+size = 2000
+[[file]]
+path = ".claude/debug/0b5a7c1e-1111-4222-8333-944455556666.txt"
+size = 1500
+[[file]]
+path = ".claude/shell-snapshots/snapshot-zsh-1.sh"
+size = 400
+[[file]]
+path = ".claude/todos/old.json"
+content = "[]"
+[[dir]]
+path = ".claude/plans"
+
+# Configuration and credentials: never offered.
+[[file]]
+path = ".claude/settings.json"
+content = '{"cleanupPeriodDays": 30}'
+[[file]]
+path = ".claude/CLAUDE.md"
+content = "fake instructions"
+[[file]]
+path = ".claude/agents/reviewer.md"
+content = "fake agent"
+[[file]]
+path = ".claude/commands/ship.md"
+content = "fake command"
+[[file]]
+path = ".claude/skills/demo/SKILL.md"
+content = "fake skill"
+[[file]]
+path = ".claude/plugins/installed_plugins.json"
+content = "{}"
+[[file]]
+path = ".claude/.credentials.json"
+content = '{"fake": true}'
+[[file]]
+path = ".claude/history.jsonl"
+content = '{"display":"fake","timestamp":1}'

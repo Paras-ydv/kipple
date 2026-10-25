@@ -2,6 +2,7 @@
 
 pub mod ai;
 pub mod android;
+pub mod claude_code;
 pub mod docker;
 pub mod huggingface;
 pub mod ollama;
@@ -26,5 +27,6 @@ pub fn all() -> Vec<Arc<dyn Adapter>> {
         Arc::new(playwright::Playwright),
         Arc::new(ollama::Ollama),
         Arc::new(huggingface::HuggingFace),
+        Arc::new(claude_code::ClaudeCode),
     ]
 }
