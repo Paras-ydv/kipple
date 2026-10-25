@@ -62,11 +62,11 @@ fn make_writable(path: &Path) {
     #[allow(clippy::permissions_set_readonly_false)]
     perms.set_readonly(false);
     let _ = fs::set_permissions(path, perms);
-    if meta.is_dir() {
-        if let Ok(rd) = fs::read_dir(path) {
-            for e in rd.flatten() {
-                make_writable(&e.path());
-            }
+    if meta.is_dir()
+        && let Ok(rd) = fs::read_dir(path)
+    {
+        for e in rd.flatten() {
+            make_writable(&e.path());
         }
     }
 }

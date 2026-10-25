@@ -488,13 +488,12 @@ impl Kipple {
             }
             let mut safety_level = d.safety;
             let mut reasons_extra = Vec::new();
-            if attribution.is_none() {
-                if let Some(outside) = d.safety_outside_project {
-                    if outside > safety_level {
-                        safety_level = outside;
-                        reasons_extra.push(reasons::reason_with(ReasonCode::ContainsUserData, &[]));
-                    }
-                }
+            if attribution.is_none()
+                && let Some(outside) = d.safety_outside_project
+                && outside > safety_level
+            {
+                safety_level = outside;
+                reasons_extra.push(reasons::reason_with(ReasonCode::ContainsUserData, &[]));
             }
             reasons.extend(reasons_extra);
             let mut item = Item {
@@ -524,11 +523,12 @@ impl Kipple {
                 newest_mtime: newest,
             };
             engine::evaluate(&mut item, &facts, safety);
-            if let Some(p) = &item.project {
-                if !p.root.exists() && !item.has_reason(ReasonCode::OrphanedProject) {
-                    item.reasons
-                        .push(reasons::reason(ReasonCode::OrphanedProject));
-                }
+            if let Some(p) = &item.project
+                && !p.root.exists()
+                && !item.has_reason(ReasonCode::OrphanedProject)
+            {
+                item.reasons
+                    .push(reasons::reason(ReasonCode::OrphanedProject));
             }
             items.push(item);
         }

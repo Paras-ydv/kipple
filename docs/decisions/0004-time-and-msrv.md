@@ -5,3 +5,6 @@
 ## Decision
 - Time: `jiff` (0.2.x as of 2026-10). Timestamps serialize as RFC 3339 strings. Relative durations (`30d`, `6m`) are parsed by kipple's own small parser so the CLI grammar stays ours.
 - MSRV: `rust-version` is set to the lowest version that builds the workspace with its dependencies, re-checked when dependencies change. CI has an `msrv` job that builds with exactly that version.
+
+## Update 2026-10-26
+The lowest version the dependencies allow is **1.95** (`sysinfo` 0.39 requires it; `rusqlite` 0.41 needs 1.89, `gix`/`ignore`/`globset` 1.88). Checked with `cargo +1.95 check --workspace --all-targets`.

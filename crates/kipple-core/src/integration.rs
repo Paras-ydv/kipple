@@ -70,10 +70,10 @@ impl<'a> Ctx<'a> {
     /// Runs `argv` once per context and returns its stdout as a path
     /// (`npm config get cache`, `go env GOCACHE`). Memoized.
     pub fn command_path(&self, argv: &[String]) -> Option<PathBuf> {
-        if let Ok(memo) = self.memo.lock() {
-            if let Some(hit) = memo.get(argv) {
-                return hit.clone();
-            }
+        if let Ok(memo) = self.memo.lock()
+            && let Some(hit) = memo.get(argv)
+        {
+            return hit.clone();
         }
         let result = self
             .platform

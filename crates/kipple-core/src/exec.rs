@@ -125,12 +125,11 @@ impl Run<'_> {
             let Ok(meta) = p.symlink_metadata() else {
                 return Err(format!("{} no longer exists.", p.display()));
             };
-            if i == 0 {
-                if let Some(expected) = item.identity {
-                    if fsx::identity_of(&meta) != expected {
-                        return Err(format!("{} was replaced since the scan.", p.display()));
-                    }
-                }
+            if i == 0
+                && let Some(expected) = item.identity
+                && fsx::identity_of(&meta) != expected
+            {
+                return Err(format!("{} was replaced since the scan.", p.display()));
             }
             if let Err(refusal) = is_actionable(&self.protected, p, &self.allowed) {
                 return Err(format!("Refused: {refusal}."));
@@ -148,10 +147,10 @@ impl Run<'_> {
             }
         }
         // Cheap recent-write check: the item and its direct children.
-        if let Some(p) = item.locator.primary_path() {
-            if recently_written(p) {
-                return Err(reasons::reason(ReasonCode::RecentlyWritten).text);
-            }
+        if let Some(p) = item.locator.primary_path()
+            && recently_written(p)
+        {
+            return Err(reasons::reason(ReasonCode::RecentlyWritten).text);
         }
         Ok(())
     }

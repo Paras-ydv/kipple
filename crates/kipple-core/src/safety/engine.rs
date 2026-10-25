@@ -187,10 +187,11 @@ fn hard_rule(item: &Item, facts: &ItemFacts, ctx: &SafetyContext) -> Option<Reas
             return Some(reason(ReasonCode::RecentlyWritten));
         }
     }
-    if let Some(path) = item.locator.primary_path() {
-        if !item.actions.is_empty() && !parent_writable(path) {
-            return Some(reason(ReasonCode::NeedsElevation));
-        }
+    if let Some(path) = item.locator.primary_path()
+        && !item.actions.is_empty()
+        && !parent_writable(path)
+    {
+        return Some(reason(ReasonCode::NeedsElevation));
     }
     None
 }

@@ -118,10 +118,10 @@ impl ProjectSet {
     fn rollup<'a>(&'a self, root: &'a ProjectRoot) -> &'a ProjectRoot {
         let mut best = None;
         for a in root.root.ancestors() {
-            if let Some(r) = self.roots.get(a) {
-                if r.has_git() {
-                    best = Some(r);
-                }
+            if let Some(r) = self.roots.get(a)
+                && r.has_git()
+            {
+                best = Some(r);
             }
         }
         best.unwrap_or(root)

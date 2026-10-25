@@ -34,10 +34,10 @@ fn lookup(env: &Env, name: &str) -> Result<String, ExpandError> {
     if let Some(p) = xdg_default(env, name) {
         return Ok(p.to_string_lossy().into_owned());
     }
-    if name == "HOME" || name == "USERPROFILE" {
-        if let Some(h) = env.home() {
-            return Ok(h.to_string_lossy().into_owned());
-        }
+    if (name == "HOME" || name == "USERPROFILE")
+        && let Some(h) = env.home()
+    {
+        return Ok(h.to_string_lossy().into_owned());
     }
     Err(ExpandError::UnsetVariable(name.to_owned()))
 }
@@ -194,14 +194,14 @@ pub fn strip_verbatim(path: PathBuf) -> PathBuf {
 
 /// Replaces the home prefix with `~` for display.
 pub fn shorten_home(path: &Path, home: Option<&Path>) -> String {
-    if let Some(home) = home {
-        if let Ok(rest) = path.strip_prefix(home) {
-            if rest.as_os_str().is_empty() {
-                return "~".to_owned();
-            }
-            let sep = std::path::MAIN_SEPARATOR;
-            return format!("~{sep}{}", rest.display());
+    if let Some(home) = home
+        && let Ok(rest) = path.strip_prefix(home)
+    {
+        if rest.as_os_str().is_empty() {
+            return "~".to_owned();
         }
+        let sep = std::path::MAIN_SEPARATOR;
+        return format!("~{sep}{}", rest.display());
     }
     path.display().to_string()
 }

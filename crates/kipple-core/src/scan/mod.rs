@@ -131,13 +131,13 @@ impl Visitor for ScanVisitor {
 
     fn error(&self, path: Option<&Path>, message: String) {
         self.unreadable.fetch_add(1, Ordering::Relaxed);
-        if let Ok(mut errs) = self.first_errors.lock() {
-            if errs.len() < 5 {
-                errs.push(match path {
-                    Some(p) => format!("{}: {message}", p.display()),
-                    None => message,
-                });
-            }
+        if let Ok(mut errs) = self.first_errors.lock()
+            && errs.len() < 5
+        {
+            errs.push(match path {
+                Some(p) => format!("{}: {message}", p.display()),
+                None => message,
+            });
         }
     }
 
@@ -319,10 +319,10 @@ pub fn run(ctx: &Ctx, input: ScanInput, sink: &dyn ScanSink) -> Result<ScanOutpu
         s.spawn(|| {
             while !walk_done.load(Ordering::Relaxed) {
                 std::thread::sleep(Duration::from_millis(100));
-                if let Some(t) = sink.cancel_token() {
-                    if t.is_cancelled() {
-                        cancel.cancel();
-                    }
+                if let Some(t) = sink.cancel_token()
+                    && t.is_cancelled()
+                {
+                    cancel.cancel();
                 }
                 sink.event(ScanEvent::Progress {
                     done: visitor.entries.load(Ordering::Relaxed),

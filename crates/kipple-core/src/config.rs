@@ -315,10 +315,10 @@ fn check_keys(
             }
             (Shape::ArrayOfTables(fields), toml::Value::Array(items)) => {
                 for item in items {
-                    if let toml::Value::Table(t) = item {
-                        if let Some(found) = check_keys(t, fields, &full) {
-                            return Some(found);
-                        }
+                    if let toml::Value::Table(t) = item
+                        && let Some(found) = check_keys(t, fields, &full)
+                    {
+                        return Some(found);
                     }
                 }
             }

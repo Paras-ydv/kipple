@@ -163,10 +163,10 @@ mod tests {
         fn visit(&self, e: &WalkEntry<'_>) -> Visit {
             let mut seen = self.seen.lock().unwrap();
             seen.push(e.path.to_path_buf());
-            if let Some(n) = self.cancel_after {
-                if seen.len() >= n {
-                    self.cancelled.store(true, Ordering::Relaxed);
-                }
+            if let Some(n) = self.cancel_after
+                && seen.len() >= n
+            {
+                self.cancelled.store(true, Ordering::Relaxed);
             }
             if self
                 .skip_name
