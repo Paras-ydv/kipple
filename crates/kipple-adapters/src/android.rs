@@ -119,10 +119,10 @@ fn newest_mtime(dir: &Path) -> Option<LastUsed> {
     let mut newest = None;
     for p in util::children(dir) {
         let name = util::file_name(&p);
-        if name.starts_with("userdata-qemu.img") || name == "snapshots" {
-            if let Ok(t) = p.symlink_metadata().and_then(|m| m.modified()) {
-                newest = newest.max(Some(t));
-            }
+        if (name.starts_with("userdata-qemu.img") || name == "snapshots")
+            && let Ok(t) = p.symlink_metadata().and_then(|m| m.modified())
+        {
+            newest = newest.max(Some(t));
         }
     }
     newest

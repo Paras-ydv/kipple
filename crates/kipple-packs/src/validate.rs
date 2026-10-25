@@ -111,10 +111,10 @@ pub fn validate(pack: &Pack) -> Vec<String> {
         if loc.keep_latest.is_some() && loc.each != Each::Child {
             ref_errors.push(format!("{ctx}: keep_latest needs each = \"child\""));
         }
-        if let Some(s) = &loc.min_size {
-            if let Err(e) = kipple_core::format::parse_size(s) {
-                ref_errors.push(format!("{ctx}: min_size: {e}"));
-            }
+        if let Some(s) = &loc.min_size
+            && let Err(e) = kipple_core::format::parse_size(s)
+        {
+            ref_errors.push(format!("{ctx}: min_size: {e}"));
         }
         if !loc.path.starts_with('{')
             && !loc.path.starts_with('~')
@@ -152,12 +152,12 @@ pub fn validate(pack: &Pack) -> Vec<String> {
         if cmd.run.is_empty() {
             ref_errors.push(format!("{ctx}: run is empty"));
         }
-        if let Some(program) = cmd.run.first() {
-            if program.contains(['/', '\\', ' ']) {
-                ref_errors.push(format!(
-                    "{ctx}: the program must be a bare name found on PATH"
-                ));
-            }
+        if let Some(program) = cmd.run.first()
+            && program.contains(['/', '\\', ' '])
+        {
+            ref_errors.push(format!(
+                "{ctx}: the program must be a bare name found on PATH"
+            ));
         }
         for arg in cmd.run.iter().skip(1) {
             for r in var_refs(arg) {

@@ -72,13 +72,15 @@ jobs:
         env:
           KIPPLE_REAL_DOCKER: unix:///var/run/docker.sock
 
-  schema:
+  generated:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - run: cargo xtask schema --check
+      - run: cargo xtask docs --check
+      - run: cargo run -q -p kipple-cli -- packs validate packs/*.toml
 
   deny:
     runs-on: ubuntu-latest

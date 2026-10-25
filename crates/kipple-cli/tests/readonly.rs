@@ -167,3 +167,36 @@ fn unknown_only_selector_is_an_error() {
             "unknown integration or category `npm-cahce`",
         ));
 }
+
+#[test]
+fn doctor_is_read_only_and_matches_schema() {
+    let home = home_with_all_fixtures();
+    let skip = vec![home.join(".local/share/kipple"), home.join("tmp")];
+    let before = mtimes(home.path(), &skip);
+    let report = json(&home, &["doctor"]);
+    assert_valid("doctor-report", &report);
+    assert!(report["integrations"].as_array().unwrap().len() >= 30);
+    kipple(&home).arg("doctor").assert().success();
+    let after = mtimes(home.path(), &skip);
+    let data = home.join(".local/share/kipple");
+    assert!(
+        after
+            .keys()
+            .all(|p| before.contains_key(p) || data.starts_with(p))
+    );
+}
+
+#[test]
+fn completions_print_for_every_shell() {
+    let home = TestHome::new().unwrap();
+    for shell in ["bash", "zsh", "fish", "powershell", "elvish"] {
+        let out = kipple(&home)
+            .args(["completions", shell])
+            .assert()
+            .success();
+        assert!(
+            String::from_utf8_lossy(&out.get_output().stdout).contains("kipple"),
+            "{shell}"
+        );
+    }
+}

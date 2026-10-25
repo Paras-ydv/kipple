@@ -18,10 +18,10 @@ fn rel(home: &TestHome, p: &std::path::Path) -> String {
 fn project(home: &TestHome, item: &Item) -> Value {
     let paths: Vec<String> = item.locator.paths().iter().map(|p| rel(home, p)).collect();
     let mut details = item.details.clone();
-    if let Some(sub) = details.get_mut("subproject") {
-        if let Some(s) = sub.as_str() {
-            *sub = json!(rel(home, std::path::Path::new(s)));
-        }
+    if let Some(sub) = details.get_mut("subproject")
+        && let Some(s) = sub.as_str()
+    {
+        *sub = json!(rel(home, std::path::Path::new(s)));
     }
     json!({
         "integration": item.integration,

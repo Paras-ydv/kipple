@@ -298,7 +298,6 @@ impl Adapter for PackAdapter {
             .commands
             .values()
             .filter_map(|c| c.run.first().cloned())
-            .chain(self.pack.detect.any_command.iter().cloned())
             .collect();
         t.sort();
         t.dedup();

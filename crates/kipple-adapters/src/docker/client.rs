@@ -54,12 +54,11 @@ pub fn endpoints(env: &Env) -> Vec<Endpoint> {
     let docker_dir = env
         .get_path("DOCKER_CONFIG")
         .or_else(|| env.home().map(|h| h.join(".docker")));
-    if let Some(dir) = &docker_dir {
-        if let Some(host) = context_host(dir) {
-            if let Ok(e) = Endpoint::parse(&host) {
-                out.push(e);
-            }
-        }
+    if let Some(dir) = &docker_dir
+        && let Some(host) = context_host(dir)
+        && let Ok(e) = Endpoint::parse(&host)
+    {
+        out.push(e);
     }
     if cfg!(windows) {
         out.push(Endpoint::Pipe(r"\\.\pipe\docker_engine".into()));

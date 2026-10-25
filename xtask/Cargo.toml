@@ -9,5 +9,7 @@ publish = false
 [dependencies]
 anyhow.workspace = true
 kipple-core = { workspace = true, features = ["test-support"] }
+kipple-packs.workspace = true
+kipple-adapters.workspace = true
 schemars.workspace = true
 serde_json.workspace = true

@@ -78,10 +78,10 @@ Spec references: `SPEC.md §n`, `INTEGRATIONS.md §n`, `UI.md §n`.
 - **Done when:** a new user can scan → select → clean → undo without reading docs.
 
 ### M8 — Doctor, share card, docs generation
-- [ ] `kipple doctor` (SPEC §11.2) with actionable fixes
+- [x] `kipple doctor` (SPEC §11.2) with actionable fixes
 - [ ] `kipple share` card per `UI.md §5` (SPEC §14), deterministic snapshot test
-- [ ] `kipple completions`
-- [ ] `cargo xtask docs`: integrations table for README + `docs/integrations/<id>.md` pages
+- [x] `kipple completions`
+- [x] `cargo xtask docs`: integrations table for README + `docs/integrations/<id>.md` pages
 - **Done when:** README integrations table is generated, share card PNG matches the design.
 
 ### M9 — Release & launch

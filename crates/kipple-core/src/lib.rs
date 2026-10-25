@@ -4,6 +4,7 @@
 pub mod attribute;
 pub mod config;
 pub mod dirs;
+mod doctor;
 mod exec;
 pub mod format;
 pub mod index;

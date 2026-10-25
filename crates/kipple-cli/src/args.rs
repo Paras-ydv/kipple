@@ -86,6 +86,13 @@ pub enum Command {
     Quarantine(QuarantineCommand),
     /// What kipple has done, or how space grew over time.
     History(HistoryArgs),
+    /// Check what kipple can see and how to fix what it can't.
+    Doctor,
+    /// Print shell completions.
+    Completions {
+        #[arg(value_enum)]
+        shell: clap_complete::Shell,
+    },
     /// Inspect and test packs.
     #[command(subcommand)]
     Packs(PacksCommand),
