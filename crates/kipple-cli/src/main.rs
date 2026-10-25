@@ -77,6 +77,7 @@ fn main() -> ExitCode {
         Command::Undo => cmd::clean::undo(&mut ctx),
         Command::Quarantine(c) => cmd::clean::quarantine(&mut ctx, c),
         Command::History(a) => cmd::clean::history(&mut ctx, a),
+        Command::Share(a) => cmd::share::share(&mut ctx, a),
         Command::Doctor => cmd::doctor::doctor(&mut ctx),
         Command::Completions { shell } => cmd::doctor::completions(*shell),
         Command::Packs(c) => cmd::packs::run(&mut ctx, c),

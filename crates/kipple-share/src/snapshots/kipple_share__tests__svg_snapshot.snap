@@ -1,0 +1,30 @@
+---
+source: crates/kipple-share/src/lib.rs
+expression: render_svg(&sample())
+---
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs>
+  <radialGradient id="glowA" cx="0.78" cy="0.30" r="0.55"><stop offset="0" stop-color="#2F6BFF" stop-opacity="0.38"/><stop offset="1" stop-color="#2F6BFF" stop-opacity="0"/></radialGradient>
+  <radialGradient id="glowB" cx="0.92" cy="0.85" r="0.5"><stop offset="0" stop-color="#8B5CF6" stop-opacity="0.32"/><stop offset="1" stop-color="#8B5CF6" stop-opacity="0"/></radialGradient>
+  <radialGradient id="glowC" cx="0.05" cy="1.0" r="0.6"><stop offset="0" stop-color="#12C8C2" stop-opacity="0.14"/><stop offset="1" stop-color="#12C8C2" stop-opacity="0"/></radialGradient>
+  <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.12"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0.04"/></linearGradient>
+  <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.30"/><stop offset="0.45" stop-color="#FFFFFF" stop-opacity="0.04"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>
+</defs>
+<rect width="1200" height="630" fill="#06080F"/>
+<rect width="1200" height="630" fill="url(#glowA)"/>
+<rect width="1200" height="630" fill="url(#glowB)"/>
+<rect width="1200" height="630" fill="url(#glowC)"/>
+<g><rect x="790" y="70.0" width="300" height="149.7" rx="16.0" fill="#2F6BFF" fill-opacity="0.34"/><rect x="790" y="70.0" width="300" height="149.7" rx="16.0" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity="0.18"/><rect x="790" y="70.0" width="300" height="149.7" rx="16.0" fill="url(#sheen)" opacity="0.6"/><line x1="806.0" y1="70.5" x2="1074.0" y2="70.5" stroke="#FFFFFF" stroke-opacity="0.4"/></g>
+<g><rect x="790" y="227.7" width="300" height="95.1" rx="16.0" fill="#8B5CF6" fill-opacity="0.34"/><rect x="790" y="227.7" width="300" height="95.1" rx="16.0" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity="0.18"/><rect x="790" y="227.7" width="300" height="95.1" rx="16.0" fill="url(#sheen)" opacity="0.6"/><line x1="806.0" y1="228.2" x2="1074.0" y2="228.2" stroke="#FFFFFF" stroke-opacity="0.4"/></g>
+<g><rect x="790" y="330.8" width="300" height="67.3" rx="16.0" fill="#FFB020" fill-opacity="0.34"/><rect x="790" y="330.8" width="300" height="67.3" rx="16.0" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity="0.18"/><rect x="790" y="330.8" width="300" height="67.3" rx="16.0" fill="url(#sheen)" opacity="0.6"/><line x1="806.0" y1="331.3" x2="1074.0" y2="331.3" stroke="#FFFFFF" stroke-opacity="0.4"/></g>
+<g><rect x="790" y="406.1" width="300" height="58.7" rx="16.0" fill="#3CCB5A" fill-opacity="0.34"/><rect x="790" y="406.1" width="300" height="58.7" rx="16.0" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity="0.18"/><rect x="790" y="406.1" width="300" height="58.7" rx="16.0" fill="url(#sheen)" opacity="0.6"/><line x1="806.0" y1="406.6" x2="1074.0" y2="406.6" stroke="#FFFFFF" stroke-opacity="0.4"/></g>
+<g><rect x="790" y="472.8" width="300" height="52.8" rx="16.0" fill="#12C8C2" fill-opacity="0.34"/><rect x="790" y="472.8" width="300" height="52.8" rx="16.0" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity="0.18"/><rect x="790" y="472.8" width="300" height="52.8" rx="16.0" fill="url(#sheen)" opacity="0.6"/><line x1="806.0" y1="473.3" x2="1074.0" y2="473.3" stroke="#FFFFFF" stroke-opacity="0.4"/></g>
+<g><rect x="790" y="533.6" width="300" height="26.4" rx="13.2" fill="#FF5C8A" fill-opacity="0.34"/><rect x="790" y="533.6" width="300" height="26.4" rx="13.2" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity="0.18"/><rect x="790" y="533.6" width="300" height="26.4" rx="13.2" fill="url(#sheen)" opacity="0.6"/><line x1="803.2" y1="534.1" x2="1076.8" y2="534.1" stroke="#FFFFFF" stroke-opacity="0.4"/></g>
+<text x="64" y="88" font-family="Mona Sans Expanded" font-weight="800" font-size="26" letter-spacing="-0.78" fill="#F4F5F8">kipple</text>
+<text x="64" y="196.0" font-family="Mona Sans" font-weight="800" font-size="64" letter-spacing="-2.56" fill="#F4F5F8">My Mac was hiding</text>
+<text x="64" y="261.3" font-family="Mona Sans" font-weight="800" font-size="64" letter-spacing="-2.56" fill="#F4F5F8">184 GB of kipple.</text>
+<g><rect x="64.0" y="482" width="167.1" height="40" rx="18" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity="0.18"/><line x1="82.0" y1="482.5" x2="213.1" y2="482.5" stroke="#FFFFFF" stroke-opacity="0.4"/><circle cx="83.0" cy="502.0" r="5" fill="#2F6BFF"/><text x="97.0" y="508.0" font-family="Mona Sans" font-size="17" fill="#F4F5F8"><tspan font-weight="700">61.2 GB</tspan><tspan font-weight="400" dx="5">Docker</tspan></text></g>
+<g><rect x="241.1" y="482" width="225.5" height="40" rx="18" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity="0.18"/><line x1="259.1" y1="482.5" x2="448.6" y2="482.5" stroke="#FFFFFF" stroke-opacity="0.4"/><circle cx="260.1" cy="502.0" r="5" fill="#8B5CF6"/><text x="274.1" y="508.0" font-family="Mona Sans" font-size="17" fill="#F4F5F8"><tspan font-weight="700">38.9 GB</tspan><tspan font-weight="400" dx="5">AI chat history</tspan></text></g>
+<g><rect x="476.6" y="482" width="168.9" height="40" rx="18" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity="0.18"/><line x1="494.6" y1="482.5" x2="627.6" y2="482.5" stroke="#FFFFFF" stroke-opacity="0.4"/><circle cx="495.6" cy="502.0" r="5" fill="#FFB020"/><text x="509.6" y="508.0" font-family="Mona Sans" font-size="17" fill="#F4F5F8"><tspan font-weight="700">27.5 GB</tspan><tspan font-weight="400" dx="5">caches</tspan></text></g>
+<text x="64" y="562" font-family="Mona Sans" font-size="16"><tspan fill="#FFFFFF" fill-opacity="0.62">Found with kipple, an open-source disk cleaner for developers. </tspan><tspan fill="#FFFFFF">github.com/Paras-ydv/kipple</tspan></text>
+</svg>

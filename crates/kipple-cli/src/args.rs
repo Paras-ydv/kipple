@@ -86,6 +86,8 @@ pub enum Command {
     Quarantine(QuarantineCommand),
     /// What kipple has done, or how space grew over time.
     History(HistoryArgs),
+    /// Make a share card PNG from the latest scan.
+    Share(ShareArgs),
     /// Check what kipple can see and how to fix what it can't.
     Doctor,
     /// Print shell completions.
@@ -225,4 +227,17 @@ pub struct HistoryArgs {
     /// Show at most this many entries.
     #[arg(long, default_value_t = 50)]
     pub limit: usize,
+}
+
+#[derive(Debug, Args)]
+pub struct ShareArgs {
+    /// Where to write the PNG.
+    #[arg(long, value_name = "FILE", default_value = "kipple-card.png")]
+    pub out: PathBuf,
+    /// Open the card when done.
+    #[arg(long)]
+    pub open: bool,
+    /// Add the heaviest project folder names (no paths).
+    #[arg(long)]
+    pub with_projects: bool,
 }

@@ -8,6 +8,13 @@ license.workspace = true
 repository.workspace = true
 homepage.workspace = true
 authors.workspace = true
+include = ["src/**", "assets/**", "Cargo.toml"]
 
 [dependencies]
 kipple-core.workspace = true
+resvg.workspace = true
+thiserror.workspace = true
+skrifa.workspace = true
+
+[dev-dependencies]
+insta.workspace = true

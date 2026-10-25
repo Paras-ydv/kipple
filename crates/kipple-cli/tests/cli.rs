@@ -182,3 +182,19 @@ fn no_arguments_outside_a_terminal_prints_help() {
         .success()
         .stdout(predicate::str::contains("Usage: kipple"));
 }
+
+#[test]
+fn share_writes_a_png() {
+    let mut home = TestHome::new().unwrap();
+    kipple_core::testing::Fixture::named("rust-target")
+        .unwrap()
+        .generate(&mut home)
+        .unwrap();
+    kipple(&home).arg("scan").assert().success();
+    let out = home.join("card.png");
+    kipple(&home)
+        .args(["share", "--out", out.to_str().unwrap()])
+        .assert()
+        .success();
+    assert_eq!(&std::fs::read(out).unwrap()[1..4], b"PNG");
+}

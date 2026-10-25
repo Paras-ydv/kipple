@@ -20,6 +20,7 @@ path = "src/main.rs"
 kipple-core.workspace = true
 kipple-packs.workspace = true
 kipple-adapters.workspace = true
+kipple-share.workspace = true
 anyhow.workspace = true
 clap.workspace = true
 clap_complete.workspace = true

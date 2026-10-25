@@ -4,6 +4,7 @@ pub mod config;
 pub mod doctor;
 pub mod packs;
 pub mod scan;
+pub mod share;
 
 use std::process::ExitCode;
 
