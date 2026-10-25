@@ -412,6 +412,24 @@ impl Config {
         Ok(())
     }
 
+    /// Validates and writes the config to `path` (atomically). Comments in
+    /// an existing file are not kept.
+    pub fn save(&self, path: &Path) -> Result<(), ConfigError> {
+        let text = self.to_toml();
+        // Round-trip through the parser so only valid configs are written.
+        Self::parse(&text, path)?;
+        let io = |source| ConfigError::Read {
+            path: path.to_path_buf(),
+            source,
+        };
+        if let Some(dir) = path.parent() {
+            std::fs::create_dir_all(dir).map_err(io)?;
+        }
+        let tmp = path.with_extension("toml.tmp");
+        std::fs::write(&tmp, text).map_err(io)?;
+        std::fs::rename(&tmp, path).map_err(io)
+    }
+
     /// The effective config as TOML.
     pub fn to_toml(&self) -> String {
         toml::to_string_pretty(self).unwrap_or_default()
@@ -527,6 +545,24 @@ color = "auto"
         assert!(parse("[ui]\nunits = \"bytes\"\n").is_err());
         assert!(parse("[[safety.override]]\nsafety = \"keep\"\n").is_err());
         assert!(parse("[exec]\nparallelism = 0\n").is_err());
+    }
+
+    #[test]
+    fn save_round_trips_and_rejects_invalid() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("sub/config.toml");
+        let mut c = Config::default();
+        c.safety.recent_days = 21;
+        c.integrations.disable = vec!["npm-cache".into()];
+        c.save(&path).unwrap();
+        assert_eq!(Config::load(&path).unwrap(), c);
+        c.quarantine.keep_days = 0;
+        assert!(c.save(&path).is_err());
+        assert_eq!(
+            Config::load(&path).unwrap().quarantine.keep_days,
+            7,
+            "bad config not written"
+        );
     }
 
     #[test]

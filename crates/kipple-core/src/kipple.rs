@@ -142,6 +142,13 @@ impl Kipple {
         &self.config
     }
 
+    /// Writes a new config to the config file. Takes effect for a `Kipple`
+    /// opened afterwards.
+    pub fn save_config(&self, config: &Config) -> Result<()> {
+        config.save(&self.dirs.config_file)?;
+        Ok(())
+    }
+
     pub fn dirs(&self) -> &Dirs {
         &self.dirs
     }
