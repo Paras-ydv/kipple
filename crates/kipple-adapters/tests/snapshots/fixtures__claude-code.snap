@@ -1,0 +1,313 @@
+---
+source: crates/kipple-adapters/tests/fixtures.rs
+expression: "common :: scan_fixture(\"claude-code\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 1500,
+    "category": "ai-history",
+    "details": {
+      "folder": "debug"
+    },
+    "files": 1,
+    "integration": "claude-code",
+    "kind": "claude_code_data",
+    "last_used_source": "item_mtime",
+    "notes": [],
+    "paths": [
+      "~/.claude/debug"
+    ],
+    "project": null,
+    "reasons": [
+      "CONTAINS_USER_DATA",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 4096,
+    "safety": "review",
+    "title": "Claude Code debug"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 2000,
+    "category": "ai-history",
+    "details": {
+      "folder": "file-history"
+    },
+    "files": 1,
+    "integration": "claude-code",
+    "kind": "claude_code_data",
+    "last_used_source": "item_mtime",
+    "notes": [],
+    "paths": [
+      "~/.claude/file-history"
+    ],
+    "project": null,
+    "reasons": [
+      "CONTAINS_USER_DATA",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 4096,
+    "safety": "review",
+    "title": "Claude Code file history"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 348,
+    "category": "ai-history",
+    "details": {
+      "claude_version": "2.0.10",
+      "cwd": "~/code/deleted-app",
+      "has_subagents": false,
+      "session_id": "3f3f3f3f-0000-4000-8000-000000000003",
+      "started_at": "2025-11-02T08:00:00.000Z"
+    },
+    "files": 1,
+    "integration": "claude-code",
+    "kind": "claude_code_session",
+    "last_used_source": "tool_metadata",
+    "notes": [],
+    "paths": [
+      "~/.claude/projects/-home-code-deleted-app/3f3f3f3f-0000-4000-8000-000000000003.jsonl"
+    ],
+    "project": {
+      "exists": false,
+      "name": "deleted-app",
+      "root": "~/code/deleted-app"
+    },
+    "reasons": [
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS",
+      "ORPHANED_PROJECT"
+    ],
+    "reclaimable": 4096,
+    "safety": "review",
+    "title": "Write a README for this prototype"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 328,
+    "category": "ai-history",
+    "details": {
+      "claude_version": "2.0.10",
+      "cwd": "~/code/deleted-app",
+      "has_subagents": false,
+      "session_id": "3f3f3f3f-0000-4000-8000-000000000003",
+      "started_at": "2025-11-02T08:00:00.000Z"
+    },
+    "files": 1,
+    "integration": "claude-code",
+    "kind": "claude_code_set_aside_transcript",
+    "last_used_source": "tool_metadata",
+    "notes": [
+      "Claude Code set this older copy of the transcript aside; it doesn't appear in the session picker."
+    ],
+    "paths": [
+      "~/.claude/projects/-home-code-deleted-app/3f3f3f3f-0000-4000-8000-000000000003.jsonl.superseded-1762070400"
+    ],
+    "project": {
+      "exists": false,
+      "name": "deleted-app",
+      "root": "~/code/deleted-app"
+    },
+    "reasons": [
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS",
+      "ORPHANED_PROJECT"
+    ],
+    "reclaimable": 4096,
+    "safety": "review",
+    "title": "Write a README for this prototype"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 734,
+    "category": "ai-history",
+    "details": {
+      "claude_version": "2.1.300",
+      "cwd": "~/code/webapp",
+      "has_subagents": false,
+      "session_id": "2c3d4e5f-aaaa-4bbb-8ccc-ddddeeeeffff",
+      "started_at": "2026-02-01T12:00:00.000Z"
+    },
+    "files": 1,
+    "integration": "claude-code",
+    "kind": "claude_code_session",
+    "last_used_source": "tool_metadata",
+    "notes": [],
+    "paths": [
+      "~/.claude/projects/-home-code-webapp/2c3d4e5f-aaaa-4bbb-8ccc-ddddeeeeffff.jsonl"
+    ],
+    "project": {
+      "exists": true,
+      "name": "webapp",
+      "root": "~/code/webapp"
+    },
+    "reasons": [
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 4096,
+    "safety": "review",
+    "title": "Add a dark mode toggle"
+  },
+  {
+    "actions": [],
+    "apparent": 304,
+    "category": "ai-history",
+    "details": {
+      "claude_version": "2.1.300",
+      "cwd": "~/code/webapp",
+      "has_subagents": false,
+      "session_id": "5b5b5b5b-0000-4000-8000-000000000005",
+      "started_at": "2026-03-01T08:00:00.000Z"
+    },
+    "files": 1,
+    "integration": "claude-code",
+    "kind": "claude_code_session",
+    "last_used_source": "tool_metadata",
+    "notes": [],
+    "paths": [
+      "~/.claude/projects/-home-code-webapp/5b5b5b5b-0000-4000-8000-000000000005.jsonl"
+    ],
+    "project": {
+      "exists": true,
+      "name": "webapp",
+      "root": "~/code/webapp"
+    },
+    "reasons": [
+      "RECENTLY_WRITTEN",
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 4096,
+    "safety": "keep",
+    "title": "Still running"
+  },
+  {
+    "actions": [],
+    "apparent": 17,
+    "category": "ai-history",
+    "details": {
+      "claude_version": null,
+      "cwd": null,
+      "has_subagents": false,
+      "session_id": "4a4a4a4a-0000-4000-8000-000000000004",
+      "started_at": null
+    },
+    "files": 1,
+    "integration": "claude-code",
+    "kind": "claude_code_session",
+    "last_used_source": "item_mtime",
+    "notes": [],
+    "paths": [
+      "~/.claude/projects/-home-other/4a4a4a4a-0000-4000-8000-000000000004.jsonl"
+    ],
+    "project": null,
+    "reasons": [
+      "UNKNOWN_FORMAT",
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 4096,
+    "safety": "keep",
+    "title": "Claude Code session 4a4a4a4a"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 400,
+    "category": "ai-history",
+    "details": {
+      "folder": "shell-snapshots"
+    },
+    "files": 1,
+    "integration": "claude-code",
+    "kind": "claude_code_data",
+    "last_used_source": "item_mtime",
+    "notes": [],
+    "paths": [
+      "~/.claude/shell-snapshots"
+    ],
+    "project": null,
+    "reasons": [
+      "CONTAINS_USER_DATA",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 4096,
+    "safety": "review",
+    "title": "Claude Code shell snapshots"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 2,
+    "category": "ai-history",
+    "details": {
+      "folder": "todos"
+    },
+    "files": 1,
+    "integration": "claude-code",
+    "kind": "claude_code_data",
+    "last_used_source": "item_mtime",
+    "notes": [],
+    "paths": [
+      "~/.claude/todos"
+    ],
+    "project": null,
+    "reasons": [
+      "CONTAINS_USER_DATA",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 4096,
+    "safety": "review",
+    "title": "Claude Code todos"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 9271,
+    "category": "ai-history",
+    "details": {
+      "claude_version": "2.1.300",
+      "cwd": "~/code/webapp",
+      "has_subagents": true,
+      "session_id": "0b5a7c1e-1111-4222-8333-944455556666",
+      "started_at": "2026-01-10T09:00:00.000Z"
+    },
+    "files": 3,
+    "integration": "claude-code",
+    "kind": "claude_code_session",
+    "last_used_source": "tool_metadata",
+    "notes": [],
+    "paths": [
+      "~/.claude/projects/-home-code-webapp/0b5a7c1e-1111-4222-8333-944455556666.jsonl",
+      "~/.claude/projects/-home-code-webapp/0b5a7c1e-1111-4222-8333-944455556666"
+    ],
+    "project": {
+      "exists": true,
+      "name": "webapp",
+      "root": "~/code/webapp"
+    },
+    "reasons": [
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 16384,
+    "safety": "review",
+    "title": "Deploy the staging stack with key AKIA**** and then fix the…"
+  }
+]

@@ -1,0 +1,152 @@
+---
+source: crates/kipple-adapters/tests/fixtures.rs
+expression: "common :: scan_fixture(\"cursor\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 7000,
+    "category": "ai-history",
+    "details": {
+      "project_folder": "Users-me-code-webshop"
+    },
+    "files": 1,
+    "integration": "cursor",
+    "kind": "cursor_agent_transcripts",
+    "last_used_source": "item_mtime",
+    "notes": [],
+    "paths": [
+      "~/.cursor/projects/Users-me-code-webshop/agent-transcripts"
+    ],
+    "project": null,
+    "reasons": [
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 8192,
+    "safety": "review",
+    "title": "Cursor agent transcripts · Users-me-code-webshop"
+  },
+  {
+    "actions": [],
+    "apparent": 3125248,
+    "category": "ai-history",
+    "details": {
+      "chat_bytes_by_key_prefix": {
+        "agentKv": 30000,
+        "bubbleId": 60000,
+        "checkpointId": 2000,
+        "composerData": 5000,
+        "other": 1000
+      },
+      "free_bytes": 3002368,
+      "has_chat_table": true,
+      "page_size": 4096,
+      "pages": 763
+    },
+    "files": 1,
+    "integration": "cursor",
+    "kind": "cursor_state_db",
+    "last_used_source": "item_mtime",
+    "notes": [
+      "To remove old chats, use Cursor's command palette: \"Developer: Delete Old Chats\", then \"Developer: GC Agent KV Blobs\". Quit Cursor and scan again afterwards."
+    ],
+    "paths": [
+      "{config}/Cursor/User/globalStorage/state.vscdb"
+    ],
+    "project": null,
+    "reasons": [
+      "FREE_PAGES",
+      "CHAT_HISTORY"
+    ],
+    "reclaimable": 3002368,
+    "safety": "keep",
+    "title": "Cursor chat database"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 9000,
+    "category": "ai-history",
+    "details": null,
+    "files": 1,
+    "integration": "cursor",
+    "kind": "cursor_state_backup",
+    "last_used_source": "item_mtime",
+    "notes": [
+      "Cursor uses this copy to recover a damaged database and writes a new one when it closes."
+    ],
+    "paths": [
+      "{config}/Cursor/User/globalStorage/state.vscdb.backup"
+    ],
+    "project": null,
+    "reasons": [
+      "BACKUP_COPY",
+      "CHAT_HISTORY"
+    ],
+    "reclaimable": 12288,
+    "safety": "review",
+    "title": "Cursor chat database backup"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 6112,
+    "category": "ai-history",
+    "details": {
+      "kind": "folder",
+      "workspace": "~/code/old site"
+    },
+    "files": 2,
+    "integration": "cursor",
+    "kind": "cursor_workspace_storage",
+    "last_used_source": "item_mtime",
+    "notes": [],
+    "paths": [
+      "{config}/Cursor/User/workspaceStorage/0a1b2c3d4e5f60718293a4b5c6d7e8f9"
+    ],
+    "project": {
+      "exists": false,
+      "name": "old site",
+      "root": "~/code/old site"
+    },
+    "reasons": [
+      "ORPHANED_PROJECT",
+      "CHAT_HISTORY"
+    ],
+    "reclaimable": 12288,
+    "safety": "review",
+    "title": "Cursor data for old site"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 124,
+    "category": "ai-history",
+    "details": {
+      "kind": "workspace file",
+      "workspace": "~/code/mono.code-workspace"
+    },
+    "files": 1,
+    "integration": "cursor",
+    "kind": "cursor_workspace_storage",
+    "last_used_source": "item_mtime",
+    "notes": [],
+    "paths": [
+      "{config}/Cursor/User/workspaceStorage/1b2c3d4e5f60718293a4b5c6d7e8f90a"
+    ],
+    "project": null,
+    "reasons": [
+      "ORPHANED_PROJECT",
+      "CHAT_HISTORY"
+    ],
+    "reclaimable": 4096,
+    "safety": "review",
+    "title": "Cursor data for mono.code-workspace"
+  }
+]

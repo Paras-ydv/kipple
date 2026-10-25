@@ -222,20 +222,20 @@ Commands are argv arrays (no shell), may reference only pack vars. They run with
 ### 4.10 `claude-code` (adapter)
 - Root: `CLAUDE_CONFIG_DIR` → `~/.claude` (`%USERPROFILE%\.claude` on Windows).
 - Sessions: `<root>/projects/<encoded-cwd>/<session-uuid>.jsonl`. **Do not decode the folder name** to get the project path; read the `cwd` field from the first lines of the JSONL that contain it. Title = first user message text, truncated (60 chars) and secret-masked. `last_used` = last line timestamp or file mtime.
-- Item per session (`Review`, `CHAT_HISTORY`, `MAY_CONTAIN_SECRETS`); grouped per project; orphan flag when `cwd` no longer exists (`ORPHANED_PROJECT`).
-- Other subdirectories under the root (e.g. `todos`, `shell-snapshots`, `debug`, `file-history` — verify per version): report sizes as separate items, `Review`, until each is documented as safe.
-- Never touch `settings.json`, `CLAUDE.md`, `agents/`, `commands/`, `skills/`, `plugins/`, credentials.
-- In use: `claude` process running → sessions modified in the last 24 h are `Keep`; others unaffected. Any session file written in the last 10 min → `Keep`.
-- Actions: `quarantine` (whole `.jsonl` file; never edit lines), `archive` [v1].
-- Retention [v1]: `set_retention` writes `cleanupPeriodDays` in `<root>/settings.json`, preserving other keys and formatting (use a JSON editor that preserves order), shows a diff, requires confirmation. **Never write `0`** (reported to disable transcript writing entirely rather than meaning "keep forever"); minimum 1.
+- Item per session (`Review`, `CHAT_HISTORY`, `MAY_CONTAIN_SECRETS`); grouped per project; orphan flag when `cwd` no longer exists (`ORPHANED_PROJECT`). The item includes the session's companion folder `projects/<encoded-cwd>/<session-uuid>/` (subagent transcripts, `tool-results/`, `mcp-tasks/`) so it moves as one unit. Set-aside copies (`<uuid>.jsonl.superseded-<ts>`, `<uuid>.orphaned-<ts>-<suffix>.jsonl`) are separate items (decision 0010).
+- Other subdirectories under the root: `file-history`, `plans`, `paste-cache`, `debug`, `shell-snapshots`, `session-env`, `image-cache`, `uploads`, `usage-data`, and the legacy `todos`, `statsig`, `logs` (verified 2026-10-25, see `docs/integrations/claude-code.md`): report sizes as separate items, `Review`, until each is documented as safe.
+- Never touch `settings.json`, `settings.local.json`, `CLAUDE.md`, `agents/`, `commands/`, `skills/`, `plugins/`, `rules/`, `output-styles/`, `workflows/`, `agent-memory/`, auto memory (`projects/<p>/memory/`), `history.jsonl`, `backups/`, `sessions/`, `tasks/`, `jobs/`, `daemon/`, credentials (`.credentials.json`).
+- In use: `claude` process running → sessions modified in the last 24 h are `Keep`; others unaffected (so the integration declares no blanket `in_use_processes`). Any session file written in the last 10 min → `Keep`.
+- Actions: `quarantine` (whole `.jsonl` file plus its companion folder; never edit lines), `archive` [v1].
+- Retention [v1]: `set_retention` writes `cleanupPeriodDays` in `<root>/settings.json`, preserving other keys and formatting (use a JSON editor that preserves order), shows a diff, requires confirmation. **Never write `0`** (current Claude Code rejects it in settings validation; older versions reportedly disabled transcript writing); minimum 1.
 - Note for users (shown in `explain`): Claude Code deletes transcripts older than `cleanupPeriodDays` (default 30) itself.
 
 ### 4.11 `codex` (adapter)
 - Root: `CODEX_HOME` → `~/.codex` (`%USERPROFILE%\.codex`).
-- Sessions: `<root>/sessions/YYYY/MM/DD/rollout-<timestamp>-<uuid>.jsonl`; archived: `<root>/archived_sessions/`. Thread metadata in `<root>/state_*.sqlite` (table `threads`, verify columns per version) and `<root>/session_index.jsonl` (may be stale — prefer SQLite, read-only).
+- Sessions: `<root>/sessions/YYYY/MM/DD/rollout-<timestamp>-<uuid>.jsonl` (or `.jsonl.zst` after Codex's paginated-history migration); archived: `<root>/archived_sessions/`. Thread metadata in `$CODEX_SQLITE_HOME` (default `<root>`) `/state_<n>.sqlite` — newest `n`, currently `state_5.sqlite` — table `threads` (columns verified against codex-rs migrations up to 0062, rust-v0.164.0, 2026-10-25) and `<root>/session_index.jsonl` (may be stale — prefer SQLite, read-only).
 - Item per session: title from thread metadata, else first user message; project from recorded `cwd`; size; created/updated; `source` (cli, exec, vscode, app) if available. Flag sessions > 100 MB in `notes` ("dominated by tool output").
 - Safety `Review` always.
-- Actions: **only** `native:codex.delete` → `codex delete <uuid>` (check `codex delete --help` at runtime for the non-interactive flag; if the installed version lacks `delete`, the session is report-only with `NATIVE_TOOL_MISSING` and the explanation tells the user to update Codex). **Never** remove rollout files directly (orphans threads in the state DB).
+- Actions: **only** `native:codex.delete` → `codex delete <uuid> --force` (`--force` is the non-interactive flag and requires a UUID; kipple checks `codex delete --help` for it at runtime; if the installed version lacks it, the session is report-only with `NATIVE_TOOL_MISSING` and the explanation tells the user to update Codex). **Never** remove rollout files directly (orphans threads in the state DB).
 - `requires_closed`: all Codex surfaces (`codex`, Codex desktop app, VS Code extension host running Codex). If a rollout grows between two stats → `Keep` (`ACTIVE_WRITER`).
 - `codex archive` does not free disk space — do not offer it as a reclaim action.
 
@@ -244,18 +244,19 @@ Commands are argv arrays (no shell), may reference only pack vars. They run with
 - Items:
   1. `globalStorage/state.vscdb.backup` → `Review` (`BACKUP_COPY`), action `quarantine` (requires Cursor closed).
   2. `globalStorage/state.vscdb` → report: total size, bytes by key prefix in table `cursorDiskKV` (`bubbleId:`, `composerData:`, `agentKv:`, `checkpointId:`, other) computed read-only with `SUM(length(value))`, and free pages (`PRAGMA freelist_count * page_size`).
-     - Action `compact:sqlite_vacuum` (`Review`, `FREE_PAGES`) only when free pages ≥ 256 MB: requires Cursor closed, copies the DB to `<data>/backups/cursor-<ts>.vscdb` first (needs free space ≥ DB size — check and refuse otherwise), runs `VACUUM`, verifies `PRAGMA integrity_check`, keeps the backup in quarantine for 7 days.
-     - **kipple MUST NOT delete rows** in MVP. For chat history, `explain` tells the user to use Cursor's own command palette action *"Developer: Delete Old Chats…"* (verify name per version) and then rescan.
-  3. `workspaceStorage/<hash>/` whose `workspace.json` points to a folder that no longer exists → `Review` (`ORPHANED_PROJECT`), quarantine.
-  4. `~/.cursor/projects/*/agent-transcripts` → per project items, `Review`.
+     - Action `compact:sqlite_vacuum` (`Review`, `FREE_PAGES`) only when free pages ≥ 256 MB: requires Cursor closed, copies the DB to `<data>/backups/cursor-<ts>.vscdb` first (needs free space ≥ 2 × DB size on both volumes — the backup plus SQLite's working copy during `VACUUM`, decision 0010 — check and refuse otherwise, and refuse where free space can't be measured), runs `VACUUM`, verifies `PRAGMA integrity_check`, keeps the backup for 7 days (pruned at the next compaction).
+     - **kipple MUST NOT delete rows** in MVP. For chat history, `explain` tells the user to use Cursor's own command palette actions *"Developer: Delete Old Chats"* then *"Developer: GC Agent KV Blobs"* (names verified 2026-10-25 from Cursor staff replies) and then rescan.
+  3. `workspaceStorage/<hash>/` whose `workspace.json` `folder` (or `workspace`) `file://` URI points to something that no longer exists → `Review` (`ORPHANED_PROJECT`), quarantine. Remote URIs are skipped.
+  4. `~/.cursor/projects/*/agent-transcripts` → per project items, `Review` (path from community sources — verify).
   5. `~/.cursor/extensions` older versions of the same extension → `Safe` (v1).
-- In use: Cursor process running → items 1–3 `Keep`.
+- In use: Cursor process running → items 1–4 `Keep` (kipple also keeps item 4, the stricter choice).
+- Status: `experimental` — Cursor doesn't document this storage.
 
 ### 4.13 `antigravity` (adapter) — `experimental`
-- Data roots (check both): `~/.gemini/antigravity-ide/` (current) and `~/.gemini/antigravity/` (legacy). Inside: `conversations/*.pb` (older) / `*.db` (newer), `brain/<id>/`, `code_tracker/`, `implicit/`, `context_state/`.
+- Data roots (check all): `~/.gemini/antigravity-ide/` (Antigravity IDE), `~/.gemini/antigravity/` (the standalone Antigravity 2.0 app since May 2026; the IDE before that), `~/.gemini/antigravity-backup/` (snapshot made by the 2.0 migration) — decision 0010. Inside: `conversations/*.pb` (verified) / `*.db` (verify), `brain/<id>/`, `code_tracker/`, `implicit/`, `context_state/`, `annotations/`.
 - App state DB (UI index): macOS `~/Library/Application Support/Antigravity IDE/User/globalStorage/state.vscdb` or `.../Antigravity/...` (verify), Linux `~/.config/Antigravity IDE/User/globalStorage/state.vscdb` or `~/.config/Antigravity/...`, Windows `%APPDATA%\Antigravity IDE\User\globalStorage\state.vscdb` or `%APPDATA%\antigravity\...`. **Read-only, never modified.**
 - Item per conversation: conversation file + matching `brain/<id>/` dir (sizes summed). Title only if cheaply available; otherwise "Conversation <short-id> · <date>".
-- **Migrated copies:** when the same conversation id exists in both legacy and current roots, the legacy copy is `Review` with `MIGRATED_COPY` (and only if the current copy is ≥ the legacy copy in size).
+- **Migrated copies:** when the same conversation id exists in more than one root, a copy is `Review` with `MIGRATED_COPY` when a more authoritative root (`antigravity-ide` > `antigravity` > `antigravity-backup`) has a copy ≥ it in size.
 - Safety `Review`; actions `quarantine` only; requires all Antigravity processes closed. No compaction, no DB edits.
 
 ### 4.14 `ollama` (adapter)

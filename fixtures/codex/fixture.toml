@@ -1,0 +1,110 @@
+# Codex data under CODEX_HOME (~/.codex in TestHome). Generated, fake
+# content only. Rollout lines follow codex-rs (`{"timestamp", "type",
+# "payload"}`), the state database follows codex-rs/state/migrations up to
+# 0062 (rust-v0.164.0); see docs/integrations/codex.md.
+days_ago = 40
+
+[[file]]
+path = "code/api/Cargo.toml"
+content = "[package]\nname = \"api\"\n"
+[[git]]
+path = "code/api"
+days_ago = 10
+
+# In the state database, with a title.
+[[file]]
+path = ".codex/sessions/2026/01/15/rollout-2026-01-15T10-00-00-019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a01.jsonl"
+content = '''
+{"timestamp":"2026-01-15T10:00:00.000Z","type":"session_meta","payload":{"session_id":"019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a01","id":"019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a01","timestamp":"2026-01-15T10:00:00.000Z","cwd":"{home}/code/api","originator":"codex_cli_rs","cli_version":"0.164.0","source":"cli"}}
+{"timestamp":"2026-01-15T10:00:01.000Z","type":"event_msg","payload":{"type":"user_message","message":"Refactor the payments client to use retries"}}
+{"timestamp":"2026-01-15T10:00:05.000Z","type":"response_item","payload":{"type":"message","role":"assistant","content":[{"type":"output_text","text":"Fake reply."}]}}
+'''
+
+# Not in the database: title from the first prompt; project folder deleted.
+[[file]]
+path = ".codex/sessions/2025/12/01/rollout-2025-12-01T09-30-00-019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a02.jsonl"
+content = '''
+{"timestamp":"2025-12-01T09:30:00.000Z","type":"session_meta","payload":{"session_id":"019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a02","id":"019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a02","timestamp":"2025-12-01T09:30:00.000Z","cwd":"{home}/code/gone","originator":"codex_exec","cli_version":"0.150.0","source":"exec"}}
+{"timestamp":"2025-12-01T09:30:01.000Z","type":"response_item","payload":{"type":"message","role":"user","content":[{"type":"input_text","text":"<environment_context>fake</environment_context>"}]}}
+{"timestamp":"2025-12-01T09:30:02.000Z","type":"event_msg","payload":{"type":"user_message","message":"Summarize the build logs"}}
+'''
+
+# Archived (archiving frees nothing; still a normal session).
+[[file]]
+path = ".codex/archived_sessions/rollout-2025-10-20T08-00-00-019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a03.jsonl"
+content = '''
+{"timestamp":"2025-10-20T08:00:00.000Z","type":"session_meta","payload":{"session_id":"019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a03","id":"019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a03","timestamp":"2025-10-20T08:00:00.000Z","cwd":"{home}/code/api","originator":"codex_vscode","cli_version":"0.140.0","source":"vscode"}}
+'''
+
+# Compressed rollout known to the database.
+[[file]]
+path = ".codex/sessions/2026/02/02/rollout-2026-02-02T11-00-00-019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a04.jsonl.zst"
+size = 2048
+
+# Compressed rollout the database doesn't know: kept.
+[[file]]
+path = ".codex/sessions/2026/02/03/rollout-2026-02-03T11-00-00-019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a05.jsonl.zst"
+size = 1024
+
+# Not a rollout kipple understands: kept.
+[[file]]
+path = ".codex/sessions/2026/02/04/rollout-2026-02-04T11-00-00-019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a06.jsonl"
+content = '{"something":"else"}'
+
+# Other Codex files are never offered.
+[[file]]
+path = ".codex/config.toml"
+content = "model = \"fake\"\n"
+[[file]]
+path = ".codex/auth.json"
+content = '{"fake": true}'
+[[file]]
+path = ".codex/history.jsonl"
+content = '{"session_id":"x","ts":1,"text":"fake"}'
+[[file]]
+path = ".codex/session_index.jsonl"
+content = '{"id":"019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a01","thread_name":"stale"}'
+
+# Current state database.
+[[sqlite]]
+path = ".codex/state_5.sqlite"
+sql = """
+CREATE TABLE threads (
+    id TEXT PRIMARY KEY,
+    rollout_path TEXT NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+    source TEXT NOT NULL,
+    model_provider TEXT NOT NULL,
+    cwd TEXT NOT NULL,
+    title TEXT NOT NULL,
+    sandbox_policy TEXT NOT NULL,
+    approval_mode TEXT NOT NULL,
+    tokens_used INTEGER NOT NULL DEFAULT 0,
+    has_user_event INTEGER NOT NULL DEFAULT 0,
+    archived INTEGER NOT NULL DEFAULT 0,
+    archived_at INTEGER,
+    git_sha TEXT,
+    git_branch TEXT,
+    git_origin_url TEXT,
+    first_user_message TEXT NOT NULL DEFAULT '',
+    created_at_ms INTEGER,
+    updated_at_ms INTEGER,
+    preview TEXT NOT NULL DEFAULT '',
+    name TEXT
+);
+INSERT INTO threads (id, rollout_path, created_at, updated_at, source, model_provider, cwd, title, sandbox_policy, approval_mode, first_user_message, created_at_ms, updated_at_ms, preview, name)
+VALUES ('019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a01', '{home}/.codex/sessions/2026/01/15/rollout-2026-01-15T10-00-00-019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a01.jsonl', 1768471200, 1768471205, 'cli', 'openai', '{home}/code/api', 'Payments client refactor', 'workspace-write', 'on-request', 'Refactor the payments client to use retries', 1768471200000, 1768471205000, 'Refactor the payments client to use retries', NULL);
+INSERT INTO threads (id, rollout_path, created_at, updated_at, source, model_provider, cwd, title, sandbox_policy, approval_mode, archived, first_user_message, created_at_ms, updated_at_ms, preview, name)
+VALUES ('019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a03', '{home}/.codex/archived_sessions/rollout-2025-10-20T08-00-00-019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a03.jsonl', 1760947200, 1760947200, 'vscode', 'openai', '{home}/code/api', 'Rotate token ghp_aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789 in CI', 'read-only', 'never', 1, '', 1760947200000, 1760947200000, '', NULL);
+INSERT INTO threads (id, rollout_path, created_at, updated_at, source, model_provider, cwd, title, sandbox_policy, approval_mode, first_user_message, created_at_ms, updated_at_ms, preview, name)
+VALUES ('019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a04', '{home}/.codex/sessions/2026/02/02/rollout-2026-02-02T11-00-00-019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a04.jsonl.zst', 1770030000, 1770030000, 'exec', 'openai', '{home}/code/api', '', 'workspace-write', 'never', 'Write release notes', 1770030000000, 1770030000000, 'Write release notes', 'Release notes');
+"""
+
+# An older database version: ignored in favour of state_5.
+[[sqlite]]
+path = ".codex/state_3.sqlite"
+sql = """
+CREATE TABLE threads (id TEXT PRIMARY KEY, rollout_path TEXT NOT NULL, cwd TEXT NOT NULL, title TEXT NOT NULL);
+INSERT INTO threads VALUES ('019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a01', 'x', '/elsewhere', 'OLD TITLE');
+"""

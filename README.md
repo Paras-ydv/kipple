@@ -11,6 +11,10 @@ kipple finds the disk space your development tools quietly eat — dependency fo
 <!-- integrations:start -->
 | Category | Integration | What | Kind | Status | Systems |
 |---|---|---|---|---|---|
+| AI history | [`antigravity`](docs/integrations/antigravity.md) | Antigravity | adapter | experimental | macOS, Linux, Windows |
+| AI history | [`claude-code`](docs/integrations/claude-code.md) | Claude Code | adapter | stable | macOS, Linux, Windows |
+| AI history | [`codex`](docs/integrations/codex.md) | Codex | adapter | stable | macOS, Linux, Windows |
+| AI history | [`cursor`](docs/integrations/cursor.md) | Cursor | adapter | experimental | macOS, Linux, Windows |
 | Build caches | [`cachedir-tag`](docs/integrations/cachedir-tag.md) | Tagged caches | pack | stable | macOS, Linux, Windows |
 | Containers | [`docker`](docs/integrations/docker.md) | Docker | adapter | stable | macOS, Linux, Windows |
 | Containers | [`docker-desktop-disk`](docs/integrations/docker-desktop-disk.md) | Docker Desktop disk | adapter | experimental | macOS, Linux, Windows |
