@@ -3,3 +3,11 @@
 *.pending-snap
 .DS_Store
 /kipple-card.png
+
+# Frontends
+node_modules/
+dist/
+.astro/
+*.tsbuildinfo
+/app/src-tauri/target/
+/app/src-tauri/gen/
