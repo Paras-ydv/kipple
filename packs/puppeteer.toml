@@ -1,0 +1,20 @@
+id = "puppeteer"
+name = "Puppeteer browsers"
+category = "package-cache"
+description = "Browsers Puppeteer downloaded for testing. They download again on the next install."
+docs_url = "https://pptr.dev/guides/configuration"
+detect.any_path = ["{cache}"]
+
+[vars]
+cache.env = "PUPPETEER_CACHE_DIR"
+cache.default = "~/.cache/puppeteer"
+
+[[locations]]
+path = "{cache}/*"
+each = "child"
+kind = "puppeteer_browser"
+title = "Puppeteer {parent} {name}"
+safety = "safe"
+reasons = ["REDOWNLOADABLE"]
+actions = ["quarantine"]
+restore_hint = "npx puppeteer browsers install"

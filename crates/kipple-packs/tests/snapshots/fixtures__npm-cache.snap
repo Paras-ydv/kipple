@@ -1,0 +1,29 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"npm-cache\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 30200,
+    "category": "package-cache",
+    "details": null,
+    "files": 2,
+    "integration": "npm-cache",
+    "kind": "npm_cache",
+    "notes": 0,
+    "paths": [
+      "~/caches/npm/_cacache"
+    ],
+    "project": null,
+    "reasons": [
+      "REDOWNLOADABLE"
+    ],
+    "restore_hint": "npm install",
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "npm download cache"
+  }
+]

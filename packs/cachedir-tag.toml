@@ -1,0 +1,15 @@
+id = "cachedir-tag"
+name = "Tagged caches"
+category = "build-cache"
+description = "Folders marked as caches with a CACHEDIR.TAG file. The tool that made them recreates them."
+docs_url = "https://bford.info/cachedir/"
+
+[[artifacts]]
+dir = "*"
+requires_cachedir_tag = true
+kind = "cachedir_tag"
+title = "{name} (tagged cache)"
+safety = "safe"
+reasons = ["REGENERABLE"]
+actions = ["quarantine"]
+priority = 1000

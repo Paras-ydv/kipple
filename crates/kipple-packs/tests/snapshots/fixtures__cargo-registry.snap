@@ -1,0 +1,75 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"cargo-registry\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 5000,
+    "category": "package-cache",
+    "details": null,
+    "files": 1,
+    "integration": "cargo-registry",
+    "kind": "cargo_git_checkouts",
+    "notes": 0,
+    "paths": [
+      "~/.cargo/git/checkouts"
+    ],
+    "project": null,
+    "reasons": [
+      "REDOWNLOADABLE"
+    ],
+    "restore_hint": null,
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "Cargo git checkouts"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 9000,
+    "category": "package-cache",
+    "details": null,
+    "files": 1,
+    "integration": "cargo-registry",
+    "kind": "cargo_registry_cache",
+    "notes": 0,
+    "paths": [
+      "~/.cargo/registry/cache"
+    ],
+    "project": null,
+    "reasons": [
+      "REDOWNLOADABLE"
+    ],
+    "restore_hint": null,
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "Cargo downloaded crates"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 30000,
+    "category": "package-cache",
+    "details": null,
+    "files": 1,
+    "integration": "cargo-registry",
+    "kind": "cargo_registry_src",
+    "notes": 0,
+    "paths": [
+      "~/.cargo/registry/src"
+    ],
+    "project": null,
+    "reasons": [
+      "REDOWNLOADABLE"
+    ],
+    "restore_hint": null,
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "Cargo unpacked crate sources"
+  }
+]

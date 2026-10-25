@@ -1,0 +1,87 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"node-modules\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 8192,
+    "category": "project-artifact",
+    "details": {
+      "package": "new-app",
+      "package_manager": "yarn"
+    },
+    "files": 1,
+    "integration": "node-modules",
+    "kind": "node_modules",
+    "notes": 0,
+    "paths": [
+      "~/code/new-app/node_modules"
+    ],
+    "project": "new-app",
+    "reasons": [
+      "REGENERABLE",
+      "RECENTLY_USED"
+    ],
+    "restore_hint": "yarn install",
+    "safety": "review",
+    "shared_hardlinks": false,
+    "title": "node_modules"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 14336,
+    "category": "project-artifact",
+    "details": {
+      "package": "old-app",
+      "package_manager": "npm"
+    },
+    "files": 6,
+    "integration": "node-modules",
+    "kind": "node_modules",
+    "notes": 0,
+    "paths": [
+      "~/code/old-app/node_modules"
+    ],
+    "project": "old-app",
+    "reasons": [
+      "REGENERABLE",
+      "INACTIVE_PROJECT"
+    ],
+    "restore_hint": "npm install",
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "node_modules"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 65636,
+    "category": "project-artifact",
+    "details": {
+      "package": "pnpm-app",
+      "package_manager": "pnpm"
+    },
+    "files": 2,
+    "integration": "node-modules",
+    "kind": "node_modules",
+    "notes": 1,
+    "paths": [
+      "~/code/pnpm-app/node_modules"
+    ],
+    "project": "pnpm-app",
+    "reasons": [
+      "REGENERABLE",
+      "INACTIVE_PROJECT"
+    ],
+    "restore_hint": "pnpm install",
+    "safety": "safe",
+    "shared_hardlinks": true,
+    "title": "node_modules"
+  }
+]

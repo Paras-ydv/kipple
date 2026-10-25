@@ -1,0 +1,54 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"js-build\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 10000,
+    "category": "project-artifact",
+    "details": null,
+    "files": 1,
+    "integration": "js-build",
+    "kind": "js_build_cache",
+    "notes": 0,
+    "paths": [
+      "~/code/web/.next"
+    ],
+    "project": "web",
+    "reasons": [
+      "REGENERABLE",
+      "INACTIVE_PROJECT"
+    ],
+    "restore_hint": null,
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": ".next"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 3000,
+    "category": "project-artifact",
+    "details": null,
+    "files": 1,
+    "integration": "js-build",
+    "kind": "js_build_output",
+    "notes": 0,
+    "paths": [
+      "~/code/web/dist"
+    ],
+    "project": "web",
+    "reasons": [
+      "REGENERABLE",
+      "INACTIVE_PROJECT"
+    ],
+    "restore_hint": null,
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "dist"
+  }
+]

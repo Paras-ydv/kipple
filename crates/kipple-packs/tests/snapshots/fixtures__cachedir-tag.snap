@@ -1,0 +1,29 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"cachedir-tag\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 7066,
+    "category": "build-cache",
+    "details": null,
+    "files": 2,
+    "integration": "cachedir-tag",
+    "kind": "cachedir_tag",
+    "notes": 0,
+    "paths": [
+      "~/work/data/.cache"
+    ],
+    "project": null,
+    "reasons": [
+      "REGENERABLE"
+    ],
+    "restore_hint": null,
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": ".cache (tagged cache)"
+  }
+]

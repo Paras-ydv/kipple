@@ -1,0 +1,28 @@
+days_ago = 45
+
+[[file]]
+path = "code/web/package.json"
+content = '{"name": "web"}'
+[[file]]
+path = "code/web/.gitignore"
+content = "dist/\n"
+[[file]]
+path = "code/web/.next/cache/a.bin"
+size = 10000
+[[file]]
+path = "code/web/dist/main.js"
+size = 3000
+[[file]]
+path = "code/web/build/committed.js"
+size = 500
+[[file]]
+path = "code/web/src/index.js"
+content = "console.log(1)"
+[[git]]
+path = "code/web"
+days_ago = 45
+
+# A build folder without package.json is never matched.
+[[file]]
+path = "code/other/.next/x"
+size = 10

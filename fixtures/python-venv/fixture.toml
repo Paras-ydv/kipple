@@ -1,0 +1,23 @@
+days_ago = 30
+
+[[file]]
+path = "code/api/pyproject.toml"
+content = "[project]\nname = \"api\"\n"
+[[file]]
+path = "code/api/uv.lock"
+content = ""
+[[file]]
+path = "code/api/.venv/pyvenv.cfg"
+content = "home = /usr/bin\nversion_info = 3.12.4\nuv = 0.9.0\n"
+[[file]]
+path = "code/api/.venv/lib/site-packages/pkg/mod.py"
+size = 5000
+count = 1
+
+# A standalone environment outside any project needs review.
+[[file]]
+path = "envs/tools/pyvenv.cfg"
+content = "home = /usr/bin\nversion = 3.11.9\n"
+[[file]]
+path = "envs/tools/bin/python"
+size = 100

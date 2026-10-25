@@ -1,0 +1,13 @@
+id = "maven-project"
+name = "Maven target"
+category = "project-artifact"
+description = "Maven's build output. It is rebuilt by the next mvn package."
+
+[[artifacts]]
+dir = "target"
+requires_sibling_any = ["pom.xml"]
+kind = "maven_target"
+safety = "safe"
+reasons = ["REGENERABLE"]
+actions = ["quarantine"]
+restore_hint = "mvn package"

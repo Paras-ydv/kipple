@@ -1,0 +1,28 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"pnpm-store\")"
+---
+[
+  {
+    "actions": [],
+    "apparent": 40000,
+    "category": "package-cache",
+    "details": null,
+    "files": 1,
+    "integration": "pnpm-store",
+    "kind": "pnpm_store",
+    "notes": 0,
+    "paths": [
+      "~/pnpm-home/store"
+    ],
+    "project": null,
+    "reasons": [
+      "NATIVE_TOOL_MISSING",
+      "REDOWNLOADABLE"
+    ],
+    "restore_hint": null,
+    "safety": "keep",
+    "shared_hardlinks": false,
+    "title": "pnpm store"
+  }
+]

@@ -1,0 +1,29 @@
+id = "npm-cache"
+name = "npm cache"
+category = "package-cache"
+description = "npm's download cache. npm downloads packages again when needed."
+docs_url = "https://docs.npmjs.com/cli/commands/npm-cache"
+detect.any_command = ["npm"]
+detect.any_path = ["{npm_cache}"]
+
+[vars]
+npm_cache.command = ["npm", "config", "get", "cache"]
+npm_cache.env = "npm_config_cache"
+npm_cache.append = "_cacache"
+npm_cache.macos = "~/.npm/_cacache"
+npm_cache.linux = "~/.npm/_cacache"
+npm_cache.windows = "%LOCALAPPDATA%/npm-cache/_cacache"
+
+[[locations]]
+path = "{npm_cache}"
+kind = "npm_cache"
+title = "npm download cache"
+safety = "safe"
+reasons = ["REDOWNLOADABLE"]
+actions = ["native:npm-cache-clean", "quarantine"]
+restore_hint = "npm install"
+
+[commands.npm-cache-clean]
+run = ["npm", "cache", "clean", "--force"]
+timeout_secs = 300
+measure = "before-after"

@@ -1,0 +1,30 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"rust-target\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 50066,
+    "category": "project-artifact",
+    "details": null,
+    "files": 2,
+    "integration": "rust-target",
+    "kind": "rust_target",
+    "notes": 0,
+    "paths": [
+      "~/code/tool/target"
+    ],
+    "project": "tool",
+    "reasons": [
+      "REGENERABLE",
+      "INACTIVE_PROJECT"
+    ],
+    "restore_hint": "cargo build",
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "target"
+  }
+]

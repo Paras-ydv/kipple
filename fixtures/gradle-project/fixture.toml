@@ -1,0 +1,20 @@
+days_ago = 40
+
+[[file]]
+path = "code/android/settings.gradle.kts"
+content = ""
+[[file]]
+path = "code/android/app/build.gradle.kts"
+content = ""
+[[file]]
+path = "code/android/app/build/outputs/app.apk"
+size = 20000
+[[file]]
+path = "code/android/app/.cxx/obj.o"
+size = 3000
+[[file]]
+path = "code/android/.gradle/8.10/fileHashes.bin"
+size = 1000
+[[file]]
+path = "code/android/build.gradle.kts"
+content = ""

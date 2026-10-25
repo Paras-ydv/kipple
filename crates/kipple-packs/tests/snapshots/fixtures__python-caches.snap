@@ -1,0 +1,33 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"python-caches\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 2366,
+    "category": "project-artifact",
+    "details": null,
+    "files": 5,
+    "integration": "python-caches",
+    "kind": "python_cache",
+    "notes": 0,
+    "paths": [
+      "~/code/svc/.pytest_cache",
+      "~/code/svc/svc/__pycache__",
+      "~/code/svc/svc/sub/__pycache__",
+      "~/code/svc/svc.egg-info"
+    ],
+    "project": "svc",
+    "reasons": [
+      "REGENERABLE",
+      "INACTIVE_PROJECT"
+    ],
+    "restore_hint": null,
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "Python caches (4 folders)"
+  }
+]

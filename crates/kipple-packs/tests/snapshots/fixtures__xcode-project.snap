@@ -1,0 +1,53 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"xcode-project\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 3000,
+    "category": "project-artifact",
+    "details": null,
+    "files": 1,
+    "integration": "xcode-project",
+    "kind": "cocoapods_pods",
+    "notes": 0,
+    "paths": [
+      "~/code/ios-app/Pods"
+    ],
+    "project": null,
+    "reasons": [
+      "REGENERABLE"
+    ],
+    "restore_hint": "pod install",
+    "safety": "review",
+    "shared_hardlinks": false,
+    "title": "Pods"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 9000,
+    "category": "project-artifact",
+    "details": null,
+    "files": 1,
+    "integration": "xcode-project",
+    "kind": "swiftpm_build",
+    "notes": 0,
+    "paths": [
+      "~/code/swiftlib/.build"
+    ],
+    "project": "swiftlib",
+    "reasons": [
+      "REGENERABLE",
+      "INACTIVE_PROJECT"
+    ],
+    "restore_hint": "swift build",
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": ".build"
+  }
+]

@@ -1,0 +1,14 @@
+days_ago = 40
+
+[[file]]
+path = "code/swiftlib/Package.swift"
+content = "// swift-tools-version:5.9"
+[[file]]
+path = "code/swiftlib/.build/debug/lib.a"
+size = 9000
+[[file]]
+path = "code/ios-app/Podfile"
+content = ""
+[[file]]
+path = "code/ios-app/Pods/Alamofire/a.swift"
+size = 3000

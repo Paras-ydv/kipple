@@ -1,0 +1,26 @@
+id = "go-mod-cache"
+name = "Go module cache"
+category = "package-cache"
+description = "Go modules downloaded for your projects. Go downloads them again when needed."
+docs_url = "https://go.dev/ref/mod#module-cache"
+detect.any_command = ["go"]
+detect.any_path = ["{modcache}"]
+
+[vars]
+modcache.command = ["go", "env", "GOMODCACHE"]
+modcache.env = "GOMODCACHE"
+modcache.default = "~/go/pkg/mod"
+
+# Module files are read-only, so only Go's own command removes them.
+[[locations]]
+path = "{modcache}"
+kind = "go_mod_cache"
+title = "Go module cache"
+safety = "safe"
+reasons = ["REDOWNLOADABLE"]
+actions = ["native:go-clean-modcache"]
+
+[commands.go-clean-modcache]
+run = ["go", "clean", "-modcache"]
+timeout_secs = 900
+measure = "before-after"

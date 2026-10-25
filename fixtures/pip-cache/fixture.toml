@@ -1,0 +1,6 @@
+[env]
+PIP_CACHE_DIR = "caches/pip"
+
+[[file]]
+path = "caches/pip/http-v2/a/b/blob"
+size = 22000

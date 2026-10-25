@@ -1,0 +1,13 @@
+# CARGO_HOME is set to ~/.cargo by the test home.
+[[file]]
+path = ".cargo/registry/cache/index.crates.io-1949cf8c6b5b557f/serde-1.0.0.crate"
+size = 9000
+[[file]]
+path = ".cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.0/lib.rs"
+size = 30000
+[[file]]
+path = ".cargo/git/checkouts/repo-abc/rev/lib.rs"
+size = 5000
+[[file]]
+path = ".cargo/bin/cargo-tool"
+size = 100

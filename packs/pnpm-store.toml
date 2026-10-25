@@ -1,0 +1,28 @@
+id = "pnpm-store"
+name = "pnpm store"
+category = "package-cache"
+description = "pnpm's content-addressed package store. Pruning removes only packages no project uses."
+docs_url = "https://pnpm.io/cli/store"
+detect.any_command = ["pnpm"]
+detect.any_path = ["{store}"]
+
+[vars]
+store.command = ["pnpm", "store", "path"]
+store.env = "PNPM_HOME"
+store.append = "store"
+store.macos = "~/Library/pnpm/store"
+store.linux = "$XDG_DATA_HOME/pnpm/store"
+store.windows = "%LOCALAPPDATA%/pnpm/store"
+
+[[locations]]
+path = "{store}"
+kind = "pnpm_store"
+title = "pnpm store"
+safety = "safe"
+reasons = ["REDOWNLOADABLE"]
+actions = ["native:pnpm-store-prune"]
+
+[commands.pnpm-store-prune]
+run = ["pnpm", "store", "prune"]
+timeout_secs = 900
+measure = "before-after"

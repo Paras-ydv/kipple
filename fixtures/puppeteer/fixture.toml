@@ -1,0 +1,7 @@
+# PUPPETEER_CACHE_DIR is ~/.cache/puppeteer in the test home.
+[[file]]
+path = ".cache/puppeteer/chrome/linux-131.0.6778.85/chrome-linux64/chrome"
+size = 30000
+[[file]]
+path = ".cache/puppeteer/chrome-headless-shell/linux-131.0.6778.85/shell"
+size = 10000

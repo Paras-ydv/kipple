@@ -1,0 +1,6 @@
+[env]
+PNPM_HOME = "pnpm-home"
+
+[[file]]
+path = "pnpm-home/store/v10/files/00/blob"
+size = 40000

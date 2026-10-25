@@ -1,0 +1,16 @@
+days_ago = 90
+
+[[file]]
+path = "code/tool/Cargo.toml"
+content = "[package]\nname = \"tool\"\nversion = \"0.1.0\"\n"
+[[file]]
+path = "code/tool/src/main.rs"
+content = "fn main() {}"
+[[file]]
+path = "code/tool/target/debug/tool"
+size = 50000
+[[cachedir_tag]]
+path = "code/tool/target"
+[[git]]
+path = "code/tool"
+days_ago = 90

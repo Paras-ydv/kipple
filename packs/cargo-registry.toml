@@ -1,0 +1,43 @@
+id = "cargo-registry"
+name = "Cargo registry"
+category = "package-cache"
+description = "Crates Cargo downloaded. Cargo downloads them again when a build needs them."
+docs_url = "https://doc.rust-lang.org/cargo/guide/cargo-home.html"
+detect.any_path = ["{cargo_home}/registry", "{cargo_home}/git"]
+in_use_processes = ["cargo"]
+
+[vars]
+cargo_home.env = "CARGO_HOME"
+cargo_home.default = "~/.cargo"
+
+[[locations]]
+path = "{cargo_home}/registry/cache"
+kind = "cargo_registry_cache"
+title = "Cargo downloaded crates"
+safety = "safe"
+reasons = ["REDOWNLOADABLE"]
+actions = ["quarantine"]
+
+[[locations]]
+path = "{cargo_home}/registry/src"
+kind = "cargo_registry_src"
+title = "Cargo unpacked crate sources"
+safety = "safe"
+reasons = ["REDOWNLOADABLE"]
+actions = ["quarantine"]
+
+[[locations]]
+path = "{cargo_home}/git/checkouts"
+kind = "cargo_git_checkouts"
+title = "Cargo git checkouts"
+safety = "safe"
+reasons = ["REDOWNLOADABLE"]
+actions = ["quarantine"]
+
+[[locations]]
+path = "{cargo_home}/git/db"
+kind = "cargo_git_db"
+title = "Cargo git databases"
+safety = "safe"
+reasons = ["REDOWNLOADABLE"]
+actions = ["quarantine"]

@@ -1,0 +1,27 @@
+id = "uv-cache"
+name = "uv cache"
+category = "package-cache"
+description = "uv's package cache. Pruning removes only entries no longer needed."
+docs_url = "https://docs.astral.sh/uv/concepts/cache/"
+detect.any_command = ["uv"]
+detect.any_path = ["{cache}"]
+
+[vars]
+cache.command = ["uv", "cache", "dir"]
+cache.env = "UV_CACHE_DIR"
+cache.macos = "$XDG_CACHE_HOME/uv"
+cache.linux = "$XDG_CACHE_HOME/uv"
+cache.windows = "%LOCALAPPDATA%/uv/cache"
+
+[[locations]]
+path = "{cache}"
+kind = "uv_cache"
+title = "uv cache"
+safety = "safe"
+reasons = ["REDOWNLOADABLE"]
+actions = ["native:uv-cache-prune", "quarantine"]
+
+[commands.uv-cache-prune]
+run = ["uv", "cache", "prune"]
+timeout_secs = 600
+measure = "before-after"

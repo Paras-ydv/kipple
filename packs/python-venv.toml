@@ -1,0 +1,16 @@
+id = "python-venv"
+name = "Python virtual environments"
+category = "project-artifact"
+description = "Python virtual environments. They can be recreated from the project's requirements or lockfile."
+docs_url = "https://docs.python.org/3/library/venv.html"
+
+[[artifacts]]
+dir = "*"
+requires_inside_any = ["pyvenv.cfg"]
+kind = "python_venv"
+title = "{name} (virtualenv)"
+safety = "safe"
+safety_outside_project = "review"
+reasons = ["REGENERABLE"]
+actions = ["quarantine"]
+priority = 800

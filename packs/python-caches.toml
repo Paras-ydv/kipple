@@ -1,0 +1,13 @@
+id = "python-caches"
+name = "Python caches"
+category = "project-artifact"
+description = "Bytecode, test and type-checker caches. Python and your tools recreate them automatically."
+
+[[artifacts]]
+dir = "{__pycache__,.pytest_cache,.mypy_cache,.ruff_cache,.tox,.nox,.hypothesis,*.egg-info}"
+kind = "python_cache"
+title = "Python caches"
+aggregate = "project"
+safety = "safe"
+reasons = ["REGENERABLE"]
+actions = ["quarantine"]

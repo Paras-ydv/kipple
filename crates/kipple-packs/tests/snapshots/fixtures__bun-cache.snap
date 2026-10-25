@@ -1,0 +1,29 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"bun-cache\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 1200,
+    "category": "package-cache",
+    "details": null,
+    "files": 1,
+    "integration": "bun-cache",
+    "kind": "bun_cache",
+    "notes": 0,
+    "paths": [
+      "~/caches/bun"
+    ],
+    "project": null,
+    "reasons": [
+      "REDOWNLOADABLE"
+    ],
+    "restore_hint": null,
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "Bun cache"
+  }
+]

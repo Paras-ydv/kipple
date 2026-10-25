@@ -1,0 +1,25 @@
+id = "js-build"
+name = "JavaScript build output"
+category = "project-artifact"
+description = "Build output and caches of JavaScript frameworks and bundlers. They are recreated on the next build."
+
+[[artifacts]]
+dir = "{.next,.nuxt,.svelte-kit,.turbo,.parcel-cache,.angular,.expo,storybook-static,.vite,.docusaurus}"
+requires_sibling_any = ["package.json"]
+kind = "js_build_cache"
+title = "{name}"
+safety = "safe"
+reasons = ["REGENERABLE"]
+actions = ["quarantine"]
+
+# Generic names only count when git ignores them, so committed folders are safe.
+[[artifacts]]
+dir = "{dist,build,coverage,out}"
+requires_sibling_any = ["package.json"]
+requires_gitignored = true
+kind = "js_build_output"
+title = "{name}"
+safety = "safe"
+reasons = ["REGENERABLE"]
+actions = ["quarantine"]
+priority = 110

@@ -1,0 +1,8 @@
+[env]
+UV_CACHE_DIR = "caches/uv"
+
+[[file]]
+path = "caches/uv/wheels-v5/pypi/requests/blob"
+size = 18000
+[[cachedir_tag]]
+path = "caches/uv"

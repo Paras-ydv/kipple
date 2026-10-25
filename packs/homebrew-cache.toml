@@ -1,0 +1,27 @@
+id = "homebrew-cache"
+name = "Homebrew cache"
+category = "package-cache"
+description = "Downloaded Homebrew bottles and source archives. Homebrew downloads them again when needed."
+docs_url = "https://docs.brew.sh/Manpage#cleanup-options-formulacask-"
+os = ["macos", "linux"]
+detect.any_command = ["brew"]
+detect.any_path = ["{cache}"]
+
+[vars]
+cache.command = ["brew", "--cache"]
+cache.env = "HOMEBREW_CACHE"
+cache.macos = "~/Library/Caches/Homebrew"
+cache.linux = "$XDG_CACHE_HOME/Homebrew"
+
+[[locations]]
+path = "{cache}"
+kind = "homebrew_cache"
+title = "Homebrew downloads"
+safety = "safe"
+reasons = ["REDOWNLOADABLE"]
+actions = ["native:brew-cleanup", "quarantine"]
+
+[commands.brew-cleanup]
+run = ["brew", "cleanup", "--prune=all"]
+timeout_secs = 900
+measure = "before-after"

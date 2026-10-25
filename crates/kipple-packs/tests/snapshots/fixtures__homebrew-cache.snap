@@ -1,0 +1,29 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"homebrew-cache\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 15000,
+    "category": "package-cache",
+    "details": null,
+    "files": 1,
+    "integration": "homebrew-cache",
+    "kind": "homebrew_cache",
+    "notes": 0,
+    "paths": [
+      "~/caches/Homebrew"
+    ],
+    "project": null,
+    "reasons": [
+      "REDOWNLOADABLE"
+    ],
+    "restore_hint": null,
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "Homebrew downloads"
+  }
+]

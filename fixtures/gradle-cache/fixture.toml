@@ -1,0 +1,21 @@
+# GRADLE_USER_HOME is ~/.gradle in the test home.
+[[file]]
+path = ".gradle/caches/modules-2/files-2.1/lib.jar"
+size = 25000
+[[file]]
+path = ".gradle/wrapper/dists/gradle-8.9-bin/x/gradle.zip"
+size = 12000
+days_ago = 200
+[[dir]]
+path = ".gradle/wrapper/dists/gradle-8.9-bin"
+days_ago = 200
+[[file]]
+path = ".gradle/wrapper/dists/gradle-8.10-bin/y/gradle.zip"
+size = 13000
+days_ago = 20
+[[dir]]
+path = ".gradle/wrapper/dists/gradle-8.10-bin"
+days_ago = 20
+[[file]]
+path = ".gradle/daemon/8.10/daemon-1.out.log"
+size = 800

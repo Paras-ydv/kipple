@@ -1,0 +1,55 @@
+# Old project with npm, a recent project, a pnpm project hard-linked to a
+# global store, and a stray node_modules without package.json.
+days_ago = 60
+
+[[file]]
+path = "code/old-app/package.json"
+content = '{"name": "old-app"}'
+[[file]]
+path = "code/old-app/package-lock.json"
+content = "{}"
+[[file]]
+path = "code/old-app/node_modules/left-pad/index.js"
+size = 4096
+count = 1
+[[file]]
+path = "code/old-app/node_modules/p{i}/index.js"
+size = 2048
+count = 5
+[[git]]
+path = "code/old-app"
+days_ago = 60
+
+[[file]]
+path = "code/new-app/package.json"
+content = '{"name": "new-app"}'
+[[file]]
+path = "code/new-app/yarn.lock"
+content = ""
+days_ago = 2
+[[file]]
+path = "code/new-app/node_modules/x/index.js"
+size = 8192
+[[git]]
+path = "code/new-app"
+days_ago = 2
+
+[[file]]
+path = "store/files/aa/blob"
+size = 65536
+[[file]]
+path = "code/pnpm-app/package.json"
+content = '{"name": "pnpm-app"}'
+[[file]]
+path = "code/pnpm-app/pnpm-lock.yaml"
+content = ""
+[[file]]
+path = "code/pnpm-app/node_modules/.modules.yaml"
+size = 100
+[[hardlink]]
+path = "code/pnpm-app/node_modules/.pnpm/pkg/index.js"
+target = "store/files/aa/blob"
+
+[[file]]
+path = "code/stray/node_modules/x/index.js"
+size = 100

@@ -1,0 +1,24 @@
+id = "bun-cache"
+name = "Bun cache"
+category = "package-cache"
+description = "Bun's global package cache. Bun downloads packages again when needed."
+docs_url = "https://bun.com/docs/pm/global-cache"
+detect.any_command = ["bun"]
+detect.any_path = ["{cache}"]
+
+[vars]
+cache.env = "BUN_INSTALL_CACHE_DIR"
+cache.default = "~/.bun/install/cache"
+
+[[locations]]
+path = "{cache}"
+kind = "bun_cache"
+title = "Bun cache"
+safety = "safe"
+reasons = ["REDOWNLOADABLE"]
+actions = ["native:bun-cache-rm", "quarantine"]
+
+[commands.bun-cache-rm]
+run = ["bun", "pm", "cache", "rm"]
+timeout_secs = 300
+measure = "before-after"

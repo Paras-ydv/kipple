@@ -1,0 +1,9 @@
+[env]
+GOCACHE = "caches/go-build"
+
+[[file]]
+path = "caches/go-build/00/abc-a"
+size = 11000
+[[file]]
+path = "caches/go-build/README"
+content = "This directory holds cached build artifacts from the Go build system."

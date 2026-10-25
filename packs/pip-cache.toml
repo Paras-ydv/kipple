@@ -1,0 +1,27 @@
+id = "pip-cache"
+name = "pip cache"
+category = "package-cache"
+description = "pip's download and wheel cache. pip downloads packages again when needed."
+docs_url = "https://pip.pypa.io/en/stable/topics/caching/"
+detect.any_command = ["pip", "pip3"]
+detect.any_path = ["{cache}"]
+
+[vars]
+cache.command = ["pip", "cache", "dir"]
+cache.env = "PIP_CACHE_DIR"
+cache.macos = "~/Library/Caches/pip"
+cache.linux = "$XDG_CACHE_HOME/pip"
+cache.windows = "%LOCALAPPDATA%/pip/Cache"
+
+[[locations]]
+path = "{cache}"
+kind = "pip_cache"
+title = "pip cache"
+safety = "safe"
+reasons = ["REDOWNLOADABLE"]
+actions = ["native:pip-cache-purge", "quarantine"]
+
+[commands.pip-cache-purge]
+run = ["pip", "cache", "purge"]
+timeout_secs = 300
+measure = "before-after"

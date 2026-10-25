@@ -1,0 +1,37 @@
+id = "gradle-cache"
+name = "Gradle cache"
+category = "package-cache"
+description = "Gradle's dependency caches, downloaded Gradle versions and daemon logs."
+docs_url = "https://docs.gradle.org/current/userguide/directory_layout.html"
+detect.any_path = ["{gradle_home}"]
+in_use_processes = ["java|GradleDaemon"]
+
+[vars]
+gradle_home.env = "GRADLE_USER_HOME"
+gradle_home.default = "~/.gradle"
+
+[[locations]]
+path = "{gradle_home}/caches"
+kind = "gradle_caches"
+title = "Gradle dependency caches"
+safety = "safe"
+reasons = ["REDOWNLOADABLE"]
+actions = ["quarantine"]
+
+[[locations]]
+path = "{gradle_home}/wrapper/dists"
+each = "child"
+keep_latest = 1
+kind = "gradle_distribution"
+title = "Gradle {name}"
+safety = "safe"
+reasons = ["REDOWNLOADABLE"]
+actions = ["quarantine"]
+
+[[locations]]
+path = "{gradle_home}/daemon"
+kind = "gradle_daemon_logs"
+title = "Gradle daemon logs"
+safety = "safe"
+reasons = ["REGENERABLE"]
+actions = ["quarantine"]

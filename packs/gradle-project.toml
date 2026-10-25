@@ -1,0 +1,31 @@
+id = "gradle-project"
+name = "Gradle project build"
+category = "project-artifact"
+description = "Gradle and Android build output inside a project. It is rebuilt by the next build."
+in_use_processes = ["java|GradleDaemon"]
+
+[[artifacts]]
+dir = "build"
+requires_sibling_any = ["build.gradle", "build.gradle.kts"]
+kind = "gradle_build"
+safety = "safe"
+reasons = ["REGENERABLE"]
+actions = ["quarantine"]
+restore_hint = "./gradlew build"
+
+[[artifacts]]
+dir = ".gradle"
+requires_sibling_any = ["build.gradle", "build.gradle.kts", "settings.gradle", "settings.gradle.kts"]
+kind = "gradle_project_cache"
+safety = "safe"
+reasons = ["REGENERABLE"]
+actions = ["quarantine"]
+
+[[artifacts]]
+dir = "{.cxx,.externalNativeBuild}"
+requires_sibling_any = ["build.gradle", "build.gradle.kts"]
+kind = "android_native_build"
+title = "{name}"
+safety = "safe"
+reasons = ["REGENERABLE"]
+actions = ["quarantine"]

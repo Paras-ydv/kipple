@@ -1,0 +1,30 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"maven-project\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 4000,
+    "category": "project-artifact",
+    "details": null,
+    "files": 1,
+    "integration": "maven-project",
+    "kind": "maven_target",
+    "notes": 0,
+    "paths": [
+      "~/code/java-svc/target"
+    ],
+    "project": "java-svc",
+    "reasons": [
+      "REGENERABLE",
+      "INACTIVE_PROJECT"
+    ],
+    "restore_hint": "mvn package",
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "target"
+  }
+]

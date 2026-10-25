@@ -1,0 +1,19 @@
+days_ago = 30
+
+[[file]]
+path = "code/svc/pyproject.toml"
+content = "[project]\nname = \"svc\"\n"
+[[file]]
+path = "code/svc/svc/__pycache__/a.cpython-312.pyc"
+size = 1000
+[[file]]
+path = "code/svc/svc/sub/__pycache__/b.cpython-312.pyc"
+size = 1000
+[[file]]
+path = "code/svc/.pytest_cache/v/cache/lastfailed"
+size = 100
+[[cachedir_tag]]
+path = "code/svc/.pytest_cache"
+[[file]]
+path = "code/svc/svc.egg-info/PKG-INFO"
+size = 200

@@ -1,0 +1,27 @@
+id = "go-build-cache"
+name = "Go build cache"
+category = "package-cache"
+description = "Go's compiled build cache. Go rebuilds what it needs."
+docs_url = "https://pkg.go.dev/cmd/go#hdr-Build_and_test_caching"
+detect.any_command = ["go"]
+detect.any_path = ["{cache}"]
+
+[vars]
+cache.command = ["go", "env", "GOCACHE"]
+cache.env = "GOCACHE"
+cache.macos = "~/Library/Caches/go-build"
+cache.linux = "$XDG_CACHE_HOME/go-build"
+cache.windows = "%LOCALAPPDATA%/go-build"
+
+[[locations]]
+path = "{cache}"
+kind = "go_build_cache"
+title = "Go build cache"
+safety = "safe"
+reasons = ["REGENERABLE"]
+actions = ["native:go-clean-cache", "quarantine"]
+
+[commands.go-clean-cache]
+run = ["go", "clean", "-cache"]
+timeout_secs = 600
+measure = "before-after"

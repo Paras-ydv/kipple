@@ -1,0 +1,29 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"uv-cache\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 18066,
+    "category": "package-cache",
+    "details": null,
+    "files": 2,
+    "integration": "uv-cache",
+    "kind": "uv_cache",
+    "notes": 0,
+    "paths": [
+      "~/caches/uv"
+    ],
+    "project": null,
+    "reasons": [
+      "REDOWNLOADABLE"
+    ],
+    "restore_hint": null,
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "uv cache"
+  }
+]

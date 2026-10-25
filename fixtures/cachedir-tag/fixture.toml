@@ -1,0 +1,15 @@
+days_ago = 20
+
+[[file]]
+path = "work/data/.cache/blob"
+size = 7000
+[[cachedir_tag]]
+path = "work/data/.cache"
+
+# Wrong signature: not a cache.
+[[file]]
+path = "work/fake/CACHEDIR.TAG"
+content = "not a tag"
+[[file]]
+path = "work/fake/data"
+size = 100

@@ -1,0 +1,14 @@
+id = "node-modules"
+name = "node_modules"
+category = "project-artifact"
+description = "Installed JavaScript dependencies. Your package manager reinstalls them from the lockfile."
+docs_url = "https://docs.npmjs.com/cli/configuring-npm/folders"
+
+[[artifacts]]
+dir = "node_modules"
+requires_sibling_any = ["package.json"]
+kind = "node_modules"
+safety = "safe"
+reasons = ["REGENERABLE"]
+actions = ["quarantine"]
+restore_hint = "npm install"

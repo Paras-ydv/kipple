@@ -1,0 +1,52 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"puppeteer\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 10000,
+    "category": "package-cache",
+    "details": null,
+    "files": 1,
+    "integration": "puppeteer",
+    "kind": "puppeteer_browser",
+    "notes": 0,
+    "paths": [
+      "~/.cache/puppeteer/chrome-headless-shell/linux-131.0.6778.85"
+    ],
+    "project": null,
+    "reasons": [
+      "REDOWNLOADABLE"
+    ],
+    "restore_hint": "npx puppeteer browsers install",
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "Puppeteer chrome-headless-shell linux-131.0.6778.85"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 30000,
+    "category": "package-cache",
+    "details": null,
+    "files": 1,
+    "integration": "puppeteer",
+    "kind": "puppeteer_browser",
+    "notes": 0,
+    "paths": [
+      "~/.cache/puppeteer/chrome/linux-131.0.6778.85"
+    ],
+    "project": null,
+    "reasons": [
+      "REDOWNLOADABLE"
+    ],
+    "restore_hint": "npx puppeteer browsers install",
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "Puppeteer chrome linux-131.0.6778.85"
+  }
+]

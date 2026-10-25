@@ -1,0 +1,29 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"pip-cache\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 22000,
+    "category": "package-cache",
+    "details": null,
+    "files": 1,
+    "integration": "pip-cache",
+    "kind": "pip_cache",
+    "notes": 0,
+    "paths": [
+      "~/caches/pip"
+    ],
+    "project": null,
+    "reasons": [
+      "REDOWNLOADABLE"
+    ],
+    "restore_hint": null,
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "pip cache"
+  }
+]

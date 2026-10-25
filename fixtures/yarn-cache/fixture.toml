@@ -1,0 +1,9 @@
+[env]
+YARN_CACHE_FOLDER = "caches/yarn"
+
+[[file]]
+path = "caches/yarn/v6/npm-left-pad-1.3.0/package.json"
+size = 1500
+[[file]]
+path = ".yarn/berry/cache/left-pad-npm-1.3.0.zip"
+size = 2500

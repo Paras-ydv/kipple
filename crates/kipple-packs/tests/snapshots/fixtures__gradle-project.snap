@@ -1,0 +1,78 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"gradle-project\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 1000,
+    "category": "project-artifact",
+    "details": null,
+    "files": 1,
+    "integration": "gradle-project",
+    "kind": "gradle_project_cache",
+    "notes": 0,
+    "paths": [
+      "~/code/android/.gradle"
+    ],
+    "project": "android",
+    "reasons": [
+      "REGENERABLE",
+      "INACTIVE_PROJECT"
+    ],
+    "restore_hint": null,
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": ".gradle"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 3000,
+    "category": "project-artifact",
+    "details": null,
+    "files": 1,
+    "integration": "gradle-project",
+    "kind": "android_native_build",
+    "notes": 0,
+    "paths": [
+      "~/code/android/app/.cxx"
+    ],
+    "project": "app",
+    "reasons": [
+      "REGENERABLE",
+      "INACTIVE_PROJECT"
+    ],
+    "restore_hint": null,
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": ".cxx"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 20000,
+    "category": "project-artifact",
+    "details": null,
+    "files": 1,
+    "integration": "gradle-project",
+    "kind": "gradle_build",
+    "notes": 0,
+    "paths": [
+      "~/code/android/app/build"
+    ],
+    "project": "app",
+    "reasons": [
+      "REGENERABLE",
+      "INACTIVE_PROJECT"
+    ],
+    "restore_hint": "./gradlew build",
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "build"
+  }
+]

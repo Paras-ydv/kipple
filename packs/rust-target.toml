@@ -1,0 +1,14 @@
+id = "rust-target"
+name = "Rust target"
+category = "project-artifact"
+description = "Cargo's build output. It is rebuilt by the next cargo build."
+docs_url = "https://doc.rust-lang.org/cargo/reference/build-cache.html"
+
+[[artifacts]]
+dir = "target"
+requires_sibling_any = ["Cargo.toml"]
+kind = "rust_target"
+safety = "safe"
+reasons = ["REGENERABLE"]
+actions = ["quarantine"]
+restore_hint = "cargo build"

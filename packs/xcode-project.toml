@@ -1,0 +1,32 @@
+id = "xcode-project"
+name = "Swift and CocoaPods project build"
+category = "project-artifact"
+description = "SwiftPM build output, CocoaPods pods and Carthage dependencies inside a project."
+
+[[artifacts]]
+dir = ".build"
+requires_sibling_any = ["Package.swift"]
+kind = "swiftpm_build"
+safety = "safe"
+reasons = ["REGENERABLE"]
+actions = ["quarantine"]
+restore_hint = "swift build"
+
+# Some teams commit Pods, so this always needs a look.
+[[artifacts]]
+dir = "Pods"
+requires_sibling_any = ["Podfile"]
+kind = "cocoapods_pods"
+safety = "review"
+reasons = ["REGENERABLE"]
+actions = ["quarantine"]
+restore_hint = "pod install"
+
+[[artifacts]]
+dir = "Carthage"
+requires_sibling_any = ["Cartfile", "Cartfile.resolved"]
+kind = "carthage"
+safety = "review"
+reasons = ["REGENERABLE"]
+actions = ["quarantine"]
+restore_hint = "carthage bootstrap"

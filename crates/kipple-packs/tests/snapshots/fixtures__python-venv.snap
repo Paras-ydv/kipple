@@ -1,0 +1,60 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"python-venv\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 5049,
+    "category": "project-artifact",
+    "details": {
+      "created_by": "uv",
+      "python_version": "3.12.4"
+    },
+    "files": 2,
+    "integration": "python-venv",
+    "kind": "python_venv",
+    "notes": 0,
+    "paths": [
+      "~/code/api/.venv"
+    ],
+    "project": "api",
+    "reasons": [
+      "REGENERABLE",
+      "INACTIVE_PROJECT"
+    ],
+    "restore_hint": "uv sync",
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": ".venv (virtualenv)"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 133,
+    "category": "project-artifact",
+    "details": {
+      "created_by": "venv",
+      "python_version": "3.11.9"
+    },
+    "files": 2,
+    "integration": "python-venv",
+    "kind": "python_venv",
+    "notes": 0,
+    "paths": [
+      "~/envs/tools"
+    ],
+    "project": null,
+    "reasons": [
+      "REGENERABLE",
+      "CONTAINS_USER_DATA"
+    ],
+    "restore_hint": "pip install -e .",
+    "safety": "review",
+    "shared_hardlinks": false,
+    "title": "tools (virtualenv)"
+  }
+]

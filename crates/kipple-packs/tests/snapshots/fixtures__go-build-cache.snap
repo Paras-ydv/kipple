@@ -1,0 +1,29 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"go-build-cache\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 11069,
+    "category": "package-cache",
+    "details": null,
+    "files": 2,
+    "integration": "go-build-cache",
+    "kind": "go_build_cache",
+    "notes": 0,
+    "paths": [
+      "~/caches/go-build"
+    ],
+    "project": null,
+    "reasons": [
+      "REGENERABLE"
+    ],
+    "restore_hint": null,
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "Go build cache"
+  }
+]

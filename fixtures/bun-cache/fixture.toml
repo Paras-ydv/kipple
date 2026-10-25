@@ -1,0 +1,6 @@
+[env]
+BUN_INSTALL_CACHE_DIR = "caches/bun"
+
+[[file]]
+path = "caches/bun/left-pad@1.3.0/index.js"
+size = 1200

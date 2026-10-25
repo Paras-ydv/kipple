@@ -1,0 +1,9 @@
+[env]
+npm_config_cache = "caches/npm"
+
+[[file]]
+path = "caches/npm/_cacache/content-v2/sha512/aa/blob"
+size = 30000
+[[file]]
+path = "caches/npm/_cacache/index-v5/aa/idx"
+size = 200

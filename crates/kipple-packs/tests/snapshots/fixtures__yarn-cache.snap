@@ -1,0 +1,52 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"yarn-cache\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 2500,
+    "category": "package-cache",
+    "details": null,
+    "files": 1,
+    "integration": "yarn-cache",
+    "kind": "yarn_berry_cache",
+    "notes": 0,
+    "paths": [
+      "~/.yarn/berry/cache"
+    ],
+    "project": null,
+    "reasons": [
+      "REDOWNLOADABLE"
+    ],
+    "restore_hint": null,
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "Yarn global cache"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 1500,
+    "category": "package-cache",
+    "details": null,
+    "files": 1,
+    "integration": "yarn-cache",
+    "kind": "yarn_cache",
+    "notes": 0,
+    "paths": [
+      "~/caches/yarn"
+    ],
+    "project": null,
+    "reasons": [
+      "REDOWNLOADABLE"
+    ],
+    "restore_hint": null,
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "Yarn cache"
+  }
+]

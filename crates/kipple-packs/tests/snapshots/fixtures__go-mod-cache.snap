@@ -1,0 +1,28 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"go-mod-cache\")"
+---
+[
+  {
+    "actions": [],
+    "apparent": 6000,
+    "category": "package-cache",
+    "details": null,
+    "files": 1,
+    "integration": "go-mod-cache",
+    "kind": "go_mod_cache",
+    "notes": 0,
+    "paths": [
+      "~/go/pkg/mod"
+    ],
+    "project": null,
+    "reasons": [
+      "NATIVE_TOOL_MISSING",
+      "REDOWNLOADABLE"
+    ],
+    "restore_hint": null,
+    "safety": "keep",
+    "shared_hardlinks": false,
+    "title": "Go module cache"
+  }
+]

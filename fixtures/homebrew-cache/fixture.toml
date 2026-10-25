@@ -1,0 +1,6 @@
+[env]
+HOMEBREW_CACHE = "caches/Homebrew"
+
+[[file]]
+path = "caches/Homebrew/downloads/abc--wget.bottle.tar.gz"
+size = 15000

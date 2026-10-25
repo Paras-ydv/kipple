@@ -1,0 +1,97 @@
+---
+source: crates/kipple-packs/tests/fixtures.rs
+expression: "scan_fixture(\"gradle-cache\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 25000,
+    "category": "package-cache",
+    "details": null,
+    "files": 1,
+    "integration": "gradle-cache",
+    "kind": "gradle_caches",
+    "notes": 0,
+    "paths": [
+      "~/.gradle/caches"
+    ],
+    "project": null,
+    "reasons": [
+      "REDOWNLOADABLE"
+    ],
+    "restore_hint": null,
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "Gradle dependency caches"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 800,
+    "category": "package-cache",
+    "details": null,
+    "files": 1,
+    "integration": "gradle-cache",
+    "kind": "gradle_daemon_logs",
+    "notes": 0,
+    "paths": [
+      "~/.gradle/daemon"
+    ],
+    "project": null,
+    "reasons": [
+      "REGENERABLE"
+    ],
+    "restore_hint": null,
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "Gradle daemon logs"
+  },
+  {
+    "actions": [],
+    "apparent": 13000,
+    "category": "package-cache",
+    "details": null,
+    "files": 1,
+    "integration": "gradle-cache",
+    "kind": "gradle_distribution",
+    "notes": 0,
+    "paths": [
+      "~/.gradle/wrapper/dists/gradle-8.10-bin"
+    ],
+    "project": null,
+    "reasons": [
+      "RECENTLY_USED",
+      "REDOWNLOADABLE"
+    ],
+    "restore_hint": null,
+    "safety": "keep",
+    "shared_hardlinks": false,
+    "title": "Gradle gradle-8.10-bin"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 12000,
+    "category": "package-cache",
+    "details": null,
+    "files": 1,
+    "integration": "gradle-cache",
+    "kind": "gradle_distribution",
+    "notes": 0,
+    "paths": [
+      "~/.gradle/wrapper/dists/gradle-8.9-bin"
+    ],
+    "project": null,
+    "reasons": [
+      "REDOWNLOADABLE"
+    ],
+    "restore_hint": null,
+    "safety": "safe",
+    "shared_hardlinks": false,
+    "title": "Gradle gradle-8.9-bin"
+  }
+]

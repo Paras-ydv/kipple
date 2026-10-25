@@ -1,0 +1,36 @@
+id = "yarn-cache"
+name = "Yarn cache"
+category = "package-cache"
+description = "Yarn's download cache. Yarn downloads packages again when needed."
+docs_url = "https://classic.yarnpkg.com/en/docs/cli/cache"
+detect.any_command = ["yarn"]
+detect.any_path = ["{classic}", "{berry}"]
+
+[vars]
+classic.command = ["yarn", "cache", "dir"]
+classic.env = "YARN_CACHE_FOLDER"
+classic.macos = "~/Library/Caches/Yarn"
+classic.linux = "$XDG_CACHE_HOME/yarn"
+classic.windows = "%LOCALAPPDATA%/Yarn/Cache"
+berry.default = "~/.yarn/berry/cache"
+
+[[locations]]
+path = "{classic}"
+kind = "yarn_cache"
+title = "Yarn cache"
+safety = "safe"
+reasons = ["REDOWNLOADABLE"]
+actions = ["native:yarn-cache-clean", "quarantine"]
+
+[[locations]]
+path = "{berry}"
+kind = "yarn_berry_cache"
+title = "Yarn global cache"
+safety = "safe"
+reasons = ["REDOWNLOADABLE"]
+actions = ["quarantine"]
+
+[commands.yarn-cache-clean]
+run = ["yarn", "cache", "clean"]
+timeout_secs = 600
+measure = "before-after"

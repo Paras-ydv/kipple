@@ -1,0 +1,8 @@
+days_ago = 40
+
+[[file]]
+path = "code/java-svc/pom.xml"
+content = "<project/>"
+[[file]]
+path = "code/java-svc/target/classes/App.class"
+size = 4000
