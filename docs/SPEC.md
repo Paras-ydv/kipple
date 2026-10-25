@@ -402,7 +402,7 @@ Other guarantees:
 
 ### 8.4 Quarantine
 
-- Location: `<data>/quarantine/` on the **same volume** as the item when possible. If the item lives on another volume, a per-volume quarantine at `<volume-root>/.kipple-quarantine/` is used only if writable; otherwise use `Trash`.
+- Location: `<data>/quarantine/`. Only items on the **same volume** as the data dir are quarantined. Items on another volume use `Trash` (decision 0002); kipple never creates folders on other volumes.
 - Layout: `<quarantine>/<ulid>/payload/…` + `<quarantine>/<ulid>/manifest.json` (original path, item snapshot, integration, timestamp, size).
 - Move = atomic rename (fast, same volume). Never copy+delete for quarantine.
 - `kipple undo` restores the most recent action batch; `kipple restore <id>` restores a single entry; restoring refuses if the original path exists again (offer `--to <path>`).
@@ -748,6 +748,6 @@ The MVP ships when all of these are true on macOS and Linux:
 
 1. `jwalk` vs `ignore::WalkParallel` — benchmark on fixtures; choose by p50 cold-scan time.
 2. Desktop frontend: Svelte 5 (default) vs SolidJS — default to Svelte unless a contributor strongly prefers otherwise.
-3. Quarantine on other volumes: per-volume hidden folder vs always OS trash.
-4. Whether `kipple clean` with no flags should open the TUI picker or require filters in non-TTY.
+3. ~~Quarantine on other volumes~~ — decided: always OS trash (`docs/decisions/0002`).
+4. ~~`kipple clean` with no flags~~ — decided: requires a selection until the TUI picker exists (`docs/decisions/0003`).
 5. Community pack bundle hosting and signing key management.
