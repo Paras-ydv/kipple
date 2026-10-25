@@ -47,4 +47,5 @@ kipple is an open-source, cross-platform tool that finds and safely reclaims dis
 - Snapshots via `insta`; review diffs deliberately (`cargo insta review`).
 
 ## UI work
-- TUI and app must follow `docs/UI.md` tokens, spacing, copy and layouts. Do not add gradients, glassmorphism, emoji, or generic dashboard cards. When something isn't specified, choose the quieter option.
+- The design boards in `docs/design/boards/` are the visual source of truth (decision 0006); `docs/UI.md` documents them. TUI, app, share card and website follow its tokens, materials, spacing, copy and layouts. No emoji, no fake progress, never safety by colour alone. When something isn't specified, choose the quieter option.
+- The share card SVG exists twice: `packages/design/src/share/shareCard.ts` and `crates/kipple-share`. Change both together.

@@ -1,10 +1,11 @@
-//! `kipple share` (SPEC §14).
+//! `kipple share` (SPEC §14, UI.md §5).
 
+use std::collections::BTreeMap;
 use std::process::ExitCode;
 
 use anyhow::{Context as _, Result};
-use kipple_core::model::{Os, Outcome, Timestamp};
-use kipple_share::CardData;
+use kipple_core::model::{Category, Os, Outcome, Timestamp};
+use kipple_share::{CardData, Variant};
 use serde::Serialize;
 
 use crate::args::ShareArgs;
@@ -13,69 +14,91 @@ use crate::context::Context;
 #[derive(Serialize)]
 struct ShareOutput {
     path: String,
+    variant: &'static str,
     total: u64,
-    freed: Option<u64>,
 }
 
 pub fn share(ctx: &mut Context, args: &ShareArgs) -> Result<ExitCode> {
     let k = ctx.open()?;
     let report = k.report()?;
-    // Before/after variant when something was freed in the last 24 hours.
-    let day_ago = Timestamp::now().as_second() - 86_400;
-    let freed: u64 = k
-        .journal()
+    let categories_of: BTreeMap<String, Category> = k
+        .adapters()
         .iter()
-        .filter(|j| j.ts.as_second() >= day_ago)
-        .filter(|j| matches!(j.outcome, Outcome::Done { .. }))
-        .map(|j| {
-            if j.quarantine_id.is_some() {
-                0
-            } else {
-                j.freed
-            }
+        .map(|a| {
+            let i = a.info();
+            (i.id.to_string(), i.category)
         })
-        .sum::<u64>()
-        + k.quarantine()?
-            .iter()
-            .filter(|e| e.created_at.as_second() >= day_ago)
-            .map(|e| e.size.reclaimable)
-            .sum::<u64>();
+        .collect();
+
+    // Freed in the last 24 hours, by category: native/trash actions from the
+    // journal plus what went to quarantine.
+    let day_ago = Timestamp::now().as_second() - 86_400;
+    let mut freed: BTreeMap<Category, u64> = BTreeMap::new();
+    for j in k.journal().iter().filter(|j| j.ts.as_second() >= day_ago) {
+        if matches!(j.outcome, Outcome::Done { .. }) && j.quarantine_id.is_none()
+            && let Some(c) = categories_of.get(j.integration.as_str()) {
+                *freed.entry(*c).or_default() += j.freed;
+            }
+    }
+    for e in k
+        .quarantine()?
+        .iter()
+        .filter(|e| e.created_at.as_second() >= day_ago)
+    {
+        *freed.entry(e.item.category).or_default() += e.item.size.reclaimable;
+    }
+    let freed_total: u64 = freed.values().sum();
+
+    let (variant, total, categories) = if freed_total > 0 {
+        (Variant::Reclaimed, freed_total, freed.into_iter().collect())
+    } else {
+        (
+            Variant::Found,
+            report.summary.reclaimable,
+            report
+                .summary
+                .categories
+                .iter()
+                .map(|c| (c.category, c.reclaimable))
+                .collect(),
+        )
+    };
     let projects = if args.with_projects {
         report
             .top_projects
             .iter()
             .filter(|p| p.exists)
-            .filter_map(|p| p.root.file_name().map(|n| n.to_string_lossy().into_owned()))
+            .filter_map(|p| {
+                let name = p.root.file_name()?.to_string_lossy().into_owned();
+                Some((name, p.total.reclaimable))
+            })
             .collect()
     } else {
         Vec::new()
     };
     let data = CardData {
-        total: report.summary.reclaimable,
-        freed: (freed > 0).then_some(freed),
-        categories: report
-            .summary
-            .categories
-            .iter()
-            .map(|c| (c.category, c.reclaimable))
-            .collect(),
+        variant,
+        total,
         device: match k.platform().os {
             Os::Macos => "Mac",
             Os::Windows => "PC",
-            Os::Linux | Os::Wsl => "machine",
+            Os::Linux | Os::Wsl => "computer",
         }
         .to_owned(),
+        categories,
+        remaining: report.summary.reclaimable.saturating_sub(freed_total),
         projects,
-        units: k.config().ui.units,
-        url: "github.com/Paras-ydv/kipple".to_owned(),
     };
     let png = kipple_share::render_png(&data)?;
     std::fs::write(&args.out, png).with_context(|| format!("writing {}", args.out.display()))?;
     if ctx.global.json {
         ctx.print_json(ShareOutput {
             path: args.out.display().to_string(),
-            total: data.total,
-            freed: data.freed,
+            variant: match variant {
+                Variant::Found => "found",
+                Variant::Reclaimed => "reclaimed",
+            },
+            total,
         })?;
     } else {
         println!("Wrote {}.", args.out.display());

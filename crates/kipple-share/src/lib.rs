@@ -1,21 +1,25 @@
-//! Share card renderer (SPEC §14, UI.md §5): a 1200×630 PNG from an SVG
-//! built here, rendered with `resvg` and the bundled Mona Sans fonts (SIL
-//! OFL). No system fonts are loaded, so output is the same everywhere.
+//! Share card renderer (SPEC §14, UI.md §5): a 1200×630 PNG.
+//!
+//! The SVG is a port of the reference implementation
+//! `packages/design/src/share/shareCard.ts` (and the stack geometry in
+//! `packages/design/src/stack.ts`); keep the two in step. It is rendered
+//! with `resvg` and the bundled static Mona Sans fonts (SIL OFL). No system
+//! fonts are loaded, so the output doesn't depend on the machine.
 
 use std::fmt::Write as _;
 use std::sync::{Arc, OnceLock};
 
-use kipple_core::config::Units;
 use kipple_core::model::Category;
 use resvg::tiny_skia;
 use resvg::usvg;
 
 pub const WIDTH: u32 = 1200;
 pub const HEIGHT: u32 = 630;
+pub const URL: &str = "github.com/Paras-ydv/kipple";
 
 const REGULAR: &[u8] = include_bytes!("../assets/fonts/MonaSans-Regular.ttf");
 const BOLD: &[u8] = include_bytes!("../assets/fonts/MonaSans-Bold.ttf");
-const EXTRA_BOLD: &[u8] = include_bytes!("../assets/fonts/MonaSans-ExtraBold.ttf");
+const DISPLAY: &[u8] = include_bytes!("../assets/fonts/MonaSansDisplaySemiExpanded-ExtraBold.ttf");
 const EXPANDED: &[u8] = include_bytes!("../assets/fonts/MonaSansExpanded-ExtraBold.ttf");
 
 #[derive(Debug, thiserror::Error)]
@@ -28,51 +32,68 @@ pub enum ShareError {
     Png(String),
 }
 
-/// What the card shows. No paths or usernames unless `projects` is filled
-/// (`--with-projects`, folder names only).
-#[derive(Debug, Clone, PartialEq)]
-pub struct CardData {
-    /// Reclaimable bytes found.
-    pub total: u64,
-    /// Freed by a clean in the last 24 hours, for the before/after variant.
-    pub freed: Option<u64>,
-    /// Bytes per category, any order.
-    pub categories: Vec<(Category, u64)>,
-    /// "Mac", "PC" or "machine".
-    pub device: String,
-    /// Project folder names (opt-in).
-    pub projects: Vec<String>,
-    pub units: Units,
-    pub url: String,
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Variant {
+    /// "My Mac was hiding 184 GB of kipple."
+    Found,
+    /// "I just reclaimed 76.5 GB of kipple." (a clean in the last 24 hours)
+    Reclaimed,
 }
 
-/// Board palette.
-fn color(c: Category) -> &'static str {
+/// What the card shows. Never usernames or paths (UI.md §5.5).
+#[derive(Debug, Clone, PartialEq)]
+pub struct CardData {
+    pub variant: Variant,
+    /// Total found, or total freed.
+    pub total: u64,
+    /// "Mac", "PC" or "computer".
+    pub device: String,
+    /// Bytes found per category, or bytes freed per category.
+    pub categories: Vec<(Category, u64)>,
+    /// Reclaimed variant: bytes still left after the clean.
+    pub remaining: u64,
+    /// `--with-projects`: project folder names and sizes, shown instead of
+    /// the category chips.
+    pub projects: Vec<(String, u64)>,
+}
+
+/// Colour and chip label per category (`packages/design/src/tokens.ts`).
+fn token(c: Category) -> (&'static str, &'static str) {
     match c {
-        Category::Container => "#2F6BFF",
-        Category::AiHistory => "#8B5CF6",
-        Category::PackageCache => "#FFB020",
-        Category::ProjectArtifact | Category::BuildCache => "#3CCB5A",
-        Category::Mobile => "#12C8C2",
-        Category::Model => "#FF5C8A",
-        Category::Toolchain => "#C97F6B",
-        Category::IdeCache | Category::Logs | Category::System => "#7B8591",
+        Category::Container => ("#2F6BFF", "Docker"),
+        Category::AiHistory => ("#8B5CF6", "AI chat history"),
+        Category::PackageCache => ("#FFB020", "caches"),
+        Category::ProjectArtifact => ("#3CCB5A", "build output"),
+        Category::Mobile => ("#12C8C2", "mobile"),
+        Category::Model => ("#FF5C8A", "models"),
+        Category::Toolchain => ("#FF7A45", "toolchains"),
+        Category::BuildCache => ("#A3D635", "build caches"),
+        Category::IdeCache => ("#4CC9F0", "IDE caches"),
+        Category::Logs => ("#B0B8C8", "logs"),
+        Category::System => ("#7B8591", "system"),
     }
 }
 
-fn chip_label(c: Category) -> &'static str {
-    match c {
-        Category::Container => "Docker",
-        Category::AiHistory => "AI chat history",
-        Category::PackageCache => "caches",
-        Category::ProjectArtifact => "dependencies and builds",
-        Category::BuildCache => "build caches",
-        Category::Mobile => "emulators and simulators",
-        Category::Model => "models",
-        Category::Toolchain => "old toolchains",
-        Category::IdeCache => "editor caches",
-        Category::Logs => "logs",
-        Category::System => "system files",
+const GB: f64 = 1e9;
+const MB: f64 = 1e6;
+
+/// The design's byte format: "184 GB", "107.5 GB", "512 MB"
+/// (`packages/design/src/format.ts`).
+pub fn format_bytes(bytes: u64) -> String {
+    let b = bytes as f64;
+    if b >= GB || (b / MB).round() >= 1000.0 {
+        let gb = (b / GB * 10.0).round() / 10.0;
+        if gb >= 100.0 && gb.fract() == 0.0 {
+            format!("{gb:.0} GB")
+        } else {
+            format!("{gb:.1} GB")
+        }
+    } else if b >= MB {
+        format!("{} MB", (b / MB).round())
+    } else if b >= 1000.0 {
+        format!("{} KB", (b / 1000.0).round())
+    } else {
+        format!("{bytes} bytes")
     }
 }
 
@@ -80,11 +101,22 @@ fn esc(s: &str) -> String {
     s.replace('&', "&amp;")
         .replace('<', "&lt;")
         .replace('>', "&gt;")
-        .replace('"', "&quot;")
 }
 
-/// Text width in px from real glyph advances (skrifa, as resvg uses).
-fn text_width(font: &[u8], text: &str, size: f32, letter_spacing: f32) -> f32 {
+/// Numbers as the reference prints them: up to two decimals, no trailing
+/// zeros.
+fn num(n: f64) -> String {
+    let r = (n * 100.0).round() / 100.0;
+    if r.fract() == 0.0 {
+        format!("{r:.0}")
+    } else {
+        let s = format!("{r:.2}");
+        s.trim_end_matches('0').to_owned()
+    }
+}
+
+/// Text width in px from the font's glyph advances (skrifa, as resvg uses).
+fn text_width(font: &[u8], text: &str, size: f32) -> f32 {
     use skrifa::MetadataProvider;
     use skrifa::instance::{LocationRef, Size};
     let Ok(face) = skrifa::FontRef::new(font) else {
@@ -92,47 +124,265 @@ fn text_width(font: &[u8], text: &str, size: f32, letter_spacing: f32) -> f32 {
     };
     let charmap = face.charmap();
     let metrics = face.glyph_metrics(Size::new(size), LocationRef::default());
-    let advance: f32 = text
-        .chars()
+    text.chars()
         .map(|c| {
             charmap
                 .map(c)
                 .and_then(|g| metrics.advance_width(g))
                 .unwrap_or(size * 0.5)
         })
-        .sum();
-    advance + letter_spacing * text.chars().count().saturating_sub(1) as f32
+        .sum()
 }
 
-/// Greedy word wrap to `max` px.
-fn wrap(font: &[u8], text: &str, size: f32, spacing: f32, max: f32) -> Vec<String> {
-    let mut lines: Vec<String> = Vec::new();
-    let mut line = String::new();
-    for word in text.split_whitespace() {
-        let candidate = if line.is_empty() {
-            word.to_owned()
+pub fn headline(data: &CardData) -> (String, String) {
+    let size = format_bytes(data.total);
+    match data.variant {
+        Variant::Found => (
+            format!("My {} was hiding", data.device),
+            format!("{size} of kipple."),
+        ),
+        Variant::Reclaimed => ("I just reclaimed".to_owned(), format!("{size} of kipple.")),
+    }
+}
+
+// ---- Stack geometry (packages/design/src/stack.ts) -------------------------
+
+struct Layer {
+    color: String,
+    value: f64,
+    clear: bool,
+}
+
+struct Slab {
+    color: String,
+    clear: bool,
+    top: f64,
+    h: f64,
+    d: f64,
+    x: f64,
+    w: f64,
+    cx: f64,
+    cy: f64,
+}
+
+struct Layout {
+    slabs: Vec<Slab>,
+    bottom: f64,
+    d: f64,
+    w: f64,
+    cx: f64,
+}
+
+/// JavaScript's `Math.round`.
+fn round_js(x: f64) -> f64 {
+    (x + 0.5).floor()
+}
+
+fn metrics(w: f64) -> (f64, f64, f64) {
+    let d = round_js(w * 0.13);
+    (d, round_js(d * 0.4), round_js(w * 0.06))
+}
+
+fn fit_heights(values: &[f64], avail: f64, hmin: f64) -> Vec<f64> {
+    let n = values.len();
+    if n == 0 {
+        return Vec::new();
+    }
+    if avail <= n as f64 * hmin {
+        return vec![(avail / n as f64).max(0.0); n];
+    }
+    let mut fixed = vec![false; n];
+    loop {
+        let free_sum: f64 = values
+            .iter()
+            .zip(&fixed)
+            .filter(|(_, f)| !**f)
+            .map(|(v, _)| v)
+            .sum();
+        let fixed_count = fixed.iter().filter(|f| **f).count() as f64;
+        let s = if free_sum > 0.0 {
+            (avail - fixed_count * hmin) / free_sum
         } else {
-            format!("{line} {word}")
+            0.0
         };
-        if text_width(font, &candidate, size, spacing) > max && !line.is_empty() {
-            lines.push(std::mem::take(&mut line));
-            line = word.to_owned();
-        } else {
-            line = candidate;
+        let mut changed = false;
+        for (i, v) in values.iter().enumerate() {
+            if !fixed[i] && v * s < hmin {
+                fixed[i] = true;
+                changed = true;
+            }
+        }
+        if !changed {
+            return values
+                .iter()
+                .zip(&fixed)
+                .map(|(v, f)| if *f { hmin } else { v * s })
+                .collect();
         }
     }
-    if !line.is_empty() {
-        lines.push(line);
+}
+
+fn layout_stack(
+    mut list: Vec<Layer>,
+    cx: f64,
+    w: f64,
+    y0: f64,
+    y1: f64,
+    keep_order: bool,
+) -> Layout {
+    let (d, gap, hmin) = metrics(w);
+    list.retain(|l| l.value > 0.0);
+    if !keep_order {
+        list.sort_by(|a, b| b.value.total_cmp(&a.value));
     }
-    lines
+    let n = list.len() as f64;
+    let avail = y1 - y0 - n * d - (n - 1.0).max(0.0) * gap;
+    let values: Vec<f64> = list.iter().map(|l| l.value).collect();
+    let heights = fit_heights(&values, avail, hmin);
+    let mut y = y1;
+    let mut slabs = Vec::new();
+    for (l, h) in list.into_iter().zip(heights) {
+        let top = y - (d + h);
+        slabs.push(Slab {
+            color: l.color,
+            clear: l.clear,
+            top,
+            h,
+            d,
+            x: cx - w / 2.0,
+            w,
+            cx,
+            cy: top + (d + h) / 2.0,
+        });
+        y = top - gap;
+    }
+    Layout {
+        slabs,
+        bottom: y1,
+        d,
+        w,
+        cx,
+    }
 }
 
-fn size(b: u64, units: Units) -> String {
-    kipple_core::format::size(b, units)
+fn parse_hex(hex: &str) -> (f64, f64, f64) {
+    let n = u32::from_str_radix(hex.trim_start_matches('#'), 16).unwrap_or(0);
+    (
+        ((n >> 16) & 255) as f64,
+        ((n >> 8) & 255) as f64,
+        (n & 255) as f64,
+    )
 }
 
-/// The card as SVG.
+fn mix(a: &str, b: &str, t: f64) -> (u8, u8, u8) {
+    let (r1, g1, b1) = parse_hex(a);
+    let (r2, g2, b2) = parse_hex(b);
+    let c = |x: f64, y: f64| round_js(x + (y - x) * t) as u8;
+    (c(r1, r2), c(g1, g2), c(b1, b2))
+}
+
+fn rgba((r, g, b): (u8, u8, u8), a: f64) -> String {
+    format!("rgba({r},{g},{b},{})", num(a))
+}
+
+fn stack_defs(id: &str) -> String {
+    format!(
+        r##"<filter id="{id}-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="18"/></filter><filter id="{id}-floor" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="10"/></filter><linearGradient id="{id}-streak" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>"##
+    )
+}
+
+fn stack_svg(layout: &Layout, id: &str) -> String {
+    let mut defs = String::new();
+    let mut glows = String::new();
+    let mut slabs = String::new();
+    let floor = format!(
+        r##"<ellipse cx="{}" cy="{}" rx="{}" ry="{}" fill="#000" fill-opacity=".45" filter="url(#{id}-floor)"/>"##,
+        num(layout.cx),
+        num(layout.bottom + layout.d * 0.35),
+        num(layout.w * 0.7),
+        num(layout.d * 0.35)
+    );
+    for (i, s) in layout.slabs.iter().enumerate() {
+        let r = 14.0_f64.min(s.w * 0.08);
+        let (top, bottom, stroke, lid_fill, lid_stroke) = if s.clear {
+            (
+                "rgba(255,255,255,0.08)".to_owned(),
+                "rgba(255,255,255,0.04)".to_owned(),
+                "rgba(255,255,255,0.3)",
+                "rgba(255,255,255,0.14)".to_owned(),
+                "rgba(255,255,255,0.3)",
+            )
+        } else {
+            (
+                rgba(mix(&s.color, "#FFFFFF", 0.2), 0.92),
+                rgba(mix(&s.color, "#000000", 0.38), 0.92),
+                "rgba(255,255,255,0.28)",
+                rgba(mix(&s.color, "#FFFFFF", 0.45), 0.96),
+                "rgba(255,255,255,0.55)",
+            )
+        };
+        let gid = format!("{id}-b{i}");
+        let _ = write!(
+            defs,
+            r##"<linearGradient id="{gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{top}"/><stop offset="1" stop-color="{bottom}"/></linearGradient>"##
+        );
+        if !s.clear {
+            let _ = write!(
+                glows,
+                r##"<ellipse cx="{}" cy="{}" rx="{}" ry="{}" fill="{}" fill-opacity="0.28" filter="url(#{id}-glow)"/>"##,
+                num(s.cx),
+                num(s.cy),
+                num(s.w * 0.55),
+                num((s.d + s.h) * 0.6),
+                s.color
+            );
+        }
+        let _ = write!(
+            slabs,
+            r##"<rect x="{}" y="{}" width="{}" height="{}" rx="{}" fill="url(#{gid})" stroke="{stroke}" stroke-width="1"/><rect x="{}" y="{}" width="{}" height="{}" rx="{}" fill="{lid_fill}" stroke="{lid_stroke}" stroke-width="1"/>"##,
+            num(s.x),
+            num(s.top + s.d / 2.0),
+            num(s.w),
+            num(s.h + s.d / 2.0),
+            num(r),
+            num(s.x),
+            num(s.top),
+            num(s.w),
+            num(s.d),
+            num(s.d / 2.0),
+        );
+        let streak_h = (s.h - s.d / 2.0 - 10.0).max(0.0);
+        if streak_h > 0.0 {
+            let _ = write!(
+                slabs,
+                r##"<rect x="{}" y="{}" width="{}" height="{}" rx="2" fill="url(#{id}-streak)"/>"##,
+                num(s.x + s.w * 0.06),
+                num(s.top + s.d + 4.0),
+                num((s.w * 0.025).max(3.0)),
+                num(streak_h)
+            );
+        }
+    }
+    format!("<defs>{defs}</defs>{floor}{glows}{slabs}")
+}
+
+// ---- Card ------------------------------------------------------------------
+
+/// The card as SVG (UI.md §5).
 pub fn render_svg(data: &CardData) -> String {
+    let id = "kc";
+    let (line1, line2) = headline(data);
+
+    // Headline steps down 4 px until both lines fit 600 px (minimum 48).
+    let mut size = 64.0_f32;
+    while size > 48.0
+        && text_width(DISPLAY, &line1, size).max(text_width(DISPLAY, &line2, size)) > 600.0
+    {
+        size -= 4.0;
+    }
+    let base1 = 196.0_f32;
+    let base2 = base1 + (size * 1.02).round();
+
     let mut cats: Vec<(Category, u64)> = data
         .categories
         .iter()
@@ -141,128 +391,136 @@ pub fn render_svg(data: &CardData) -> String {
         .collect();
     cats.sort_by(|a, b| b.1.cmp(&a.1).then(a.0.cmp(&b.0)));
 
+    // Chips: three largest categories, or project names with --with-projects.
+    let chip_y = 496.0_f64;
+    let mut x = 64.0_f64;
+    let mut chips = String::new();
+    let entries: Vec<(Option<&str>, String, String)> = if data.projects.is_empty() {
+        cats.iter()
+            .take(3)
+            .map(|(c, b)| {
+                let (color, label) = token(*c);
+                (Some(color), format_bytes(*b), label.to_owned())
+            })
+            .collect()
+    } else {
+        data.projects
+            .iter()
+            .take(3)
+            .map(|(name, b)| (None, format_bytes(*b), name.clone()))
+            .collect()
+    };
+    for (color, value, label) in entries {
+        let text_x = if color.is_some() { x + 33.0 } else { x + 14.0 };
+        let w = (text_x - x)
+            + text_width(BOLD, &value, 17.0) as f64
+            + text_width(REGULAR, &format!(" {label}"), 17.0) as f64
+            + 14.0;
+        let _ = write!(
+            chips,
+            r##"<rect x="{}" y="{}" width="{w:.1}" height="42" rx="18" fill="url(#{id}-chip)" stroke="rgba(255,255,255,.18)" stroke-width="1"/><line x1="{}" y1="{}" x2="{:.1}" y2="{}" stroke="rgba(255,255,255,.4)" stroke-width="1"/>"##,
+            num(x),
+            num(chip_y),
+            num(x + 18.0),
+            num(chip_y + 1.0),
+            x + w - 18.0,
+            num(chip_y + 1.0),
+        );
+        if let Some(c) = color {
+            let _ = write!(
+                chips,
+                r##"<circle cx="{}" cy="{}" r="5" fill="{c}"/>"##,
+                num(x + 19.0),
+                num(chip_y + 21.0)
+            );
+        }
+        let _ = write!(
+            chips,
+            r##"<text x="{}" y="{}" font-family="'Mona Sans', sans-serif" font-size="17" fill="#F4F5F8"><tspan font-weight="700">{}</tspan><tspan font-weight="400"> {}</tspan></text>"##,
+            num(text_x),
+            num(chip_y + 27.0),
+            esc(&value),
+            esc(&label)
+        );
+        x += w + 10.0;
+    }
+
+    // Stack on the right.
+    let mut layers: Vec<Layer> = cats
+        .iter()
+        .map(|(c, b)| Layer {
+            color: token(*c).0.to_owned(),
+            value: *b as f64,
+            clear: false,
+        })
+        .collect();
+    if data.variant == Variant::Reclaimed && data.remaining > 0 {
+        layers.push(Layer {
+            color: "#FFFFFF".into(),
+            value: data.remaining as f64,
+            clear: true,
+        });
+    }
+    let layout = layout_stack(
+        layers,
+        930.0,
+        240.0,
+        70.0,
+        556.0,
+        data.variant == Variant::Reclaimed,
+    );
+
+    let glow = |cx: i32, cy: i32, r: i32, color: &str, op: &str, n: &str| {
+        format!(
+            r##"<radialGradient id="{id}-{n}" cx="{cx}" cy="{cy}" r="{r}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="{color}" stop-opacity="{op}"/><stop offset="1" stop-color="{color}" stop-opacity="0"/></radialGradient>"##
+        )
+    };
+
     let mut s = String::new();
     let _ = write!(
         s,
-        r##"<svg xmlns="http://www.w3.org/2000/svg" width="{WIDTH}" height="{HEIGHT}" viewBox="0 0 {WIDTH} {HEIGHT}">
-<defs>
-  <radialGradient id="glowA" cx="0.78" cy="0.30" r="0.55"><stop offset="0" stop-color="#2F6BFF" stop-opacity="0.38"/><stop offset="1" stop-color="#2F6BFF" stop-opacity="0"/></radialGradient>
-  <radialGradient id="glowB" cx="0.92" cy="0.85" r="0.5"><stop offset="0" stop-color="#8B5CF6" stop-opacity="0.32"/><stop offset="1" stop-color="#8B5CF6" stop-opacity="0"/></radialGradient>
-  <radialGradient id="glowC" cx="0.05" cy="1.0" r="0.6"><stop offset="0" stop-color="#12C8C2" stop-opacity="0.14"/><stop offset="1" stop-color="#12C8C2" stop-opacity="0"/></radialGradient>
-  <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.12"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0.04"/></linearGradient>
-  <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.30"/><stop offset="0.45" stop-color="#FFFFFF" stop-opacity="0.04"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>
-</defs>
-<rect width="{WIDTH}" height="{HEIGHT}" fill="#06080F"/>
-<rect width="{WIDTH}" height="{HEIGHT}" fill="url(#glowA)"/>
-<rect width="{WIDTH}" height="{HEIGHT}" fill="url(#glowB)"/>
-<rect width="{WIDTH}" height="{HEIGHT}" fill="url(#glowC)"/>
-"##
+        r##"<svg xmlns="http://www.w3.org/2000/svg" width="{WIDTH}" height="{HEIGHT}" viewBox="0 0 {WIDTH} {HEIGHT}" font-family="'Mona Sans', sans-serif"><defs>"##
     );
-
-    // The stack: one glass slab per category, heights by size.
-    let (x, w, top, bottom, gap) = (790.0_f32, 300.0_f32, 70.0_f32, 560.0_f32, 8.0_f32);
-    let shown: Vec<&(Category, u64)> = cats.iter().take(7).collect();
-    let total: u64 = shown.iter().map(|(_, b)| *b).sum();
-    let avail = bottom - top - gap * shown.len().saturating_sub(1) as f32;
-    let mut y = top;
-    for (i, (c, b)) in shown.iter().enumerate() {
-        let h = if total == 0 {
-            0.0
-        } else {
-            (*b as f32 / total as f32 * avail).max(18.0)
-        };
-        let h = if i + 1 == shown.len() {
-            (bottom - y).max(18.0)
-        } else {
-            h
-        };
-        let r = 16.0_f32.min(h / 2.0);
-        let col = color(*c);
-        let _ = writeln!(
-            s,
-            r##"<g><rect x="{x}" y="{y:.1}" width="{w}" height="{h:.1}" rx="{r:.1}" fill="{col}" fill-opacity="0.34"/><rect x="{x}" y="{y:.1}" width="{w}" height="{h:.1}" rx="{r:.1}" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity="0.18"/><rect x="{x}" y="{y:.1}" width="{w}" height="{h:.1}" rx="{r:.1}" fill="url(#sheen)" opacity="0.6"/><line x1="{x1:.1}" y1="{y1:.1}" x2="{x2:.1}" y2="{y1:.1}" stroke="#FFFFFF" stroke-opacity="0.4"/></g>"##,
-            x1 = x + r,
-            x2 = x + w - r,
-            y1 = y + 0.5,
-        );
-        y += h + gap;
-    }
-
-    // Wordmark.
-    let _ = writeln!(
-        s,
-        r##"<text x="64" y="88" font-family="Mona Sans Expanded" font-weight="800" font-size="26" letter-spacing="-0.78" fill="#F4F5F8">kipple</text>"##
-    );
-
-    // Headline, wrapped to 600 px.
-    let total_text = size(data.total, data.units);
-    let headline = match data.freed {
-        Some(f) => format!(
-            "I just freed {} of kipple on my {}.",
-            size(f, data.units),
-            data.device
-        ),
-        None => format!("My {} was hiding {total_text} of kipple.", data.device),
-    };
-    let (hs, hspace) = (64.0_f32, -2.56_f32);
-    let mut lines = wrap(EXTRA_BOLD, &headline, hs, hspace, 600.0);
-    lines.truncate(4);
-    for (i, l) in lines.iter().enumerate() {
-        let ly = 196.0 + i as f32 * hs * 1.02;
-        let _ = writeln!(
-            s,
-            r##"<text x="64" y="{ly:.1}" font-family="Mona Sans" font-weight="800" font-size="{hs}" letter-spacing="{hspace}" fill="#F4F5F8">{}</text>"##,
-            esc(l)
-        );
-    }
-
-    // Chips: top three categories.
-    let (cy, ch, fs) = (482.0_f32, 40.0_f32, 17.0_f32);
-    let mut cx = 64.0_f32;
-    for (c, b) in cats.iter().take(3) {
-        let num = size(*b, data.units);
-        let label = chip_label(*c);
-        let num_w = text_width(BOLD, &num, fs, 0.0);
-        let label_w = text_width(REGULAR, label, fs, 0.0);
-        let cw = 14.0 + 10.0 + 9.0 + num_w + 5.0 + label_w + 14.0;
-        if cx + cw > 700.0 {
-            break;
-        }
-        let ty = cy + ch / 2.0 + fs * 0.35;
-        let _ = writeln!(
-            s,
-            r##"<g><rect x="{cx:.1}" y="{cy}" width="{cw:.1}" height="{ch}" rx="18" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity="0.18"/><line x1="{l1:.1}" y1="{cy1:.1}" x2="{l2:.1}" y2="{cy1:.1}" stroke="#FFFFFF" stroke-opacity="0.4"/><circle cx="{dx:.1}" cy="{dy:.1}" r="5" fill="{col}"/><text x="{tx:.1}" y="{ty:.1}" font-family="Mona Sans" font-size="{fs}" fill="#F4F5F8"><tspan font-weight="700">{num}</tspan><tspan font-weight="400" dx="5">{label}</tspan></text></g>"##,
-            l1 = cx + 18.0,
-            l2 = cx + cw - 18.0,
-            cy1 = cy + 0.5,
-            dx = cx + 14.0 + 5.0,
-            dy = cy + ch / 2.0,
-            col = color(*c),
-            tx = cx + 14.0 + 10.0 + 9.0,
-            num = esc(&num),
-            label = esc(label),
-        );
-        cx += cw + 10.0;
-    }
-
-    // Opt-in project names.
-    if !data.projects.is_empty() {
-        let names: Vec<&str> = data.projects.iter().take(4).map(String::as_str).collect();
-        let _ = writeln!(
-            s,
-            r##"<text x="64" y="458" font-family="Mona Sans" font-size="15" fill="#FFFFFF" fill-opacity="0.62">Heaviest: {}</text>"##,
-            esc(&names.join(", "))
-        );
-    }
-
-    // Footer.
+    s.push_str(&glow(930, 300, 460, "#347CFF", "0.42", "g1"));
+    s.push_str(&glow(1120, 640, 420, "#B25CFF", "0.38", "g2"));
+    s.push_str(&glow(760, 640, 360, "#FF8454", "0.26", "g3"));
+    s.push_str(&glow(40, -40, 520, "#347CFF", "0.16", "g4"));
     let _ = write!(
         s,
-        r##"<text x="64" y="562" font-family="Mona Sans" font-size="16"><tspan fill="#FFFFFF" fill-opacity="0.62">Found with kipple, an open-source disk cleaner for developers. </tspan><tspan fill="#FFFFFF">{}</tspan></text>
-</svg>
-"##,
-        esc(&data.url)
+        r##"<linearGradient id="{id}-chip" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".12"/><stop offset="1" stop-color="#fff" stop-opacity=".04"/></linearGradient>"##
     );
+    s.push_str(&stack_defs(&format!("{id}-s")));
+    let _ = write!(
+        s,
+        r##"</defs><rect width="{WIDTH}" height="{HEIGHT}" fill="#06080F"/>"##
+    );
+    for g in ["g1", "g2", "g3", "g4"] {
+        let _ = write!(
+            s,
+            r##"<rect width="{WIDTH}" height="{HEIGHT}" fill="url(#{id}-{g})"/>"##
+        );
+    }
+    let _ = write!(
+        s,
+        r##"<text x="64" y="86" font-family="'Mona Sans Expanded', 'Mona Sans', sans-serif" font-size="26" font-weight="800" font-stretch="125%" letter-spacing="-0.78" fill="#F4F5F8">kipple</text>"##
+    );
+    let _ = write!(
+        s,
+        r##"<text font-family="'Mona Sans Display SemiExpanded', 'Mona Sans', sans-serif" font-size="{}" font-weight="800" font-stretch="108%" letter-spacing="{:.2}" fill="#F4F5F8"><tspan x="64" y="{}">{}</tspan><tspan x="64" y="{}">{}</tspan></text>"##,
+        num(size as f64),
+        -0.04 * size,
+        num(base1 as f64),
+        esc(&line1),
+        num(base2 as f64),
+        esc(&line2)
+    );
+    s.push_str(&chips);
+    let _ = write!(
+        s,
+        r##"<text x="64" y="574" font-size="16" font-weight="400" fill="rgba(255,255,255,.62)">Found with kipple, an open-source disk cleaner for developers. <tspan fill="#FFFFFF">{URL}</tspan></text>"##
+    );
+    s.push_str(&stack_svg(&layout, &format!("{id}-s")));
+    s.push_str("</svg>");
     s
 }
 
@@ -270,7 +528,7 @@ fn fontdb() -> Arc<usvg::fontdb::Database> {
     static DB: OnceLock<Arc<usvg::fontdb::Database>> = OnceLock::new();
     DB.get_or_init(|| {
         let mut db = usvg::fontdb::Database::new();
-        for font in [REGULAR, BOLD, EXTRA_BOLD, EXPANDED] {
+        for font in [REGULAR, BOLD, DISPLAY, EXPANDED] {
             db.load_font_data(font.to_vec());
         }
         db.set_sans_serif_family("Mona Sans");
@@ -300,8 +558,9 @@ mod tests {
 
     fn sample() -> CardData {
         CardData {
+            variant: Variant::Found,
             total: 184_000_000_000,
-            freed: None,
+            device: "Mac".into(),
             categories: vec![
                 (Category::Container, 61_200_000_000),
                 (Category::AiHistory, 38_900_000_000),
@@ -310,56 +569,135 @@ mod tests {
                 (Category::Mobile, 21_600_000_000),
                 (Category::Model, 10_800_000_000),
             ],
-            device: "Mac".into(),
+            remaining: 0,
             projects: vec![],
-            units: Units::Si,
-            url: "github.com/Paras-ydv/kipple".into(),
+        }
+    }
+
+    fn text_of(svg: &str) -> String {
+        svg.split('<')
+            .filter_map(|p| p.split_once('>').map(|(_, t)| t.trim()))
+            .filter(|t| !t.is_empty())
+            .collect::<Vec<_>>()
+            .join(" ")
+    }
+
+    #[test]
+    fn fonts_match_the_design_package() {
+        let design =
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../packages/design/fonts");
+        if !design.is_dir() {
+            return; // Published crate: the design package isn't there.
+        }
+        for (name, bytes) in [
+            ("MonaSans-Regular.ttf", REGULAR),
+            ("MonaSans-Bold.ttf", BOLD),
+            ("MonaSansDisplaySemiExpanded-ExtraBold.ttf", DISPLAY),
+            ("MonaSansExpanded-ExtraBold.ttf", EXPANDED),
+        ] {
+            assert_eq!(
+                std::fs::read(design.join(name)).unwrap(),
+                bytes,
+                "{name} differs"
+            );
         }
     }
 
     #[test]
-    fn bundled_fonts_have_the_expected_families() {
-        let db = fontdb();
-        let families: std::collections::BTreeSet<String> = db
+    fn bundled_fonts_have_the_families_the_svg_names() {
+        let families: std::collections::BTreeSet<String> = fontdb()
             .faces()
             .flat_map(|f| f.families.iter().map(|(n, _)| n.clone()))
             .collect();
-        assert!(families.contains("Mona Sans"), "{families:?}");
-        assert!(families.contains("Mona Sans Expanded"), "{families:?}");
+        for f in [
+            "Mona Sans",
+            "Mona Sans Expanded",
+            "Mona Sans Display SemiExpanded",
+        ] {
+            assert!(families.contains(f), "{f} missing from {families:?}");
+        }
     }
 
     #[test]
-    fn headline_wraps_like_the_board() {
-        let lines = wrap(
-            EXTRA_BOLD,
-            "My Mac was hiding 184 GB of kipple.",
-            64.0,
-            -2.56,
-            600.0,
+    fn formats_like_the_design() {
+        assert_eq!(format_bytes(184_000_000_000), "184 GB");
+        assert_eq!(format_bytes(107_500_000_000), "107.5 GB");
+        assert_eq!(format_bytes(24_000_000_000), "24.0 GB");
+        assert_eq!(format_bytes(512_000_000), "512 MB");
+    }
+
+    #[test]
+    fn stack_fills_the_area_largest_at_the_bottom() {
+        let layers = vec![
+            Layer {
+                color: "#2F6BFF".into(),
+                value: 61.2,
+                clear: false,
+            },
+            Layer {
+                color: "#FF5C8A".into(),
+                value: 0.1,
+                clear: false,
+            },
+            Layer {
+                color: "#8B5CF6".into(),
+                value: 38.9,
+                clear: false,
+            },
+        ];
+        let l = layout_stack(layers, 930.0, 240.0, 70.0, 556.0, false);
+        assert_eq!(l.d, 31.0);
+        assert_eq!(l.slabs[0].color, "#2F6BFF");
+        assert!(
+            (l.slabs[2].top - 70.0).abs() < 0.01,
+            "top {}",
+            l.slabs[2].top
         );
-        assert_eq!(lines, vec!["My Mac was hiding", "184 GB of kipple."]);
+        assert_eq!(l.slabs[2].h, 14.0, "tiny layers get the minimum height");
     }
 
     #[test]
-    fn svg_has_no_paths_or_usernames_by_default() {
-        let svg = render_svg(&sample());
-        assert!(svg.contains("My Mac was hiding"));
-        assert!(svg.contains("61.2 GB"));
-        assert!(svg.contains(">Docker<"));
-        assert!(!svg.contains("Heaviest"));
-        assert!(!svg.contains("/Users/"));
+    fn found_card_text() {
+        let text = text_of(&render_svg(&sample()));
+        assert!(
+            text.contains("My Mac was hiding 184 GB of kipple."),
+            "{text}"
+        );
+        assert!(text.contains("61.2 GB Docker"));
+        assert!(text.contains("38.9 GB AI chat history"));
+        assert!(text.contains("27.5 GB caches"));
+        assert!(!text.contains("build output"), "only three chips");
+    }
+
+    #[test]
+    fn reclaimed_variant_and_projects() {
+        let mut d = sample();
+        d.variant = Variant::Reclaimed;
+        d.total = 76_500_000_000;
+        d.remaining = 107_500_000_000;
+        d.projects = vec![("nomad-app".into(), 14_200_000_000)];
+        let svg = render_svg(&d);
+        let text = text_of(&svg);
+        assert!(
+            text.contains("I just reclaimed 76.5 GB of kipple."),
+            "{text}"
+        );
+        assert!(text.contains("14.2 GB nomad-app"));
+        assert!(
+            svg.contains("rgba(255,255,255,0.14)"),
+            "clear slab for what is left"
+        );
     }
 
     #[test]
     fn png_is_deterministic() {
         let a = render_png(&sample()).unwrap();
-        let b = render_png(&sample()).unwrap();
-        assert_eq!(a, b);
+        assert_eq!(a, render_png(&sample()).unwrap());
         assert_eq!(&a[1..4], b"PNG");
     }
 
-    /// The SVG is the deterministic source of the card; rasterizing can
-    /// differ by a few bits between CPU architectures.
+    /// The SVG is the deterministic source; rasterizing can differ by a few
+    /// bits between CPU architectures.
     #[test]
     fn svg_snapshot() {
         insta::assert_snapshot!(render_svg(&sample()));
@@ -371,22 +709,5 @@ mod tests {
         if let Some(out) = std::env::var_os("KIPPLE_CARD_OUT") {
             std::fs::write(out, render_png(&sample()).unwrap()).unwrap();
         }
-    }
-
-    #[test]
-    fn freed_variant() {
-        let mut d = sample();
-        d.freed = Some(76_500_000_000);
-        let svg = render_svg(&d);
-        let text: String = svg
-            .split('<')
-            .filter_map(|part| part.split_once('>').map(|(_, t)| t.trim()))
-            .filter(|t| !t.is_empty())
-            .collect::<Vec<_>>()
-            .join(" ");
-        assert!(
-            text.contains("I just freed 76.5 GB of kipple on my Mac."),
-            "{text}"
-        );
     }
 }

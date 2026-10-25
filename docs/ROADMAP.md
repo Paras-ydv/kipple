@@ -79,7 +79,7 @@ Spec references: `SPEC.md §n`, `INTEGRATIONS.md §n`, `UI.md §n`.
 
 ### M8 — Doctor, share card, docs generation
 - [x] `kipple doctor` (SPEC §11.2) with actionable fixes
-- [ ] `kipple share` card per `UI.md §5` (SPEC §14), deterministic snapshot test
+- [x] `kipple share` card per `UI.md §5` (SPEC §14), deterministic snapshot test
 - [x] `kipple completions`
 - [x] `cargo xtask docs`: integrations table for README + `docs/integrations/<id>.md` pages
 - **Done when:** README integrations table is generated, share card PNG matches the design.
