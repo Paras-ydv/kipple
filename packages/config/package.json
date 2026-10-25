@@ -1,0 +1,12 @@
+{
+  "name": "@kipple/config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared TypeScript and ESLint configuration for the kipple frontends",
+  "license": "MIT OR Apache-2.0",
+  "exports": {
+    "./eslint": "./eslint.js",
+    "./tsconfig.base.json": "./tsconfig.base.json"
+  }
+}

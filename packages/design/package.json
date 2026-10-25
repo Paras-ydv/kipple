@@ -1,0 +1,42 @@
+{
+  "name": "@kipple/design",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "kipple design tokens, fonts and shared Svelte components (docs/UI.md)",
+  "license": "MIT OR Apache-2.0",
+  "svelte": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "svelte": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./tokens": "./src/tokens.ts",
+    "./format": "./src/format.ts",
+    "./stack": "./src/stack.ts",
+    "./share": "./src/share/shareCard.ts",
+    "./styles.css": "./src/styles/index.css",
+    "./tokens.css": "./src/styles/tokens.css",
+    "./materials.css": "./src/styles/materials.css",
+    "./fonts.css": "./src/styles/fonts.css",
+    "./base.css": "./src/styles/base.css",
+    "./fonts/*": "./fonts/*"
+  },
+  "files": [
+    "src",
+    "fonts"
+  ],
+  "scripts": {
+    "typecheck": "svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
+    "lint": "eslint src"
+  },
+  "peerDependencies": {
+    "svelte": "^5.57.2"
+  },
+  "devDependencies": {
+    "svelte": "5.57.2",
+    "svelte-check": "4.7.7",
+    "typescript": "6.0.3"
+  }
+}

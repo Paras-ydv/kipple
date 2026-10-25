@@ -1,0 +1,23 @@
+/* App-wide styles. Tokens and materials come from @kipple/design. */
+html,
+body,
+#app,
+#tray {
+  min-height: 100vh;
+}
+
+html.native,
+html.native body {
+  background: transparent;
+  overflow: hidden;
+}
+
+body {
+  overflow: auto;
+}
+
+/* Scrollbars that sit quietly on glass. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+}

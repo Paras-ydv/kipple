@@ -1,0 +1,27 @@
+{
+  "name": "@kipple/client",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Typed client for the kipple core API (SPEC §3.4) with mock and Tauri implementations",
+  "license": "MIT OR Apache-2.0",
+  "exports": {
+    ".": "./src/index.ts",
+    "./mock": "./src/mock/index.ts",
+    "./tauri": "./src/tauri.ts"
+  },
+  "scripts": {
+    "gen:types": "node scripts/gen-types.mjs",
+    "typecheck": "tsc --noEmit -p .",
+    "lint": "eslint src scripts test",
+    "test": "node --experimental-strip-types --no-warnings --test test/*.test.ts"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "2.12.4"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.5",
+    "json-schema-to-typescript": "16.0.0",
+    "typescript": "6.0.3"
+  }
+}

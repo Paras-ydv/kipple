@@ -1,0 +1,29 @@
+{
+  "name": "web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "kipple.dev, the kipple website (Astro, static)",
+  "license": "MIT OR Apache-2.0",
+  "scripts": {
+    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "typecheck": "ASTRO_TELEMETRY_DISABLED=1 astro check",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@kipple/client": "workspace:*",
+    "@kipple/design": "workspace:*"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "@astrojs/svelte": "9.1.1",
+    "astro": "7.4.2",
+    "svelte": "5.57.2",
+    "typescript": "6.0.3"
+  },
+  "engines": {
+    "node": ">=22.23.4"
+  }
+}

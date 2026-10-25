@@ -1,0 +1,31 @@
+[package]
+name = "kipple-app"
+version = "0.1.0"
+description = "kipple desktop app"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/Paras-ydv/kipple"
+publish = false
+
+# Its own workspace: the desktop app is built separately from the root Cargo
+# workspace (crates/, xtask/) and is not part of `cargo test --workspace`.
+[workspace]
+
+[lib]
+name = "kipple_app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.7.4", features = [] }
+
+[dependencies]
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+tauri = { version = "2.12.5", features = ["tray-icon", "image-png", "macos-private-api"] }
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

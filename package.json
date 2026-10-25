@@ -1,0 +1,27 @@
+{
+  "name": "kipple-frontends",
+  "private": true,
+  "description": "Desktop app, website and shared frontend packages for kipple",
+  "license": "MIT OR Apache-2.0",
+  "packageManager": "pnpm@10.34.6",
+  "engines": {
+    "node": ">=22.17.0"
+  },
+  "scripts": {
+    "gen:types": "pnpm --filter @kipple/client gen:types",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint",
+    "build": "pnpm -r build",
+    "dev:app": "pnpm --filter app dev",
+    "dev:web": "pnpm --filter web dev"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.13.0",
+    "eslint-plugin-svelte": "3.23.1",
+    "globals": "17.13.0",
+    "svelte": "5.57.2",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.0"
+  }
+}
