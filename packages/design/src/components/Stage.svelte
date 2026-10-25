@@ -78,7 +78,7 @@
     pointer-events: none;
   }
   .fluid {
-    flex: 1 1 auto;
+    flex: none;
   }
   .shadow-lg {
     box-shadow: var(--k-shadow-figure);

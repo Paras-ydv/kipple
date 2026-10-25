@@ -60,8 +60,8 @@ export interface StackLayout {
 }
 
 export function stackMetrics(w: number) {
-  const d = Math.round(w * 0.2);
-  return { d, gap: Math.round(d * 0.35), hmin: Math.round(w * 0.08) };
+  const d = Math.round(w * 0.13);
+  return { d, gap: Math.round(d * 0.4), hmin: Math.round(w * 0.06) };
 }
 
 /** Lays out slabs bottom-up, largest at the bottom. */

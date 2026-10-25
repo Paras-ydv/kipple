@@ -39,6 +39,8 @@ export function config(options = {}) {
         ],
         // Svelte's {@html} is used only for SVG strings produced by our own renderers.
         'svelte/no-at-html-tags': 'off',
+        // Maps and Sets here are local temporaries or replaced immutably, never mutated reactively.
+        'svelte/prefer-svelte-reactivity': 'off',
         // Navigation is hash-based and handled by the app router.
         'svelte/no-navigation-without-resolve': 'off',
       },

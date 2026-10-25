@@ -61,7 +61,8 @@ export function formatAge(iso: string | Date, now: Date = new Date()): string {
   if (secs < 60) return 'just now';
   for (const [size, name] of UNITS) {
     if (secs >= size) {
-      const n = Math.floor(secs / size);
+      // Months and years round to the nearest ("58 days" reads as "2 months").
+      const n = size >= 30 * 24 * 3600 ? Math.max(1, Math.round(secs / size)) : Math.floor(secs / size);
       return `${n} ${name}${n === 1 ? '' : 's'}`;
     }
   }

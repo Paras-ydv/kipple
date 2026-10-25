@@ -12,6 +12,11 @@
     block?: boolean;
     /** Weight override; defaults follow the design per variant and size. */
     weight?: number;
+    /** Height override in px (the design uses 36, 38 and 42 in places). */
+    height?: number;
+    fontSize?: number;
+    /** Horizontal padding in px. */
+    pad?: number;
     href?: string;
     children: Snippet;
   } & Omit<HTMLButtonAttributes, 'children'> &
@@ -22,6 +27,9 @@
     size = 'md',
     block = false,
     weight,
+    height,
+    fontSize,
+    pad,
     href,
     children,
     class: className = '',
@@ -41,9 +49,10 @@
     {href}
     class="btn k-{variant} {className}"
     class:block
-    style:height="{heights[size]}px"
-    style:font-size="{fontSizes[size]}px"
+    style:height="{height ?? heights[size]}px"
+    style:font-size="{fontSize ?? fontSizes[size]}px"
     style:font-weight={defaultWeight}
+    style:padding-inline={pad !== undefined ? `${pad}px` : undefined}
     {...rest as HTMLAnchorAttributes}>{@render children()}</a
   >
 {:else}
@@ -51,9 +60,10 @@
     {type}
     class="btn k-{variant} {className}"
     class:block
-    style:height="{heights[size]}px"
-    style:font-size="{fontSizes[size]}px"
+    style:height="{height ?? heights[size]}px"
+    style:font-size="{fontSize ?? fontSizes[size]}px"
     style:font-weight={defaultWeight}
+    style:padding-inline={pad !== undefined ? `${pad}px` : undefined}
     {...rest as HTMLButtonAttributes}>{@render children()}</button
   >
 {/if}
