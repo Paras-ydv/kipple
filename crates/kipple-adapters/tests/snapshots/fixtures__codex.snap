@@ -1,0 +1,225 @@
+---
+source: crates/kipple-adapters/tests/fixtures.rs
+expression: "common :: scan_fixture(\"codex\")"
+---
+[
+  {
+    "actions": [],
+    "apparent": 373,
+    "category": "ai-history",
+    "details": {
+      "archived": true,
+      "cli_version": "0.140.0",
+      "created_at": "2025-10-20T08:00:00Z",
+      "cwd": "~/code/api",
+      "in_state_db": true,
+      "source": "vscode",
+      "thread_id": "019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a03"
+    },
+    "files": 1,
+    "integration": "codex",
+    "kind": "codex_session",
+    "last_used_source": "tool_metadata",
+    "notes": [
+      "kipple removes Codex sessions only with `codex delete`. Install or update Codex, then scan again."
+    ],
+    "paths": [
+      "~/.codex/archived_sessions/rollout-2025-10-20T08-00-00-019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a03.jsonl"
+    ],
+    "project": {
+      "exists": true,
+      "name": "api",
+      "root": "~/code/api"
+    },
+    "reasons": [
+      "NATIVE_TOOL_MISSING",
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 4096,
+    "safety": "keep",
+    "title": "Rotate token ghp_**** in CI"
+  },
+  {
+    "actions": [],
+    "apparent": 699,
+    "category": "ai-history",
+    "details": {
+      "archived": false,
+      "cli_version": "0.150.0",
+      "created_at": null,
+      "cwd": "~/code/gone",
+      "in_state_db": false,
+      "source": "exec",
+      "thread_id": "019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a02"
+    },
+    "files": 1,
+    "integration": "codex",
+    "kind": "codex_session",
+    "last_used_source": "item_mtime",
+    "notes": [
+      "kipple removes Codex sessions only with `codex delete`. Install or update Codex, then scan again."
+    ],
+    "paths": [
+      "~/.codex/sessions/2025/12/01/rollout-2025-12-01T09-30-00-019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a02.jsonl"
+    ],
+    "project": {
+      "exists": false,
+      "name": "gone",
+      "root": "~/code/gone"
+    },
+    "reasons": [
+      "NATIVE_TOOL_MISSING",
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS",
+      "ORPHANED_PROJECT"
+    ],
+    "reclaimable": 4096,
+    "safety": "keep",
+    "title": "Summarize the build logs"
+  },
+  {
+    "actions": [],
+    "apparent": 688,
+    "category": "ai-history",
+    "details": {
+      "archived": false,
+      "cli_version": "0.164.0",
+      "created_at": "2026-01-15T10:00:00Z",
+      "cwd": "~/code/api",
+      "in_state_db": true,
+      "source": "cli",
+      "thread_id": "019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a01"
+    },
+    "files": 1,
+    "integration": "codex",
+    "kind": "codex_session",
+    "last_used_source": "tool_metadata",
+    "notes": [
+      "kipple removes Codex sessions only with `codex delete`. Install or update Codex, then scan again."
+    ],
+    "paths": [
+      "~/.codex/sessions/2026/01/15/rollout-2026-01-15T10-00-00-019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a01.jsonl"
+    ],
+    "project": {
+      "exists": true,
+      "name": "api",
+      "root": "~/code/api"
+    },
+    "reasons": [
+      "NATIVE_TOOL_MISSING",
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 4096,
+    "safety": "keep",
+    "title": "Payments client refactor"
+  },
+  {
+    "actions": [],
+    "apparent": 2048,
+    "category": "ai-history",
+    "details": {
+      "archived": false,
+      "cli_version": null,
+      "created_at": "2026-02-02T11:00:00Z",
+      "cwd": "~/code/api",
+      "in_state_db": true,
+      "source": "exec",
+      "thread_id": "019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a04"
+    },
+    "files": 1,
+    "integration": "codex",
+    "kind": "codex_session",
+    "last_used_source": "tool_metadata",
+    "notes": [
+      "Codex stores this session compressed and partly in its database.",
+      "kipple removes Codex sessions only with `codex delete`. Install or update Codex, then scan again."
+    ],
+    "paths": [
+      "~/.codex/sessions/2026/02/02/rollout-2026-02-02T11-00-00-019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a04.jsonl.zst"
+    ],
+    "project": {
+      "exists": true,
+      "name": "api",
+      "root": "~/code/api"
+    },
+    "reasons": [
+      "NATIVE_TOOL_MISSING",
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 4096,
+    "safety": "keep",
+    "title": "Release notes"
+  },
+  {
+    "actions": [],
+    "apparent": 1024,
+    "category": "ai-history",
+    "details": {
+      "archived": false,
+      "cli_version": null,
+      "created_at": null,
+      "cwd": null,
+      "in_state_db": false,
+      "source": null,
+      "thread_id": "019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a05"
+    },
+    "files": 1,
+    "integration": "codex",
+    "kind": "codex_session",
+    "last_used_source": "item_mtime",
+    "notes": [
+      "Codex stores this session compressed and partly in its database.",
+      "kipple removes Codex sessions only with `codex delete`. Install or update Codex, then scan again."
+    ],
+    "paths": [
+      "~/.codex/sessions/2026/02/03/rollout-2026-02-03T11-00-00-019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a05.jsonl.zst"
+    ],
+    "project": null,
+    "reasons": [
+      "UNKNOWN_FORMAT",
+      "NATIVE_TOOL_MISSING",
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 4096,
+    "safety": "keep",
+    "title": "Codex session …4e5f6a05"
+  },
+  {
+    "actions": [],
+    "apparent": 20,
+    "category": "ai-history",
+    "details": {
+      "archived": false,
+      "cli_version": null,
+      "created_at": null,
+      "cwd": null,
+      "in_state_db": false,
+      "source": null,
+      "thread_id": "019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a06"
+    },
+    "files": 1,
+    "integration": "codex",
+    "kind": "codex_session",
+    "last_used_source": "item_mtime",
+    "notes": [
+      "kipple removes Codex sessions only with `codex delete`. Install or update Codex, then scan again."
+    ],
+    "paths": [
+      "~/.codex/sessions/2026/02/04/rollout-2026-02-04T11-00-00-019a1b2c-3d4e-7f80-9a1b-2c3d4e5f6a06.jsonl"
+    ],
+    "project": null,
+    "reasons": [
+      "UNKNOWN_FORMAT",
+      "NATIVE_TOOL_MISSING",
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 4096,
+    "safety": "keep",
+    "title": "Codex session …4e5f6a06"
+  }
+]

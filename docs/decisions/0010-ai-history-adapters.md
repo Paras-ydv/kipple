@@ -16,6 +16,12 @@ INTEGRATIONS.md §4.10–4.13 were written before the tools' current storage was
 - **In-use is per item.** The spec keeps only sessions changed in the last 24 h while `claude` runs. A blanket `in_use_processes = ["claude"]` would make every Claude item `Keep` (and the executor would skip all of them), so the adapter applies the rule in discovery and declares no blanket process. The executor still re-checks the 10-minute rule before acting; the 24-hour rule is evaluated at scan time (plans are valid for an hour).
 - **`cleanupPeriodDays = 0`** is now rejected by Claude Code's settings validation. The v1 retention action must still never write `0`.
 
+### Codex (§4.11)
+
+- **Compressed rollouts.** Codex 0.16x migrates rollouts to `.jsonl.zst` with part of the history in `thread_history_1.sqlite`. kipple doesn't decompress them; it relies on the `threads` row for title and `cwd`. A compressed rollout with no row is `UNKNOWN_FORMAT` (`Keep`).
+- **State DB columns vary by version.** kipple selects only the columns that exist; it requires `id`, `rollout_path` and `cwd`, otherwise every session is `Keep`.
+- **The active-writer check runs once per scan,** only for rollouts modified in the last hour (one shared 1-second wait), and again in `preflight` right before `codex delete`.
+
 ## Consequences
 
 - Snapshot tests cover each rule; `docs/integrations/claude-code.md` lists the verified sources.

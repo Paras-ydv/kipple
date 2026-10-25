@@ -232,10 +232,10 @@ Commands are argv arrays (no shell), may reference only pack vars. They run with
 
 ### 4.11 `codex` (adapter)
 - Root: `CODEX_HOME` → `~/.codex` (`%USERPROFILE%\.codex`).
-- Sessions: `<root>/sessions/YYYY/MM/DD/rollout-<timestamp>-<uuid>.jsonl`; archived: `<root>/archived_sessions/`. Thread metadata in `<root>/state_*.sqlite` (table `threads`, verify columns per version) and `<root>/session_index.jsonl` (may be stale — prefer SQLite, read-only).
+- Sessions: `<root>/sessions/YYYY/MM/DD/rollout-<timestamp>-<uuid>.jsonl` (or `.jsonl.zst` after Codex's paginated-history migration); archived: `<root>/archived_sessions/`. Thread metadata in `$CODEX_SQLITE_HOME` (default `<root>`) `/state_<n>.sqlite` — newest `n`, currently `state_5.sqlite` — table `threads` (columns verified against codex-rs migrations up to 0062, rust-v0.164.0, 2026-10-25) and `<root>/session_index.jsonl` (may be stale — prefer SQLite, read-only).
 - Item per session: title from thread metadata, else first user message; project from recorded `cwd`; size; created/updated; `source` (cli, exec, vscode, app) if available. Flag sessions > 100 MB in `notes` ("dominated by tool output").
 - Safety `Review` always.
-- Actions: **only** `native:codex.delete` → `codex delete <uuid>` (check `codex delete --help` at runtime for the non-interactive flag; if the installed version lacks `delete`, the session is report-only with `NATIVE_TOOL_MISSING` and the explanation tells the user to update Codex). **Never** remove rollout files directly (orphans threads in the state DB).
+- Actions: **only** `native:codex.delete` → `codex delete <uuid> --force` (`--force` is the non-interactive flag and requires a UUID; kipple checks `codex delete --help` for it at runtime; if the installed version lacks it, the session is report-only with `NATIVE_TOOL_MISSING` and the explanation tells the user to update Codex). **Never** remove rollout files directly (orphans threads in the state DB).
 - `requires_closed`: all Codex surfaces (`codex`, Codex desktop app, VS Code extension host running Codex). If a rollout grows between two stats → `Keep` (`ACTIVE_WRITER`).
 - `codex archive` does not free disk space — do not offer it as a reclaim action.
 
