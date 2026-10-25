@@ -1,0 +1,21 @@
+name: New integration
+description: Ask kipple to cover another tool.
+labels: ["integration"]
+body:
+  - type: input
+    id: tool
+    attributes:
+      label: Tool
+      description: Name and link.
+    validations:
+      required: true
+  - type: textarea
+    id: storage
+    attributes:
+      label: Where it stores data
+      description: Paths per OS if you know them, and how big they get.
+  - type: textarea
+    id: cleanup
+    attributes:
+      label: Cleanup command
+      description: Does the tool have its own command to clean or prune its data?

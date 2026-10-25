@@ -1,0 +1,27 @@
+name: Wrong safety level
+description: kipple marked something Safe or Review that should not be removed.
+labels: ["safety"]
+body:
+  - type: markdown
+    attributes:
+      value: If data was already lost, please also report it privately through a security advisory.
+  - type: input
+    id: integration
+    attributes:
+      label: Integration id
+    validations:
+      required: true
+  - type: textarea
+    id: explain
+    attributes:
+      label: Output of `kipple explain <item>`
+      description: Remove anything personal.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it is not safe
+    validations:
+      required: true

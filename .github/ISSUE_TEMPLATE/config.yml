@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security or safety problem that could delete data
+    url: https://github.com/Paras-ydv/kipple/security/advisories/new
+    about: Report privately. Do not open a public issue.

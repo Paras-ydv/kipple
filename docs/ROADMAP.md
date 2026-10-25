@@ -9,12 +9,12 @@ Spec references: `SPEC.md §n`, `INTEGRATIONS.md §n`, `UI.md §n`.
 ## MVP
 
 ### M0 — Repository foundation
-- [ ] Cargo workspace with crates `kipple-core`, `kipple-packs`, `kipple-adapters`, `kipple-cli` (binary `kipple`), `kipple-mcp`, `kipple-share`, and `xtask` (SPEC §3.1)
-- [ ] `rust-version` (MSRV) set; `rustfmt.toml`, `clippy.toml`, `deny.toml`
-- [ ] Dual license files, `README.md` stub (name, pronunciation, one-line pitch, "pre-alpha"), `CONTRIBUTING.md` stub, `SECURITY.md`, `CODE_OF_CONDUCT.md`
-- [ ] `.github/workflows/ci.yml`: fmt, clippy `-D warnings`, test, cargo-deny — matrix macOS/Linux/Windows
-- [ ] Issue templates (bug, integration request, path report, false-safety report) and labels list in `docs/labels.md`
-- [ ] Test helper `TestHome` that creates a temp home and sets `HOME`, `USERPROFILE`, `XDG_*`, `APPDATA`, `LOCALAPPDATA`, `CODEX_HOME`, `CLAUDE_CONFIG_DIR`, `ANDROID_HOME`, etc. (SPEC §18)
+- [x] Cargo workspace with crates `kipple-core`, `kipple-packs`, `kipple-adapters`, `kipple-cli` (binary `kipple`), `kipple-mcp`, `kipple-share`, and `xtask` (SPEC §3.1)
+- [x] `rust-version` (MSRV) set; `rustfmt.toml`, `clippy.toml`, `deny.toml`
+- [x] Dual license files, `README.md` stub (name, pronunciation, one-line pitch, "pre-alpha"), `CONTRIBUTING.md` stub, `SECURITY.md`, `CODE_OF_CONDUCT.md`
+- [x] `.github/workflows/ci.yml`: fmt, clippy `-D warnings`, test, cargo-deny — matrix macOS/Linux/Windows
+- [x] Issue templates (bug, integration request, path report, false-safety report) and labels list in `docs/labels.md`
+- [x] Test helper `TestHome` that creates a temp home and sets `HOME`, `USERPROFILE`, `XDG_*`, `APPDATA`, `LOCALAPPDATA`, `CODEX_HOME`, `CLAUDE_CONFIG_DIR`, `ANDROID_HOME`, etc. (SPEC §18)
 - **Done when:** `cargo test` passes on all OSes and `kipple --version` prints.
 
 ### M1 — Core model, platform, config, index

@@ -1,0 +1,43 @@
+[workspace]
+resolver = "3"
+members = ["crates/*", "xtask"]
+default-members = ["crates/*"]
+
+[workspace.package]
+version = "0.1.0-alpha.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/Paras-ydv/kipple"
+homepage = "https://github.com/Paras-ydv/kipple"
+authors = ["The kipple contributors"]
+keywords = ["disk", "cleanup", "cache", "developer-tools", "cli"]
+categories = ["command-line-utilities", "filesystem", "development-tools"]
+
+[workspace.dependencies]
+kipple-core = { path = "crates/kipple-core", version = "0.1.0-alpha.0" }
+kipple-packs = { path = "crates/kipple-packs", version = "0.1.0-alpha.0" }
+kipple-adapters = { path = "crates/kipple-adapters", version = "0.1.0-alpha.0" }
+kipple-mcp = { path = "crates/kipple-mcp", version = "0.1.0-alpha.0" }
+kipple-share = { path = "crates/kipple-share", version = "0.1.0-alpha.0" }
+
+anyhow = "1.0.104"
+clap = { version = "4.6.7", features = ["derive", "env", "wrap_help"] }
+clap_complete = "4.6"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2.0.21"
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+
+# dev
+tempfile = "3.27.0"
+assert_cmd = "2.2.2"
+predicates = "3"
+insta = { version = "1.49.0", features = ["json", "redactions"] }
+proptest = "1.12.0"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = "symbols"

@@ -1,0 +1,36 @@
+name: My tool stores data somewhere else
+description: kipple looks in the wrong place for a tool on your system.
+labels: ["integration"]
+body:
+  - type: input
+    id: integration
+    attributes:
+      label: Integration id
+      description: For example `pip-cache` or `codex`.
+    validations:
+      required: true
+  - type: input
+    id: tool-version
+    attributes:
+      label: Tool version
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options: [macOS, Linux, Windows, WSL]
+    validations:
+      required: true
+  - type: input
+    id: path
+    attributes:
+      label: Actual path
+      description: Replace your user name with `~` or `%USERPROFILE%`.
+    validations:
+      required: true
+  - type: textarea
+    id: how
+    attributes:
+      label: How you found it
+      description: For example the output of the tool's own command (`npm config get cache`).

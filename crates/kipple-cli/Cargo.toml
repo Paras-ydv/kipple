@@ -1,0 +1,29 @@
+[package]
+name = "kipple-cli"
+description = "Find and safely reclaim disk space used by developer tools"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+keywords.workspace = true
+categories.workspace = true
+default-run = "kipple"
+
+[[bin]]
+name = "kipple"
+path = "src/main.rs"
+
+[dependencies]
+kipple-core.workspace = true
+kipple-packs.workspace = true
+kipple-adapters.workspace = true
+anyhow.workspace = true
+clap.workspace = true
+
+[dev-dependencies]
+kipple-core = { workspace = true, features = ["test-support"] }
+assert_cmd.workspace = true
+predicates.workspace = true

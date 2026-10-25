@@ -1,0 +1,22 @@
+[package]
+name = "kipple-core"
+description = "Core model, scanner, safety engine, planner and executor for kipple"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[features]
+# Exposes `kipple_core::testing` (TestHome) to other crates' tests.
+test-support = ["dep:tempfile"]
+
+[dependencies]
+tempfile = { workspace = true, optional = true }
+
+[dev-dependencies]
+tempfile.workspace = true
