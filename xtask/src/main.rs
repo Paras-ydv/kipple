@@ -1,5 +1,6 @@
 //! Development tasks: `cargo xtask <task>`.
 
+mod fixtures;
 mod schema;
 
 use std::path::PathBuf;
@@ -10,6 +11,7 @@ const HELP: &str = "usage: cargo xtask <task>
 
 tasks:
   schema [--check]   export JSON Schemas to docs/schema/
+  fixtures [ids…]    generate fixtures into a kept sandbox home
   help               show this message";
 
 fn workspace_root() -> PathBuf {
@@ -28,6 +30,7 @@ fn main() -> Result<()> {
             Ok(())
         }
         Some("schema") => schema::run(&workspace_root(), flag("--check")),
+        Some("fixtures") => fixtures::run(&args[1..]),
         Some(other) => bail!("unknown task: {other}\n\n{HELP}"),
     }
 }

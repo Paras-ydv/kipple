@@ -801,6 +801,7 @@
           }
         },
         "items": {
+          "description": "All items, including `Keep`.",
           "type": "integer",
           "format": "uint64",
           "minimum": 0
@@ -812,6 +813,7 @@
           "minimum": 0
         },
         "reclaimable": {
+          "description": "Bytes of `Safe` and `Review` items.",
           "type": "integer",
           "format": "uint64",
           "minimum": 0

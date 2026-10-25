@@ -64,9 +64,85 @@ pub struct GlobalArgs {
 
 #[derive(Debug, Subcommand)]
 pub enum Command {
+    /// Scan and print a summary. Nothing is changed.
+    Scan,
+    /// Print the latest scan's report again without scanning.
+    Report(ReportArgs),
+    /// Projects and what they hold.
+    Projects(ProjectsArgs),
+    /// Every item, with ids for `explain` and `clean`.
+    Items(ItemsArgs),
+    /// Everything about one item.
+    Explain {
+        /// Item id (or its first characters) or path.
+        item: String,
+    },
+    /// Inspect and test packs.
+    #[command(subcommand)]
+    Packs(PacksCommand),
     /// Show, check or locate the config file.
     #[command(subcommand)]
     Config(ConfigCommand),
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, clap::ValueEnum)]
+pub enum ReportBy {
+    Category,
+    Project,
+    Integration,
+}
+
+#[derive(Debug, Args)]
+pub struct ReportArgs {
+    /// Group the table by this.
+    #[arg(long, value_enum, default_value_t = ReportBy::Category)]
+    pub by: ReportBy,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, clap::ValueEnum)]
+pub enum SortKey {
+    Size,
+    Age,
+    Name,
+}
+
+#[derive(Debug, Args)]
+pub struct ProjectsArgs {
+    /// Only projects whose folder no longer exists.
+    #[arg(long)]
+    pub orphaned: bool,
+    #[arg(long, value_enum, default_value_t = SortKey::Size)]
+    pub sort: SortKey,
+    /// Show at most this many.
+    #[arg(long)]
+    pub limit: Option<usize>,
+}
+
+#[derive(Debug, Args)]
+pub struct ItemsArgs {
+    #[arg(long, value_enum, default_value_t = SortKey::Size)]
+    pub sort: SortKey,
+    /// Show at most this many.
+    #[arg(long)]
+    pub limit: Option<usize>,
+    /// Include items marked keep.
+    #[arg(long)]
+    pub all: bool,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum PacksCommand {
+    /// List built-in packs.
+    List,
+    /// Print a built-in pack.
+    Show { id: String },
+    /// Check pack files for errors.
+    Validate {
+        #[arg(required = true)]
+        files: Vec<PathBuf>,
+    },
+    /// Scan with only this integration and list what it finds.
+    Test { id: String },
 }
 
 #[derive(Debug, Subcommand)]

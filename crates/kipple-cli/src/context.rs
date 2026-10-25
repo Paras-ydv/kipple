@@ -8,7 +8,13 @@ use kipple_core::dirs::Dirs;
 use kipple_core::platform::{Env, Platform};
 use serde::Serialize;
 
+use kipple_core::config::Units;
+use kipple_core::format::{parse_age, parse_size};
+use kipple_core::model::ItemFilter;
+use kipple_core::{Kipple, OpenOptions};
+
 use crate::args::GlobalArgs;
+use crate::output::Style;
 
 #[expect(
     dead_code,
@@ -20,6 +26,7 @@ pub struct Context {
     pub platform: Platform,
     pub dirs: Dirs,
     pub color: bool,
+    pub units: Units,
 }
 
 impl Context {
@@ -39,6 +46,7 @@ impl Context {
             platform,
             dirs,
             color,
+            units: Units::Si,
         })
     }
 
@@ -48,7 +56,6 @@ impl Context {
     }
 
     /// Applies `ui.color` from config.
-    #[expect(dead_code, reason = "used by the scan commands (M3)")]
     pub fn apply_config(&mut self, config: &Config) {
         match config.ui.color {
             ColorMode::Never => self.color = false,
@@ -58,6 +65,45 @@ impl Context {
             }
             ColorMode::Auto => {}
         }
+    }
+
+    /// Opens the core with every built-in integration.
+    pub fn open(&mut self) -> Result<Kipple> {
+        let mut integrations = kipple_packs::builtin()?;
+        integrations.extend(kipple_adapters::all());
+        let mut opts = OpenOptions::new(self.env.clone(), integrations);
+        opts.config_file = self.global.config.clone();
+        let k = Kipple::open(opts)?;
+        self.apply_config(k.config());
+        self.units = k.config().ui.units;
+        Ok(k)
+    }
+
+    pub fn style(&self) -> Style {
+        Style {
+            color: self.color,
+            units: self.units,
+        }
+    }
+
+    pub fn home(&self) -> Option<std::path::PathBuf> {
+        self.env.home()
+    }
+
+    /// Global filter flags as an item filter.
+    pub fn filter(&self) -> Result<ItemFilter> {
+        let g = &self.global;
+        Ok(ItemFilter {
+            only: g.only.clone(),
+            exclude: g.exclude.clone(),
+            ids: Vec::new(),
+            roots: g.root.clone(),
+            older_than_secs: g.older_than.as_deref().map(parse_age).transpose()?,
+            min_size: g.min_size.as_deref().map(parse_size).transpose()?,
+            safe_only: g.safe_only,
+            safety: Vec::new(),
+            project: None,
+        })
     }
 
     /// Prints `data` wrapped in the versioned envelope.

@@ -8,6 +8,6 @@ publish = false
 
 [dependencies]
 anyhow.workspace = true
-kipple-core.workspace = true
+kipple-core = { workspace = true, features = ["test-support"] }
 schemars.workspace = true
 serde_json.workspace = true

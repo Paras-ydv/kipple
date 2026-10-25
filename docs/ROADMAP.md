@@ -26,22 +26,22 @@ Spec references: `SPEC.md §n`, `INTEGRATIONS.md §n`, `UI.md §n`.
 - **Done when:** config round-trips, index migrates from empty, protected-path property tests pass.
 
 ### M2 — Scanner, pack engine, sizes, projects
-- [ ] Pack TOML schema + loader + validation (`INTEGRATIONS.md §2`); packs embedded at build time from `packs/`
-- [ ] Parallel walker with skip rules, `.kippleignore`, `CACHEDIR.TAG`, cancellation, progress events (SPEC §5.1–5.2)
-- [ ] Honest sizes: apparent / on_disk / reclaimable with hardlink accounting (SPEC §5.5) — test with a pnpm-style hardlinked fixture
-- [ ] Project detection with all markers (SPEC §5.4)
-- [ ] First packs: `node-modules`, `js-build`, `python-venv`, `python-caches`, `rust-target`, `gradle-project`, `maven-project`, `xcode-project`, `cachedir-tag`
-- [ ] Cache packs: `npm-cache`, `pnpm-store`, `yarn-cache`, `bun-cache`, `pip-cache`, `uv-cache`, `cargo-registry`, `go-build-cache`, `go-mod-cache`, `gradle-cache`, `homebrew-cache`, `puppeteer`
-- [ ] Fixtures + snapshot tests for every pack
-- [ ] Benchmark harness on a generated 500k-entry fixture (SPEC §5.3)
+- [x] Pack TOML schema + loader + validation (`INTEGRATIONS.md §2`); packs embedded at build time from `packs/`
+- [x] Parallel walker with skip rules, `.kippleignore`, `CACHEDIR.TAG`, cancellation, progress events (SPEC §5.1–5.2)
+- [x] Honest sizes: apparent / on_disk / reclaimable with hardlink accounting (SPEC §5.5) — test with a pnpm-style hardlinked fixture
+- [x] Project detection with all markers (SPEC §5.4)
+- [x] First packs: `node-modules`, `js-build`, `python-venv`, `python-caches`, `rust-target`, `gradle-project`, `maven-project`, `xcode-project`, `cachedir-tag`
+- [x] Cache packs: `npm-cache`, `pnpm-store`, `yarn-cache`, `bun-cache`, `pip-cache`, `uv-cache`, `cargo-registry`, `go-build-cache`, `go-mod-cache`, `gradle-cache`, `homebrew-cache`, `puppeteer`
+- [x] Fixtures + snapshot tests for every pack
+- [x] Benchmark harness on a generated 500k-entry fixture (SPEC §5.3)
 - **Done when:** `kipple scan --json` on fixtures produces stable snapshots; benchmark recorded in `docs/perf.md`.
 
 ### M3 — Attributor, safety engine, read-only CLI
-- [ ] Attributor: nearest project, git last commit via `gix`, source mtime sampling, orphan projects (SPEC §6)
-- [ ] Safety engine with evaluation order, reason codes and texts, in-use process checks, recent-write checks (SPEC §7)
-- [ ] Commands: `scan`, `report`, `projects`, `items`, `explain` with global filters and `--json` (SPEC §11)
-- [ ] Human output exactly per SPEC §11.3 (tables, units, ages, words for safety, `NO_COLOR`)
-- [ ] Test: every read-only command leaves fixture mtimes untouched (SPEC §21.5)
+- [x] Attributor: nearest project, git last commit via `gix`, source mtime sampling, orphan projects (SPEC §6)
+- [x] Safety engine with evaluation order, reason codes and texts, in-use process checks, recent-write checks (SPEC §7)
+- [x] Commands: `scan`, `report`, `projects`, `items`, `explain` with global filters and `--json` (SPEC §11)
+- [x] Human output exactly per SPEC §11.3 (tables, units, ages, words for safety, `NO_COLOR`)
+- [x] Test: every read-only command leaves fixture mtimes untouched (SPEC §21.5)
 - **Done when:** a real-machine scan reads well and every item has ≥ 1 reason.
 
 ### M4 — Plans, execution, quarantine, undo

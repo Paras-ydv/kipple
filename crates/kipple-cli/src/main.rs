@@ -3,6 +3,7 @@
 mod args;
 mod cmd;
 mod context;
+mod output;
 
 use std::process::ExitCode;
 
@@ -49,7 +50,7 @@ fn main() -> ExitCode {
         let _ = Cli::command().print_help();
         return ExitCode::SUCCESS;
     };
-    let ctx = match Context::new(cli.global, Env::from_process()) {
+    let mut ctx = match Context::new(cli.global, Env::from_process()) {
         Ok(ctx) => ctx,
         Err(e) => {
             eprintln!("error: {e:#}");
@@ -57,6 +58,12 @@ fn main() -> ExitCode {
         }
     };
     let result = match &command {
+        Command::Scan => cmd::scan::scan(&mut ctx),
+        Command::Report(a) => cmd::scan::report(&mut ctx, a),
+        Command::Projects(a) => cmd::browse::projects(&mut ctx, a),
+        Command::Items(a) => cmd::browse::items(&mut ctx, a),
+        Command::Explain { item } => cmd::browse::explain(&mut ctx, item),
+        Command::Packs(c) => cmd::packs::run(&mut ctx, c),
         Command::Config(c) => cmd::config::run(&ctx, c),
     };
     match result {
