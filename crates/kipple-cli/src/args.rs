@@ -77,6 +77,15 @@ pub enum Command {
         /// Item id (or its first characters) or path.
         item: String,
     },
+    /// Make a plan, confirm it, and reclaim the space.
+    Clean(CleanArgs),
+    /// Put back everything the last clean moved to quarantine.
+    Undo,
+    /// List, restore or delete quarantined items.
+    #[command(subcommand)]
+    Quarantine(QuarantineCommand),
+    /// What kipple has done, or how space grew over time.
+    History(HistoryArgs),
     /// Inspect and test packs.
     #[command(subcommand)]
     Packs(PacksCommand),
@@ -155,4 +164,58 @@ pub enum ConfigCommand {
     Validate,
     /// Open the config file in $EDITOR.
     Edit,
+}
+
+#[derive(Debug, Args)]
+pub struct CleanArgs {
+    /// Item ids (or their first characters) or paths. Combine with filters.
+    pub items: Vec<String>,
+    /// Write the plan and print its id without doing anything.
+    #[arg(long, conflicts_with = "plan")]
+    pub plan_only: bool,
+    /// Run a plan saved with --plan-only.
+    #[arg(long, value_name = "ID")]
+    pub plan: Option<String>,
+    /// Leave this item out of the plan. Repeatable.
+    #[arg(long, value_name = "ID")]
+    pub skip: Vec<String>,
+    /// Don't ask. Only allowed together with --safe-only.
+    #[arg(short, long)]
+    pub yes: bool,
+    /// Delete quarantined items right away instead of keeping them for undo.
+    #[arg(long)]
+    pub purge_now: bool,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum QuarantineCommand {
+    /// What's in quarantine.
+    List,
+    /// Put one item back.
+    Restore {
+        id: String,
+        /// Restore into this folder instead of the original place.
+        #[arg(long, value_name = "FOLDER")]
+        to: Option<PathBuf>,
+    },
+    /// Delete quarantined items for good: expired ones, or those older than
+    /// --older-than.
+    Purge {
+        /// Everything in quarantine.
+        #[arg(long)]
+        all: bool,
+        /// Don't ask.
+        #[arg(short, long)]
+        yes: bool,
+    },
+}
+
+#[derive(Debug, Args)]
+pub struct HistoryArgs {
+    /// Show how reclaimable space grew per category.
+    #[arg(long)]
+    pub growth: bool,
+    /// Show at most this many entries.
+    #[arg(long, default_value_t = 50)]
+    pub limit: usize,
 }

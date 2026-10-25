@@ -63,19 +63,28 @@ fn main() -> ExitCode {
         Command::Projects(a) => cmd::browse::projects(&mut ctx, a),
         Command::Items(a) => cmd::browse::items(&mut ctx, a),
         Command::Explain { item } => cmd::browse::explain(&mut ctx, item),
+        Command::Clean(a) => cmd::clean::clean(&mut ctx, a),
+        Command::Undo => cmd::clean::undo(&mut ctx),
+        Command::Quarantine(c) => cmd::clean::quarantine(&mut ctx, c),
+        Command::History(a) => cmd::clean::history(&mut ctx, a),
         Command::Packs(c) => cmd::packs::run(&mut ctx, c),
         Command::Config(c) => cmd::config::run(&ctx, c),
     };
     match result {
         Ok(code) => code,
         Err(e) => {
+            let code = if e.downcast_ref::<cmd::clean::UsageError>().is_some() {
+                exit::USAGE
+            } else {
+                exit::ERROR
+            };
             if ctx.global.json {
                 let msg = serde_json::json!({ "error": format!("{e:#}") });
                 eprintln!("{msg}");
             } else {
                 eprintln!("error: {e:#}");
             }
-            ExitCode::from(exit::ERROR)
+            ExitCode::from(code)
         }
     }
 }

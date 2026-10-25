@@ -45,12 +45,12 @@ Spec references: `SPEC.md §n`, `INTEGRATIONS.md §n`, `UI.md §n`.
 - **Done when:** a real-machine scan reads well and every item has ≥ 1 reason.
 
 ### M4 — Plans, execution, quarantine, undo
-- [ ] Planner (pure) + plan files + confirmation rules (SPEC §8.1–8.2)
-- [ ] Executor with per-entry revalidation, journal, cancellation (SPEC §8.3, §8.5)
-- [ ] Quarantine with same-volume rename, manifests, restore, purge, cross-volume → trash (SPEC §8.4)
-- [ ] Commands: `clean` (filters + `--plan-only`, `--plan <id>`), `undo`, `quarantine list|restore|purge`, `history`
-- [ ] Native command actions for packs with `measure = before-after`
-- [ ] Tests: undo restores byte-identical trees (checksums); `--yes` rejected without `--safe-only`; Review plans require typing `reclaim`
+- [x] Planner (pure) + plan files + confirmation rules (SPEC §8.1–8.2)
+- [x] Executor with per-entry revalidation, journal, cancellation (SPEC §8.3, §8.5)
+- [x] Quarantine with same-volume rename, manifests, restore, purge, cross-volume → trash (SPEC §8.4)
+- [x] Commands: `clean` (filters + `--plan-only`, `--plan <id>`), `undo`, `quarantine list|restore|purge`, `history`
+- [x] Native command actions for packs with `measure = before-after`
+- [x] Tests: undo restores byte-identical trees (checksums); `--yes` rejected without `--safe-only`; Review plans require typing `reclaim`
 - **Done when:** clean → undo round-trip works on fixtures on all three OSes.
 
 ### M5 — Platform adapters
