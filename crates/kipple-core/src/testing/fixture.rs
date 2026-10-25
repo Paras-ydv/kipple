@@ -43,7 +43,8 @@ fn default_days() -> u64 {
 #[derive(Debug, Clone, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct FileSpec {
-    /// Relative to the test home.
+    /// Relative to the test home. `{config}` expands to the OS's app
+    /// settings folder ([`APP_CONFIG_DIR`]), here and in `dir`/`sqlite`.
     pub path: String,
     #[serde(default)]
     pub content: Option<String>,
@@ -120,6 +121,21 @@ fn fill_home(text: &str, root: &Path, json: bool) -> String {
     text.replace("{home}", &home)
 }
 
+/// Per-OS folder for application settings, relative to the home, that
+/// `{config}` in a fixture path expands to (Electron/VS Code style apps).
+pub const APP_CONFIG_DIR: &str = if cfg!(target_os = "macos") {
+    "Library/Application Support"
+} else if cfg!(windows) {
+    "AppData/Roaming"
+} else {
+    ".config"
+};
+
+/// Expands `{config}` in a fixture path.
+fn fixture_path(path: &str) -> String {
+    path.replace("{config}", APP_CONFIG_DIR)
+}
+
 fn ago(days: u64) -> SystemTime {
     SystemTime::now() - Duration::from_secs(days * 86_400)
 }
@@ -160,13 +176,13 @@ impl Fixture {
         let root = root.as_path();
         let mut aged: Vec<(PathBuf, u64)> = Vec::new();
         for d in &self.dirs {
-            let p = root.join(&d.path);
+            let p = root.join(fixture_path(&d.path));
             std::fs::create_dir_all(&p)?;
             aged.push((p, d.days_ago.unwrap_or(self.days_ago)));
         }
         for f in &self.files {
             for i in 0..f.count.unwrap_or(1) {
-                let p = root.join(f.path.replace("{i}", &i.to_string()));
+                let p = root.join(fixture_path(&f.path).replace("{i}", &i.to_string()));
                 ensure_parent(&p)?;
                 match (&f.content, f.size) {
                     (Some(c), _) => std::fs::write(&p, fill_home(c, root, true))?,
@@ -186,7 +202,7 @@ impl Fixture {
             aged.push((p, t.days_ago.unwrap_or(self.days_ago)));
         }
         for db in &self.sqlite {
-            let p = root.join(&db.path);
+            let p = root.join(fixture_path(&db.path));
             ensure_parent(&p)?;
             let conn = rusqlite::Connection::open(&p)?;
             conn.execute_batch(&fill_home(&db.sql, root, false))?;
@@ -340,6 +356,8 @@ path = "app/.cache"
         let f = Fixture::parse(
             r#"
 [[file]]
+path = "{config}/App/s.txt"
+[[file]]
 path = "s.json"
 content = '{"cwd": "{home}/app"}'
 [[sqlite]]
@@ -349,6 +367,7 @@ sql = "CREATE TABLE t (p TEXT); INSERT INTO t VALUES ('{home}/x');"
         )
         .unwrap();
         f.generate(&mut home).unwrap();
+        assert!(home.join(APP_CONFIG_DIR).join("App/s.txt").is_file());
         let text = std::fs::read_to_string(home.join("s.json")).unwrap();
         let v: serde_json::Value = serde_json::from_str(&text).unwrap();
         assert_eq!(v["cwd"], home.join("app").to_string_lossy().as_ref());
