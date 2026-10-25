@@ -65,6 +65,7 @@ fn toggle_popover(app: &AppHandle, anchor: Option<tauri::Rect>) {
 /// Starts the app. Returns when the app exits.
 pub fn run() -> tauri::Result<()> {
     tauri::Builder::default()
+        .manage(commands::AppState::default())
         .invoke_handler(tauri::generate_handler![
             commands::integrations,
             commands::scan,

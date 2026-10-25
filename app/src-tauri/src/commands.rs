@@ -1,12 +1,16 @@
-//! Tauri commands named after the core API (SPEC §3.4), one to one.
-//!
-//! They return the schema types from `docs/schema/` as JSON. Until the app is
-//! wired to `kipple-core`, every core command answers with the
-//! `unavailable` error ("not available yet"); the frontend shows a notice and
-//! the browser preview uses `MockClient` instead.
+//! Tauri commands named after the core API (SPEC §3.4), one to one. They
+//! return the schema types from `docs/schema/` as JSON. Long commands run off
+//! the main thread and can be cancelled by their `op` id.
 
+use std::collections::HashMap;
+use std::sync::{Arc, Mutex, OnceLock};
+
+use kipple_core::model::*;
+use kipple_core::platform::Env;
+use kipple_core::{Kipple, OpenOptions};
 use serde::Serialize;
 use serde_json::Value;
+use tauri::State;
 use tauri::ipc::Channel;
 
 /// Error sent to the frontend; `KippleError.from` in `@kipple/client` reads it.
@@ -17,116 +21,249 @@ pub struct CommandError {
 }
 
 impl CommandError {
-    fn unavailable() -> Self {
+    fn new(code: &'static str, message: impl Into<String>) -> Self {
         Self {
-            code: "unavailable",
-            message: "not available yet".to_owned(),
+            code,
+            message: message.into(),
         }
     }
 
     fn io(message: String) -> Self {
-        Self {
-            code: "io",
-            message,
-        }
+        Self::new("io", message)
+    }
+}
+
+impl From<kipple_core::Error> for CommandError {
+    fn from(e: kipple_core::Error) -> Self {
+        use kipple_core::Error as E;
+        let code = match &e {
+            E::NoScan => "no_scan",
+            E::ItemNotFound(_) | E::AmbiguousItem(_) => "not_found",
+            E::Invalid(_) | E::UnknownSelector(_) => "invalid",
+            E::Config(_) => "config",
+            _ => "error",
+        };
+        Self::new(code, e.to_string())
     }
 }
 
 type CmdResult<T = Value> = Result<T, CommandError>;
 
-#[tauri::command]
-pub fn integrations() -> CmdResult {
-    Err(CommandError::unavailable())
+fn json<T: Serialize>(v: T) -> CmdResult {
+    serde_json::to_value(v).map_err(|e| CommandError::new("error", e.to_string()))
 }
 
-#[tauri::command]
-pub fn scan(req: Value, op: String, on_event: Channel<Value>) -> CmdResult {
-    let _ = (req, op, on_event);
-    Err(CommandError::unavailable())
+/// Shared app state: the core, opened once, and running operations.
+#[derive(Default)]
+pub struct AppState {
+    core: OnceLock<Result<Arc<Kipple>, String>>,
+    ops: Mutex<HashMap<String, CancelToken>>,
 }
 
-#[tauri::command]
-pub fn items(query: Value) -> CmdResult {
-    let _ = query;
-    Err(CommandError::unavailable())
+impl AppState {
+    fn core(&self) -> CmdResult<Arc<Kipple>> {
+        self.core
+            .get_or_init(|| {
+                let mut integrations = kipple_packs::builtin().map_err(|e| e.to_string())?;
+                integrations.extend(kipple_adapters::all());
+                Kipple::open(OpenOptions::new(Env::from_process(), integrations))
+                    .map(Arc::new)
+                    .map_err(|e| e.to_string())
+            })
+            .clone()
+            .map_err(|m| CommandError::new("config", m))
+    }
+
+    fn start(&self, op: &str) -> CancelToken {
+        let token = CancelToken::new();
+        if let Ok(mut ops) = self.ops.lock() {
+            ops.insert(op.to_owned(), token.clone());
+        }
+        token
+    }
+
+    fn finish(&self, op: &str) {
+        if let Ok(mut ops) = self.ops.lock() {
+            ops.remove(op);
+        }
+    }
 }
 
-#[tauri::command]
-pub fn projects(query: Value) -> CmdResult {
-    let _ = query;
-    Err(CommandError::unavailable())
+struct ScanToChannel {
+    channel: Channel<Value>,
+    cancel: CancelToken,
 }
 
-#[tauri::command]
-pub fn explain(item: String) -> CmdResult {
-    let _ = item;
-    Err(CommandError::unavailable())
+impl ScanSink for ScanToChannel {
+    fn event(&self, event: ScanEvent) {
+        if let Ok(v) = serde_json::to_value(&event) {
+            let _ = self.channel.send(v);
+        }
+    }
+
+    fn cancel_token(&self) -> Option<&CancelToken> {
+        Some(&self.cancel)
+    }
 }
 
-#[tauri::command]
-pub fn plan(req: Value) -> CmdResult {
-    let _ = req;
-    Err(CommandError::unavailable())
+struct ExecToChannel {
+    channel: Channel<Value>,
+    cancel: CancelToken,
 }
 
-#[tauri::command]
-pub fn execute(plan: Value, confirm: Value, op: String, on_event: Channel<Value>) -> CmdResult {
-    let _ = (plan, confirm, op, on_event);
-    Err(CommandError::unavailable())
+impl ExecSink for ExecToChannel {
+    fn event(&self, event: ExecEvent) {
+        if let Ok(v) = serde_json::to_value(&event) {
+            let _ = self.channel.send(v);
+        }
+    }
+
+    fn cancel_token(&self) -> Option<&CancelToken> {
+        Some(&self.cancel)
+    }
 }
 
-#[tauri::command]
-pub fn quarantine() -> CmdResult {
-    Err(CommandError::unavailable())
+#[tauri::command(async)]
+pub fn integrations(state: State<'_, AppState>) -> CmdResult {
+    json(state.core()?.integrations())
 }
 
-#[tauri::command]
-pub fn restore(entry: String) -> CmdResult {
-    let _ = entry;
-    Err(CommandError::unavailable())
+#[tauri::command(async)]
+pub fn scan(
+    state: State<'_, AppState>,
+    req: ScanRequest,
+    op: String,
+    on_event: Channel<Value>,
+) -> CmdResult {
+    let k = state.core()?;
+    let sink = ScanToChannel {
+        channel: on_event,
+        cancel: state.start(&op),
+    };
+    let result = k.scan(req, &sink);
+    state.finish(&op);
+    json(result?)
 }
 
-#[tauri::command]
-pub fn purge(req: Value) -> CmdResult {
-    let _ = req;
-    Err(CommandError::unavailable())
+#[tauri::command(async)]
+pub fn items(state: State<'_, AppState>, query: ItemQuery) -> CmdResult {
+    json(state.core()?.items(query)?)
 }
 
-#[tauri::command]
-pub fn history(req: Value) -> CmdResult {
-    let _ = req;
-    Err(CommandError::unavailable())
+#[tauri::command(async)]
+pub fn projects(state: State<'_, AppState>, query: ProjectQuery) -> CmdResult {
+    json(state.core()?.projects(query)?)
 }
 
-#[tauri::command]
-pub fn doctor() -> CmdResult {
-    Err(CommandError::unavailable())
+#[tauri::command(async)]
+pub fn explain(state: State<'_, AppState>, item: String) -> CmdResult {
+    json(state.core()?.explain(&item)?)
 }
 
-#[tauri::command]
-pub fn report() -> CmdResult {
-    Err(CommandError::unavailable())
+#[tauri::command(async)]
+pub fn plan(state: State<'_, AppState>, req: PlanRequest) -> CmdResult {
+    json(state.core()?.plan(req)?)
 }
 
-/// Cancels a running `scan` or `execute` by its operation id (the core's `CancelToken`).
+/// Runs a plan. The core refuses it without the right confirmation (typing
+/// `reclaim` for Review items), whatever the frontend sends.
+#[tauri::command(async)]
+pub fn execute(
+    state: State<'_, AppState>,
+    plan: Plan,
+    confirm: Confirmation,
+    op: String,
+    on_event: Channel<Value>,
+) -> CmdResult {
+    let k = state.core()?;
+    let sink = ExecToChannel {
+        channel: on_event,
+        cancel: state.start(&op),
+    };
+    let result = k.execute(&plan, confirm, &sink);
+    state.finish(&op);
+    json(result?)
+}
+
+#[tauri::command(async)]
+pub fn quarantine(state: State<'_, AppState>) -> CmdResult {
+    json(state.core()?.quarantine()?)
+}
+
+#[tauri::command(async)]
+pub fn restore(state: State<'_, AppState>, entry: QuarantineId) -> CmdResult {
+    json(state.core()?.restore(&entry, None)?)
+}
+
+#[tauri::command(async)]
+pub fn purge(state: State<'_, AppState>, req: PurgeRequest) -> CmdResult {
+    json(state.core()?.purge(req)?)
+}
+
+#[tauri::command(async)]
+pub fn history(state: State<'_, AppState>, req: HistoryRequest) -> CmdResult {
+    json(state.core()?.history(req)?)
+}
+
+#[tauri::command(async)]
+pub fn doctor(state: State<'_, AppState>) -> CmdResult {
+    json(state.core()?.doctor()?)
+}
+
+#[tauri::command(async)]
+pub fn report(state: State<'_, AppState>) -> CmdResult {
+    json(state.core()?.report()?)
+}
+
+/// Cancels a running scan or plan. A plan finishes its current item first.
 #[tauri::command]
-pub fn cancel(op: String) -> CmdResult<()> {
-    let _ = op;
-    Err(CommandError::unavailable())
+pub fn cancel(state: State<'_, AppState>, op: String) -> CmdResult<()> {
+    if let Some(t) = state.ops.lock().ok().and_then(|ops| ops.get(&op).cloned()) {
+        t.cancel();
+    }
+    Ok(())
 }
 
 // ---- App extras (not part of SPEC §3.4) --------------------------------------
 
+#[derive(Serialize)]
+struct VolumeInfo {
+    name: String,
+    mount: String,
+    capacity: u64,
+    free: u64,
+}
+
 /// The volume that holds the home folder.
-#[tauri::command]
+#[tauri::command(async)]
 pub fn volume() -> CmdResult {
-    Err(CommandError::unavailable())
+    let home = Env::from_process()
+        .home()
+        .ok_or_else(|| CommandError::io("home folder unknown".into()))?;
+    let disks = sysinfo::Disks::new_with_refreshed_list();
+    let disk = disks
+        .list()
+        .iter()
+        .filter(|d| home.starts_with(d.mount_point()))
+        .max_by_key(|d| d.mount_point().as_os_str().len())
+        .ok_or_else(|| CommandError::io("no disk found for the home folder".into()))?;
+    let name = disk.name().to_string_lossy().into_owned();
+    json(VolumeInfo {
+        name: if name.is_empty() {
+            disk.mount_point().display().to_string()
+        } else {
+            name
+        },
+        mount: disk.mount_point().display().to_string(),
+        capacity: disk.total_space(),
+        free: disk.available_space(),
+    })
 }
 
 /// The action journal (SPEC §8.5).
-#[tauri::command]
-pub fn journal() -> CmdResult {
-    Err(CommandError::unavailable())
+#[tauri::command(async)]
+pub fn journal(state: State<'_, AppState>) -> CmdResult {
+    json(state.core()?.journal())
 }
 
 /// Shows a path in Finder, Explorer or the file manager. Read-only.
