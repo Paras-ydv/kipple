@@ -35,10 +35,12 @@ pub fn share(ctx: &mut Context, args: &ShareArgs) -> Result<ExitCode> {
     let day_ago = Timestamp::now().as_second() - 86_400;
     let mut freed: BTreeMap<Category, u64> = BTreeMap::new();
     for j in k.journal().iter().filter(|j| j.ts.as_second() >= day_ago) {
-        if matches!(j.outcome, Outcome::Done { .. }) && j.quarantine_id.is_none()
-            && let Some(c) = categories_of.get(j.integration.as_str()) {
-                *freed.entry(*c).or_default() += j.freed;
-            }
+        if matches!(j.outcome, Outcome::Done { .. })
+            && j.quarantine_id.is_none()
+            && let Some(c) = categories_of.get(j.integration.as_str())
+        {
+            *freed.entry(*c).or_default() += j.freed;
+        }
     }
     for e in k
         .quarantine()?
