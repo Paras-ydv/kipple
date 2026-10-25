@@ -30,6 +30,7 @@ import type {
   ScanResult,
   SizePoint,
   VolumeInfo,
+  KippleConfig,
 } from './types.ts';
 
 export { isTauri };
@@ -109,5 +110,11 @@ export class TauriClient implements KippleClient {
   }
   journal(): Promise<JournalEntry[]> {
     return call('journal');
+  }
+  config(): Promise<KippleConfig> {
+    return call('config');
+  }
+  setConfig(config: KippleConfig): Promise<KippleConfig> {
+    return call('set_config', { config });
   }
 }

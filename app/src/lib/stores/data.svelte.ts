@@ -14,6 +14,7 @@ import {
   type SizePoint,
   type VolumeInfo,
 } from '@kipple/client';
+import { setHomeDir } from '@kipple/design';
 import { client } from '../client.ts';
 
 /** `empty`: the core works but nothing has been scanned yet. */
@@ -76,6 +77,7 @@ class DataStore {
       this.items = items;
       this.projects = projects;
       this.volume = volume;
+      setHomeDir(volume.home);
       this.history = history;
       this.quarantine = quarantine;
       this.journal = journal;

@@ -1,32 +1,32 @@
 <script lang="ts">
-  // Settings (docs/UI.md §3.6). The core has no settings API yet (SPEC §10.3 config.toml),
-  // so the values are kept on this device until it does.
-  import { GlassPanel, Switch, categoryLabel, type CategoryId } from '@kipple/design';
+  // Settings (docs/UI.md §3.6). Scanning, safety and integrations are kipple's
+  // config file (SPEC §10.3), read and written through the core. Menu bar and
+  // update preferences belong to the app and stay on this device.
+  import type { KippleConfig } from '@kipple/client';
+  import { KippleError } from '@kipple/client';
+  import { GlassPanel, Switch, categoryLabel, tildePath, type CategoryId } from '@kipple/design';
   import Toolbar from '../components/Toolbar.svelte';
-  import { native } from '../lib/client.ts';
+  import { client, native } from '../lib/client.ts';
   import { data } from '../lib/stores/data.svelte.ts';
 
   const KEY = 'kipple.settings';
-  interface Prefs {
-    untouchedDays: number;
-    keepDays: number;
+  interface AppPrefs {
     menuBar: boolean;
     checkEvery: string;
     growthAlertGb: number;
     updates: boolean;
-    disabled: string[];
   }
-  const defaults: Prefs = { untouchedDays: 30, keepDays: 7, menuBar: true, checkEvery: '1h', growthAlertGb: 10, updates: false, disabled: [] };
+  const defaults: AppPrefs = { menuBar: true, checkEvery: '1h', growthAlertGb: 10, updates: false };
 
-  function load(): Prefs {
+  function loadPrefs(): AppPrefs {
     try {
-      return { ...defaults, ...(JSON.parse(localStorage.getItem(KEY) ?? '{}') as Partial<Prefs>) };
+      return { ...defaults, ...(JSON.parse(localStorage.getItem(KEY) ?? '{}') as Partial<AppPrefs>) };
     } catch {
       return { ...defaults };
     }
   }
 
-  let prefs = $state(load());
+  let prefs = $state(loadPrefs());
   $effect(() => {
     const snapshot = JSON.stringify(prefs);
     try {
@@ -36,38 +36,82 @@
     }
   });
 
+  // kipple's config, from the core.
+  let config = $state<KippleConfig | null>(null);
+  let status = $state<{ kind: 'saved' | 'error'; text: string } | null>(null);
+
+  $effect(() => {
+    client
+      .config()
+      .then((c) => (config = c))
+      .catch((err) => (status = { kind: 'error', text: KippleError.from(err).message }));
+  });
+
+  async function save() {
+    if (!config) return;
+    try {
+      config = await client.setConfig($state.snapshot(config) as KippleConfig);
+      status = { kind: 'saved', text: 'Saved. It applies from the next scan.' };
+      void data.load();
+    } catch (err) {
+      status = { kind: 'error', text: KippleError.from(err).message };
+      config = await client.config().catch(() => config);
+    }
+  }
+
   const groups = $derived.by(() => {
     const m = new Map<string, typeof data.integrations>();
     for (const i of data.integrations) m.set(i.category, [...(m.get(i.category) ?? []), i]);
     return [...m.entries()];
   });
 
-  function toggleIntegration(id: string, on: boolean) {
-    prefs.disabled = on ? prefs.disabled.filter((x) => x !== id) : [...prefs.disabled, id];
+  function isOn(i: (typeof data.integrations)[number]): boolean {
+    if (!config) return i.enabled;
+    if (config.integrations.disable.includes(i.id)) return false;
+    return config.integrations.enable.includes(i.id) || i.enabled;
+  }
+
+  function toggleIntegration(i: (typeof data.integrations)[number], on: boolean) {
+    if (!config) return;
+    const { disable, enable } = config.integrations;
+    config.integrations.disable = on ? disable.filter((x) => x !== i.id) : [...new Set([...disable, i.id])];
+    // Opt-in integrations (off unless enabled) need to be listed to turn on.
+    config.integrations.enable = on && !i.enabled ? [...new Set([...enable, i.id])] : enable.filter((x) => x !== i.id || on);
+    void save();
   }
 </script>
 
-<Toolbar title="Settings" subtitle="Changes save right away" />
+<Toolbar title="Settings" subtitle={status?.text ?? 'Changes save right away'} />
 
 <div class="scroll">
   <div class="col">
     <GlassPanel tag="section" radius={20} padding="16px 20px" aria-labelledby="s-scan">
       <h2 id="s-scan">Scanning</h2>
       <div class="row">
-        <span><span class="t">Scan folders</span><span class="d k-mono">~ (your home folder)</span></span>
+        <span>
+          <span class="t">Scan folders</span>
+          <span class="d k-mono">{config ? config.scan.roots.map((r) => (r === '~' ? '~ (your home folder)' : tildePath(r))).join(', ') : '…'}</span>
+        </span>
       </div>
-      <label class="row">
-        <span><span class="t">Treat projects as untouched after</span><span class="d">Used by the Untouched filter and the plan.</span></span>
-        <span class="num"><input type="number" min="7" max="365" bind:value={prefs.untouchedDays} /> days</span>
-      </label>
+      {#if config}
+        <label class="row">
+          <span>
+            <span class="t">Count a project as recent for</span>
+            <span class="d">Build output of projects used more recently than this needs your review first.</span>
+          </span>
+          <span class="num"><input type="number" min="1" max="365" bind:value={config.safety.recent_days} onchange={save} /> days</span>
+        </label>
+      {/if}
     </GlassPanel>
 
     <GlassPanel tag="section" radius={20} padding="16px 20px" aria-labelledby="s-safety">
       <h2 id="s-safety">Safety</h2>
-      <label class="row">
-        <span><span class="t">Keep quarantined items for</span><span class="d">Then they are deleted for good.</span></span>
-        <span class="num"><input type="number" min="1" max="60" bind:value={prefs.keepDays} /> days</span>
-      </label>
+      {#if config}
+        <label class="row">
+          <span><span class="t">Keep quarantined items for</span><span class="d">Then they are deleted for good.</span></span>
+          <span class="num"><input type="number" min="1" max="60" bind:value={config.quarantine.keep_days} onchange={save} /> days</span>
+        </label>
+      {/if}
       <div class="row">
         <span><span class="t">Protected folders</span><span class="d">kipple never touches your documents, photos, keys or the system.</span></span>
       </div>
@@ -83,7 +127,7 @@
               <span class="t">{i.name}{i.status === 'experimental' ? ' (experimental)' : ''}</span>
               <span class="d">{i.detection.state === 'present' ? `Found${i.detection.version ? ` ${i.detection.version}` : ''}` : 'Not found'}</span>
             </span>
-            <Switch label="Use {i.name}" checked={!prefs.disabled.includes(i.id)} onchange={(on) => toggleIntegration(i.id, on)} />
+            <Switch label="Use {i.name}" checked={isOn(i)} onchange={(on) => toggleIntegration(i, on)} />
           </div>
         {/each}
       {/each}
@@ -118,7 +162,7 @@
     </GlassPanel>
 
     {#if !native}
-      <p class="note">This preview keeps settings in the browser.</p>
+      <p class="note">This preview keeps settings in memory.</p>
     {/if}
   </div>
 </div>

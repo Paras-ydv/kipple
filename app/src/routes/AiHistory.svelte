@@ -42,7 +42,7 @@
   });
 
   function suggested(i: Item): boolean {
-    if (i.safety === 'keep' || i.kind === 'chat_db') return false;
+    if (i.safety === 'keep' || i.kind === 'cursor_state_db') return false;
     const d = i.details as { suggested?: boolean; flag?: string | null } | undefined;
     if (i.integration === 'codex') return !!d?.suggested;
     if (i.integration === 'antigravity') return true;
@@ -75,7 +75,7 @@
     return `${text.charAt(0).toUpperCase()}${text.slice(1)} ${secrets.length === 1 ? 'was' : 'were'} pasted into chats.`;
   });
   const orphanSessions = $derived(byTool['claude-code'].filter((i) => sessionFlag(i)?.kind === 'orphan').length);
-  const cursorDb = $derived(byTool.cursor.find((i) => i.kind === 'chat_db'));
+  const cursorDb = $derived(byTool.cursor.find((i) => i.kind === 'cursor_state_db'));
   const cursorFree = $derived(((cursorDb?.details as { free_pages_bytes?: number } | undefined)?.free_pages_bytes ?? 0));
 
   const name = (t: string) => TOOL_NAMES[t] ?? t;

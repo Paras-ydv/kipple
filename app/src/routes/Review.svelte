@@ -19,7 +19,7 @@
   } from '@kipple/design';
   import { entryBytes } from '@kipple/client';
   import Toolbar from '../components/Toolbar.svelte';
-  import { groupPlanEntries } from '../lib/derive.ts';
+  import { groupPlanEntries, reviewPhrase } from '../lib/derive.ts';
   import { data } from '../lib/stores/data.svelte.ts';
   import { planStore } from '../lib/stores/plan.svelte.ts';
   import { ui } from '../lib/stores/ui.svelte.ts';
@@ -68,13 +68,14 @@
           ? (data.categories.find((d) => d.category === c.category)?.reclaimable ?? 0)
           : Math.max(0, c.reclaimable - (removedByCat.get(c.category) ?? 0)),
       }))
-      .filter((l) => l.value > 1e8);
+      .filter((l) => l.value > 0);
     const scale = sharedScale([total, after], [before.length, Math.max(1, rest.length)], W, FLOOR - 120);
     return {
       before: layoutStack(before, { cx: LEFT, w: W, y0: 120, y1: FLOOR, scale }),
       after: layoutStack(rest, { cx: RIGHT, w: W, y0: 120, y1: FLOOR, scale }),
     };
   });
+  const reviewWhat = $derived(reviewPhrase(data.report?.summary.categories ?? [], 4));
   const reviewLeft = $derived(Math.max(0, (data.report?.summary.by_safety.review ?? 0) - (totals?.by_safety.review ?? 0)));
   const keepDays = $derived(data.report?.next?.keep_days ?? 7);
   const freedNow = $derived(totals ? totals.freed_now + (planStore.skipQuarantine ? totals.held_in_quarantine : 0) : 0);
@@ -239,7 +240,7 @@
         {/if}
         {#if reviewLeft > 0}
           <a class="foot" href="#/ai">
-            {formatBytes(reviewLeft)} needs your decision: database volumes, emulators, models and chat history.
+            {formatBytes(reviewLeft)} needs your decision{reviewWhat ? `: ${reviewWhat}` : ''}.
           </a>
         {/if}
       </div>

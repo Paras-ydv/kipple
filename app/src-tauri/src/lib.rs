@@ -66,6 +66,21 @@ fn toggle_popover(app: &AppHandle, anchor: Option<tauri::Rect>) {
 pub fn run() -> tauri::Result<()> {
     tauri::Builder::default()
         .manage(commands::AppState::default())
+        // Debug builds only: `KIPPLE_APP_ROUTE=#/projects` opens a screen
+        // directly, for screenshots of a sandboxed app. Release ignores it.
+        .on_page_load(|webview, payload| {
+            if cfg!(debug_assertions)
+                && webview.label() == MAIN
+                && matches!(payload.event(), tauri::webview::PageLoadEvent::Finished)
+                && let Ok(route) = std::env::var("KIPPLE_APP_ROUTE")
+                && route.starts_with("#/")
+                && route
+                    .chars()
+                    .all(|c| c.is_ascii_alphanumeric() || "#/-_".contains(c))
+            {
+                let _ = webview.eval(format!("location.hash = {route:?}"));
+            }
+        })
         .invoke_handler(tauri::generate_handler![
             commands::integrations,
             commands::scan,
@@ -82,6 +97,8 @@ pub fn run() -> tauri::Result<()> {
             commands::report,
             commands::cancel,
             commands::volume,
+            commands::config,
+            commands::set_config,
             commands::journal,
             commands::reveal,
             show_main,

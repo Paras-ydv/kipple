@@ -37,6 +37,7 @@ import type {
   SizePoint,
   Summary,
   VolumeInfo,
+  KippleConfig,
 } from '../types.ts';
 import { CATALOG, integrationInfo } from './catalog.ts';
 import { buildFixtures, type Fixtures } from './fixtures.ts';
@@ -237,6 +238,25 @@ export class MockClient implements KippleClient {
 
   async journal(): Promise<JournalEntry[]> {
     return [...this.journalEntries];
+  }
+
+  private cfg: KippleConfig = {
+    scan: { roots: ['~'], exclude: [], include_network: false, follow_symlinks: false },
+    safety: { recent_days: 14, protect: [], override: [] },
+    quarantine: { keep_days: 7 },
+    integrations: { disable: [], enable: [] },
+  };
+
+  async config(): Promise<KippleConfig> {
+    return structuredClone(this.cfg);
+  }
+
+  async setConfig(config: KippleConfig): Promise<KippleConfig> {
+    if (config.quarantine.keep_days < 1 || config.safety.recent_days < 1) {
+      throw new KippleError('config', 'Days must be at least 1.');
+    }
+    this.cfg = structuredClone(config);
+    return structuredClone(this.cfg);
   }
 
   async quarantine(): Promise<QuarantineEntry[]> {

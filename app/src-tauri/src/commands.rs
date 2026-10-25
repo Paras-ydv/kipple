@@ -3,7 +3,7 @@
 //! the main thread and can be cancelled by their `op` id.
 
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex, OnceLock};
+use std::sync::{Arc, Mutex};
 
 use kipple_core::model::*;
 use kipple_core::platform::Env;
@@ -53,25 +53,39 @@ fn json<T: Serialize>(v: T) -> CmdResult {
     serde_json::to_value(v).map_err(|e| CommandError::new("error", e.to_string()))
 }
 
-/// Shared app state: the core, opened once, and running operations.
+/// Shared app state: the core (reopened after a config change) and running
+/// operations.
 #[derive(Default)]
 pub struct AppState {
-    core: OnceLock<Result<Arc<Kipple>, String>>,
+    core: Mutex<Option<Arc<Kipple>>>,
     ops: Mutex<HashMap<String, CancelToken>>,
+}
+
+fn open_core() -> Result<Kipple, String> {
+    let mut integrations = kipple_packs::builtin().map_err(|e| e.to_string())?;
+    integrations.extend(kipple_adapters::all());
+    Kipple::open(OpenOptions::new(Env::from_process(), integrations)).map_err(|e| e.to_string())
 }
 
 impl AppState {
     fn core(&self) -> CmdResult<Arc<Kipple>> {
-        self.core
-            .get_or_init(|| {
-                let mut integrations = kipple_packs::builtin().map_err(|e| e.to_string())?;
-                integrations.extend(kipple_adapters::all());
-                Kipple::open(OpenOptions::new(Env::from_process(), integrations))
-                    .map(Arc::new)
-                    .map_err(|e| e.to_string())
-            })
-            .clone()
-            .map_err(|m| CommandError::new("config", m))
+        let mut slot = self
+            .core
+            .lock()
+            .map_err(|_| CommandError::new("error", "app state is unavailable"))?;
+        if let Some(k) = slot.as_ref() {
+            return Ok(Arc::clone(k));
+        }
+        let k = Arc::new(open_core().map_err(|m| CommandError::new("config", m))?);
+        *slot = Some(Arc::clone(&k));
+        Ok(k)
+    }
+
+    /// Drops the open core so the next command reads the new config.
+    fn reload(&self) {
+        if let Ok(mut slot) = self.core.lock() {
+            *slot = None;
+        }
     }
 
     fn start(&self, op: &str) -> CancelToken {
@@ -226,12 +240,27 @@ pub fn cancel(state: State<'_, AppState>, op: String) -> CmdResult<()> {
 
 // ---- App extras (not part of SPEC §3.4) --------------------------------------
 
+/// The effective config (SPEC §10.3).
+#[tauri::command(async)]
+pub fn config(state: State<'_, AppState>) -> CmdResult {
+    json(state.core()?.config())
+}
+
+/// Validates and saves the config, then reopens the core with it.
+#[tauri::command(async)]
+pub fn set_config(state: State<'_, AppState>, config: kipple_core::config::Config) -> CmdResult {
+    state.core()?.save_config(&config)?;
+    state.reload();
+    json(state.core()?.config())
+}
+
 #[derive(Serialize)]
 struct VolumeInfo {
     name: String,
     mount: String,
     capacity: u64,
     free: u64,
+    home: String,
 }
 
 /// The volume that holds the home folder.
@@ -257,6 +286,7 @@ pub fn volume() -> CmdResult {
         mount: disk.mount_point().display().to_string(),
         capacity: disk.total_space(),
         free: disk.available_space(),
+        home: home.display().to_string(),
     })
 }
 

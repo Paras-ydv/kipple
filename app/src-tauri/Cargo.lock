@@ -2544,6 +2544,7 @@ dependencies = [
  "globset",
  "jiff",
  "kipple-core",
+ "libc",
  "rusqlite",
  "serde",
  "serde_json",

@@ -14,35 +14,48 @@ interface GroupLabel {
 }
 
 const KIND_LABELS: Record<string, GroupLabel> = {
-  'docker/build_cache': { many: () => 'Docker build cache', short: 'Docker build cache' },
+  'docker/docker_build_cache': { many: () => 'Docker build cache', short: 'Docker build cache' },
   'docker/docker_image': { many: (n) => `${n} Docker images`, short: 'Docker images' },
   'docker/docker_volume': { many: (n) => `${n} Docker volumes`, short: 'Docker volumes' },
   'docker/docker_container': { many: (n) => `${n} stopped containers`, short: 'stopped containers' },
   'node-modules/node_modules': { many: (_n, p) => (p > 1 ? `node_modules in ${p} projects` : 'node_modules'), short: 'node_modules' },
-  'build-output/pycache': { many: () => 'Python caches', short: 'Python caches' },
+  'python-caches/python_cache': { many: () => 'Python caches', short: 'Python caches' },
   'codex/codex_session': { many: (n) => `${n} Codex sessions`, short: 'Codex' },
-  'claude-code/claude_session': { many: (n) => `${n} Claude Code sessions`, short: 'Claude Code' },
+  'claude-code/claude_code_session': { many: (n) => `${n} Claude Code sessions`, short: 'Claude Code' },
 };
 
 const INTEGRATION_LABELS: Record<string, GroupLabel> = {
   'npm-cache': { many: () => 'npm cache', short: 'npm' },
   'uv-cache': { many: () => 'uv cache', short: 'uv' },
   'pip-cache': { many: () => 'pip cache', short: 'pip' },
-  homebrew: { many: () => 'Homebrew cache', short: 'Homebrew' },
+  'homebrew-cache': { many: () => 'Homebrew cache', short: 'Homebrew' },
   'pnpm-store': { many: () => 'pnpm store', short: 'pnpm' },
-  gradle: { many: () => 'Gradle caches', short: 'Gradle' },
+  'gradle-cache': { many: () => 'Gradle caches', short: 'Gradle' },
   playwright: { many: () => 'Playwright browsers', short: 'Playwright' },
-  'build-output': { many: (_n, p) => (p > 1 ? `Build output in ${p} projects` : 'Build output'), short: 'build output' },
+  'js-build': { many: (_n, p) => (p > 1 ? `Build output in ${p} projects` : 'Build output'), short: 'build output' },
   'xcode-derived-data': { many: () => 'Xcode DerivedData', short: 'DerivedData' },
   'android-system-images': { many: (n) => (n > 1 ? `${n} Android images` : 'Android system image'), short: 'Android image' },
   'android-avd': { many: (n) => `${n} emulators`, short: 'emulators' },
   'ios-device-support': { many: () => 'iOS DeviceSupport', short: 'DeviceSupport' },
   'python-venv': { many: (_n, p) => (p > 1 ? `.venv in ${p} projects` : '.venv'), short: '.venv' },
-  'cargo-target': { many: () => 'Rust target', short: 'target' },
+  'rust-target': { many: () => 'Rust target', short: 'target' },
   ollama: { many: (n) => `${n} Ollama models`, short: 'Ollama' },
   huggingface: { many: (n) => `${n} Hugging Face models`, short: 'Hugging Face' },
   cursor: { many: () => 'Cursor', short: 'Cursor' },
   antigravity: { many: (n) => `${n} Antigravity copies`, short: 'Antigravity' },
+  'python-caches': { many: (_n, p) => (p > 1 ? `Python caches in ${p} projects` : 'Python caches'), short: 'Python caches' },
+  'maven-project': { many: (_n, p) => (p > 1 ? `Maven target in ${p} projects` : 'Maven target'), short: 'Maven target' },
+  'gradle-project': { many: (_n, p) => (p > 1 ? `Gradle build output in ${p} projects` : 'Gradle build output'), short: 'Gradle build' },
+  'xcode-project': { many: (_n, p) => (p > 1 ? `Swift and CocoaPods builds in ${p} projects` : 'Swift and CocoaPods builds'), short: 'Swift builds' },
+  'cachedir-tag': { many: (n) => `${n} tagged caches`, short: 'tagged caches' },
+  'bun-cache': { many: () => 'Bun cache', short: 'Bun' },
+  'yarn-cache': { many: () => 'Yarn caches', short: 'Yarn' },
+  'cargo-registry': { many: () => 'Cargo registry', short: 'Cargo' },
+  'go-build-cache': { many: () => 'Go build cache', short: 'Go build' },
+  'go-mod-cache': { many: () => 'Go module cache', short: 'Go modules' },
+  puppeteer: { many: (n) => `${n} Puppeteer browsers`, short: 'Puppeteer' },
+  'claude-code': { many: (n) => `${n} Claude Code items`, short: 'Claude Code' },
+  codex: { many: (n) => `${n} Codex sessions`, short: 'Codex' },
 };
 
 export interface ItemGroup {
@@ -70,7 +83,11 @@ export function groupItems(
     const label = KIND_LABELS[kindKey] ?? INTEGRATION_LABELS[first.integration];
     const projects = new Set(list.map((i) => i.project?.id ?? i.id)).size;
     const dangling = list.every((i) => (i.details as { dangling?: boolean } | undefined)?.dangling);
-    let title = first.title;
+    // A lone project artifact says whose it is ("target in tool").
+    let title =
+      first.project && (first.category === 'project-artifact' || first.category === 'build-cache') && first.title !== first.project.name
+        ? `${first.title} in ${first.project.name}`
+        : first.title;
     if (list.length > 1) {
       if (kindKey === 'docker/docker_image' && dangling && keyOf === planKey) title = `${list.length} dangling Docker images`;
       else title = label ? label.many(list.length, projects) : `${list.length} × ${first.title}`;
@@ -157,7 +174,11 @@ export function sessionFlag(item: Item): { kind: FlagKind; text: string } | null
 export function sessionSubtitle(item: Item, now = new Date()): string {
   const project = item.project?.name;
   const age = item.last_used ? formatAgo(item.last_used.at, now).toLowerCase() : '';
-  return [project, age].filter(Boolean).join(', ');
+  // Tools that keep several copies (Antigravity) say which one this is.
+  const root = (item.details as { data_root?: unknown } | undefined)?.data_root;
+  const copy = item.reasons.some((r) => r.code === 'MIGRATED_COPY') ? 'older copy' : '';
+  const where = typeof root === 'string' ? `in ${root}` : '';
+  return [copy, where, project, age].filter(Boolean).join(', ');
 }
 
 /** Bytes added per month for the last 12 months, from cumulative SizePoints. */
@@ -204,7 +225,7 @@ function lastTwelveMonths(now: Date) {
 
 const GROWTH_LABELS: Record<string, { label: string; category: string }> = {
   codex: { label: 'Codex sessions', category: 'ai-history' },
-  'docker/build_cache': { label: 'Docker build cache', category: 'container' },
+  'docker/docker_build_cache': { label: 'Docker build cache', category: 'container' },
   'cursor/chat_db': { label: 'Cursor chat database', category: 'ai-history' },
   'claude-code': { label: 'Claude Code transcripts', category: 'ai-history' },
 };
@@ -257,4 +278,32 @@ export function deviceWord(): 'Mac' | 'PC' | 'computer' {
   if (/Mac/i.test(ua)) return 'Mac';
   if (/Windows/i.test(ua)) return 'PC';
   return 'computer';
+}
+
+// ---- Review copy ----------------------------------------------------------------
+
+const REVIEW_WORDS: Record<string, string> = {
+  'ai-history': 'chat history',
+  container: 'Docker data',
+  mobile: 'emulators',
+  model: 'models',
+  'package-cache': 'caches',
+  'project-artifact': 'project files',
+  'build-cache': 'build caches',
+  toolchain: 'toolchains',
+  'ide-cache': 'editor caches',
+  logs: 'logs',
+  system: 'system files',
+};
+
+/** "chat history, models and emulators": what review bytes are made of, largest first. */
+export function reviewPhrase(categories: { category: string; by_safety: { review: number } }[], max = 3): string {
+  const words = [...categories]
+    .filter((c) => c.by_safety.review > 0)
+    .sort((a, b) => b.by_safety.review - a.by_safety.review)
+    .map((c) => REVIEW_WORDS[c.category] ?? c.category)
+    .filter((w, i, all) => all.indexOf(w) === i)
+    .slice(0, max);
+  if (words.length < 2) return words[0] ?? '';
+  return `${words.slice(0, -1).join(', ')} and ${words[words.length - 1]}`;
 }

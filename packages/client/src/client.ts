@@ -28,6 +28,7 @@ import type {
   ScanResult,
   SizePoint,
   VolumeInfo,
+  KippleConfig,
 } from './types.ts';
 
 export interface StreamOptions<E> {
@@ -72,6 +73,10 @@ export interface KippleClient {
   volume(): Promise<VolumeInfo>;
   /** The action journal (SPEC §8.5), newest first. */
   journal(): Promise<JournalEntry[]>;
+  /** kipple's config file. */
+  config(): Promise<KippleConfig>;
+  /** Validates and saves the config; returns what is now in effect. */
+  setConfig(config: KippleConfig): Promise<KippleConfig>;
 }
 
 /** Errors from either implementation. `unavailable` means the core isn't wired yet. */

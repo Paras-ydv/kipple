@@ -77,6 +77,7 @@ export function formatAgo(iso: string | Date, now: Date = new Date()): string {
 
 /** Seconds in plain words: "18 seconds", "2 minutes". */
 export function formatDuration(ms: number): string {
+  if (ms < 1000) return 'under a second';
   const s = Math.round(ms / 1000);
   if (s < 60) return `${s} second${s === 1 ? '' : 's'}`;
   const m = Math.round(s / 60);
@@ -89,9 +90,18 @@ export function formatDay(iso: string | Date): string {
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
 }
 
+let homeDir: string | undefined;
+
+/** Sets the home folder `tildePath` shortens against (from the core). */
+export function setHomeDir(home: string | undefined): void {
+  homeDir = home?.replace(/[\\/]+$/, '') || undefined;
+}
+
 /** Shortens a home path with "~". */
-export function tildePath(path: string, home?: string): string {
-  if (home && path.startsWith(home)) return `~${path.slice(home.length)}`;
+export function tildePath(path: string, home: string | undefined = homeDir): string {
+  if (home && (path === home || path.startsWith(`${home}/`) || path.startsWith(`${home}\\`))) {
+    return `~${path.slice(home.length)}`;
+  }
   return path.replace(/^\/(Users|home)\/[^/]+/, '~');
 }
 

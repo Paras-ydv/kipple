@@ -169,9 +169,9 @@ export function buildFixtures(now = Date.now()): Fixtures {
 
   // ---- Containers: 61.2 GB, 22.1 GB safe --------------------------------------
   add({
-    integration: 'docker', kind: 'build_cache', title: 'Docker build cache', bytes: gb(14.3), safety: 'safe',
+    integration: 'docker', kind: 'docker_build_cache', title: 'Docker build cache', bytes: gb(14.3), safety: 'safe',
     reasons: [['REGENERABLE', 'Docker rebuilds these layers when a build needs them.']],
-    actions: [native('docker.builder.prune')], locator: docker('build_cache', 'buildkit'), lastDays: 1,
+    actions: [native('docker.builder.prune')], locator: docker('docker_build_cache', 'buildkit'), lastDays: 1,
     restore_hint: 'docker build',
   });
   const dangling = split(gb(4.4), 14, rand);
@@ -234,13 +234,13 @@ export function buildFixtures(now = Date.now()): Fixtures {
   cache('npm-cache', 'npx_cache', 'npx cache', 0.5, '.npm/_npx', native('npm.cache.clean'), 'npx');
   cache('uv-cache', 'uv_cache', 'uv cache', 4.1, 'Library/Caches/uv', native('uv.cache.clean'), 'uv');
   cache('pip-cache', 'pip_cache', 'pip cache', 2.2, 'Library/Caches/pip', native('pip.cache.purge'), 'pip');
-  cache('homebrew', 'brew_downloads', 'Homebrew downloads', 2.4, 'Library/Caches/Homebrew/downloads', native('brew.cleanup'), 'Homebrew');
-  cache('homebrew', 'brew_old_versions', 'Old Homebrew versions', 1.0, '/opt/homebrew/Cellar', native('brew.cleanup'), 'Homebrew');
+  cache('homebrew-cache', 'brew_downloads', 'Homebrew downloads', 2.4, 'Library/Caches/Homebrew/downloads', native('brew.cleanup'), 'Homebrew');
+  cache('homebrew-cache', 'brew_old_versions', 'Old Homebrew versions', 1.0, '/opt/homebrew/Cellar', native('brew.cleanup'), 'Homebrew');
   cache('pnpm-store', 'pnpm_store', 'pnpm store, unused packages', 1.8, 'Library/pnpm/store/v10', native('pnpm.store.prune'), 'pnpm');
   cache('pnpm-store', 'pnpm_store', 'pnpm store, old index', 0.8, 'Library/pnpm/store/v3', native('pnpm.store.prune'), 'pnpm');
-  cache('gradle', 'gradle_cache', 'Gradle module cache', 2.0, '.gradle/caches/modules-2', QUARANTINE, 'Gradle');
-  cache('gradle', 'gradle_cache', 'Gradle build cache', 1.4, '.gradle/caches/build-cache-1', QUARANTINE, 'Gradle');
-  cache('gradle', 'gradle_cache', 'Gradle wrapper dists', 0.7, '.gradle/wrapper/dists', QUARANTINE, 'Gradle');
+  cache('gradle-cache', 'gradle_cache', 'Gradle module cache', 2.0, '.gradle/caches/modules-2', QUARANTINE, 'Gradle');
+  cache('gradle-cache', 'gradle_cache', 'Gradle build cache', 1.4, '.gradle/caches/build-cache-1', QUARANTINE, 'Gradle');
+  cache('gradle-cache', 'gradle_cache', 'Gradle wrapper dists', 0.7, '.gradle/wrapper/dists', QUARANTINE, 'Gradle');
   cache('playwright', 'playwright_browser', 'Playwright Chromium 1187', 1.1, 'Library/Caches/ms-playwright/chromium-1187', QUARANTINE, 'Playwright');
   cache('playwright', 'playwright_browser', 'Playwright WebKit 2215', 0.9, 'Library/Caches/ms-playwright/webkit-2215', QUARANTINE, 'Playwright');
   cache('playwright', 'playwright_browser', 'Playwright Firefox 1490', 0.5, 'Library/Caches/ms-playwright/firefox-1490', QUARANTINE, 'Playwright');
@@ -270,19 +270,19 @@ export function buildFixtures(now = Date.now()): Fixtures {
   split(gb(0.7), 29, rand).forEach((b, i) => builds.push([pickFiller(b), 'dist', ['dist', '.next', 'build', '.turbo'][i % 4] as string, b]));
   builds.forEach(([p, kind, title, b]) =>
     add({
-      integration: 'build-output', kind, title, bytes: b, safety: 'safe', reasons: [R.rebuild], actions: [QUARANTINE],
+      integration: 'js-build', kind, title, bytes: b, safety: 'safe', reasons: [R.rebuild], actions: [QUARANTINE],
       locator: path(`${p.ref.root.slice(HOME.length + 1)}/${kind === 'pycache' ? '**/__pycache__' : title}`), project: p,
     }),
   );
   add({
-    integration: 'cargo-target', kind: 'cargo_target', title: 'target', bytes: gb(1.9), safety: 'review', reasons: [R.recent],
+    integration: 'rust-target', kind: 'rust_target', title: 'target', bytes: gb(1.9), safety: 'review', reasons: [R.recent],
     actions: [QUARANTINE], locator: path('code/kipple/target'), project: kipple, lastDays: 0.05, restore_hint: 'cargo build',
   });
   const venvs: [FixtureProject, number][] = [[llm, gb(2.0)], [shop, gb(0.6)]];
   split(gb(0.8), 17, rand).forEach((b) => venvs.push([pickFiller(b), b]));
   venvs.forEach(([p, b]) =>
     add({
-      integration: 'python-venv', kind: 'venv', title: '.venv', bytes: b, safety: 'review', reasons: [R.venv],
+      integration: 'python-venv', kind: 'python_venv', title: '.venv', bytes: b, safety: 'review', reasons: [R.venv],
       actions: [QUARANTINE], locator: path(`${p.ref.root.slice(HOME.length + 1)}/.venv`), project: p,
       restore_hint: 'uv sync',
     }),
@@ -292,20 +292,20 @@ export function buildFixtures(now = Date.now()): Fixtures {
   const dd: [number, FixtureProject][] = [[gb(3.3), byName('swift-widgets')], [gb(2.7), byName('flutter-demo')]];
   dd.forEach(([b, p], i) =>
     add({
-      integration: 'xcode-derived-data', kind: 'derived_data', title: `DerivedData ${p.ref.name}`, bytes: b, safety: 'safe',
+      integration: 'xcode-derived-data', kind: 'xcode_derived_data', title: `DerivedData ${p.ref.name}`, bytes: b, safety: 'safe',
       reasons: [['REGENERABLE', 'Xcode rebuilds it on the next build.']], actions: [QUARANTINE],
       locator: path(`Library/Developer/Xcode/DerivedData/${p.ref.name}-${hexId(p.ref.name).slice(0, 8)}`), project: p,
       lastDays: 20 + i * 30,
     }),
   );
   add({
-    integration: 'android-system-images', kind: 'system_image', title: 'Android 10 system image', bytes: gb(2.2), safety: 'safe',
+    integration: 'android-system-images', kind: 'android_system_image', title: 'Android 10 system image', bytes: gb(2.2), safety: 'safe',
     reasons: [['UNUSED_BY_ANY_EMULATOR', 'No emulator uses it.']], actions: [QUARANTINE],
     locator: path('Library/Android/sdk/system-images/android-29'), lastDays: 400,
   });
   const avd = (name: string, gbs: number, days: number) =>
     add({
-      integration: 'android-avd', kind: 'avd', title: `Emulator ${name}`, bytes: gb(gbs), safety: 'review',
+      integration: 'android-avd', kind: 'android_avd', title: `Emulator ${name}`, bytes: gb(gbs), safety: 'review',
       reasons: [['CONTAINS_USER_DATA', 'An emulator with its apps and data. Removing it deletes them.']],
       actions: [QUARANTINE], locator: path(`.android/avd/${name}.avd`), lastDays: days,
     });
@@ -438,7 +438,7 @@ export function buildFixtures(now = Date.now()): Fixtures {
     const title = nextPrompt();
     const orphan = !p.exists;
     add({
-      integration: 'claude-code', kind: 'claude_session', title, bytes: b, safety: 'review',
+      integration: 'claude-code', kind: 'claude_code_session', title, bytes: b, safety: 'review',
       reasons: orphan ? [R.chat, ['ORPHANED_PROJECT', 'Its project folder was deleted.']] : [R.chat],
       actions: [QUARANTINE], locator: path(`.claude/projects/-Users-you-${p.ref.root.split('/').slice(-2).join('-')}/${hexId(`cl${i}`).slice(0, 8)}.jsonl`),
       project: p, lastDays: orphan ? 31 + rand() * 25 : p.lastDays + rand() * 25,
@@ -448,7 +448,7 @@ export function buildFixtures(now = Date.now()): Fixtures {
 
   // Cursor: 11.8 GB.
   add({
-    integration: 'cursor', kind: 'chat_db', title: 'Cursor chat database', bytes: gb(9.6), safety: 'review',
+    integration: 'cursor', kind: 'cursor_state_db', title: 'Cursor chat database', bytes: gb(9.6), safety: 'review',
     reasons: [['CHAT_HISTORY', 'Chat data that only Cursor can remove safely. Use Delete Old Chats in Cursor.'], ['FREE_PAGES', '1.9 GB of the file is free pages that compacting gives back.']],
     actions: [{ type: 'compact', method: 'sqlite_vacuum' }], locator: path('Library/Application Support/Cursor/User/globalStorage/state.vscdb'),
     lastDays: 0.2, details: { free_pages_bytes: gb(1.9) },
@@ -456,7 +456,7 @@ export function buildFixtures(now = Date.now()): Fixtures {
   split(gb(2.2), 5, rand).forEach((b, i) => {
     const p = deleted[(i + 1) % deleted.length] as FixtureProject;
     add({
-      integration: 'cursor', kind: 'workspace_storage', title: `Workspace storage for ${p.ref.name}`, bytes: b, safety: 'review',
+      integration: 'cursor', kind: 'cursor_workspace_storage', title: `Workspace storage for ${p.ref.name}`, bytes: b, safety: 'review',
       reasons: [['ORPHANED_PROJECT', 'Its project folder was deleted.']], actions: [QUARANTINE],
       locator: path(`Library/Application Support/Cursor/User/workspaceStorage/${hexId(`ws${i}`)}`), project: p,
       details: { flag: 'orphan' },
@@ -467,7 +467,7 @@ export function buildFixtures(now = Date.now()): Fixtures {
   split(gb(2.5), 8, rand).forEach((b, i) =>
     add({
       project: pickFiller(b),
-      integration: 'antigravity', kind: 'migrated_copy', title: `Old copy of conversation ${i + 1}`, bytes: b, safety: 'review',
+      integration: 'antigravity', kind: 'antigravity_conversation', title: `Old copy of conversation ${i + 1}`, bytes: b, safety: 'review',
       reasons: [['MIGRATED_COPY', 'An old copy Antigravity kept after migrating the conversation.'], ['EXPERIMENTAL', 'Antigravity support is experimental.']],
       actions: [QUARANTINE], locator: path(`.gemini/antigravity/conversations.bak/${hexId(`ag${i}`).slice(0, 12)}`),
       lastDays: 60 + i * 5,
@@ -488,7 +488,7 @@ export function buildFixtures(now = Date.now()): Fixtures {
   const weekAgo = iso(now - 7 * DAY);
   const growth: [string, number, number][] = [
     ['codex', gb(21.4), gb(6.2)],
-    ['docker/build_cache', gb(14.3), gb(3.1)],
+    ['docker/docker_build_cache', gb(14.3), gb(3.1)],
     ['cursor/chat_db', gb(9.6), gb(1.4)],
   ];
   growth.forEach(([key, nowBytes, delta]) => {
@@ -524,7 +524,7 @@ export function buildFixtures(now = Date.now()): Fixtures {
     projects,
     history,
     journal: journal.reverse(),
-    volume: { name: 'Macintosh HD', mount: '/', capacity: 512 * GB, free: 41 * GB },
+    volume: { name: 'Macintosh HD', mount: '/', capacity: 512 * GB, free: 41 * GB, home: '/Users/you' },
     scan: { id: ulid(now - 2 * 60_000, 'scan'), startedAt: now - 2 * 60_000 - 18_000, finishedAt: now - 2 * 60_000, entries: 1_020_000 },
   };
 }

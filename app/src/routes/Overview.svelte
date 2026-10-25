@@ -22,7 +22,7 @@
     type CategoryId,
   } from '@kipple/design';
   import Toolbar from '../components/Toolbar.svelte';
-  import { growth } from '../lib/derive.ts';
+  import { growth, reviewPhrase } from '../lib/derive.ts';
   import { router } from '../lib/router.svelte.ts';
   import { data } from '../lib/stores/data.svelte.ts';
   import { planStore } from '../lib/stores/plan.svelte.ts';
@@ -58,6 +58,14 @@
 
   const total = $derived(splitBytes(data.total));
   const safe = $derived(data.report?.summary.by_safety.safe ?? 0);
+
+  const safeLine = $derived.by(() => {
+    const list = reviewPhrase(data.report?.summary.categories ?? []);
+    if (safe === 0) return `Nothing here is marked safe. It's mostly ${list}, so you decide.`;
+    if (!list) return `All of it, ${formatBytes(safe)}, is safe to remove right now.`;
+    return `${formatBytes(safe)} is safe to remove right now. The rest is ${list}, so you decide.`;
+  });
+
   const scanInfo = $derived(data.report?.scan);
   const now = new Date();
   const week = $derived(growth(data.history, now.getTime() - 7 * 86_400_000));
@@ -143,7 +151,7 @@
       {#if !data.scanning}
         {#if data.total > 0}
           <p class="para">
-            {formatBytes(safe)} is safe to remove right now. The rest is chat history, database volumes and emulators, so you decide.
+            {safeLine}
           </p>
         {:else}
           <p class="para">Nothing to reclaim. kipple checked {formatCount(scanInfo?.entries_seen ?? 0)} files.</p>

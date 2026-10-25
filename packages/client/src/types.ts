@@ -57,6 +57,20 @@ export interface VolumeInfo {
   mount: string;
   capacity: number;
   free: number;
+  /** The user's home folder, for shortening paths with "~". */
+  home?: string;
 }
 
 export type { ItemFilter, PlanRequest };
+
+/**
+ * kipple's config (SPEC §10.3), as the core returns it. Only the fields the
+ * app edits are typed; everything else is passed back unchanged.
+ */
+export interface KippleConfig {
+  scan: { roots: string[]; exclude: string[]; include_network: boolean; follow_symlinks: boolean; [k: string]: unknown };
+  safety: { recent_days: number; protect: string[]; [k: string]: unknown };
+  quarantine: { keep_days: number; [k: string]: unknown };
+  integrations: { disable: string[]; enable: string[] };
+  [k: string]: unknown;
+}
