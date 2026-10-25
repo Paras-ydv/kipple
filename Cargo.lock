@@ -1635,7 +1635,15 @@ dependencies = [
 name = "kipple-adapters"
 version = "0.1.0-alpha.0"
 dependencies = [
+ "globset",
+ "insta",
+ "jiff",
  "kipple-core",
+ "rusqlite",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tracing",
 ]
 
 [[package]]
