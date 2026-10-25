@@ -73,6 +73,7 @@ fn main() -> ExitCode {
         Command::Projects(a) => cmd::browse::projects(&mut ctx, a),
         Command::Items(a) => cmd::browse::items(&mut ctx, a),
         Command::Explain { item } => cmd::browse::explain(&mut ctx, item),
+        Command::Ai(a) => cmd::ai::run(&mut ctx, a),
         Command::Clean(a) => cmd::clean::clean(&mut ctx, a),
         Command::Undo => cmd::clean::undo(&mut ctx),
         Command::Quarantine(c) => cmd::clean::quarantine(&mut ctx, c),

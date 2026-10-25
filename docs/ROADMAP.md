@@ -62,12 +62,12 @@ Spec references: `SPEC.md §n`, `INTEGRATIONS.md §n`, `UI.md §n`.
 - **Done when:** each adapter has fixtures, snapshots, action tests and a docs page.
 
 ### M6 — AI history adapters
-- [ ] `claude-code` (§4.10)
-- [ ] `codex` (§4.11) — native delete only; mock the `codex` binary in tests
-- [ ] `cursor` (§4.12) — read-only stats by key prefix, backup-copy item, guarded VACUUM, orphan workspaceStorage
-- [ ] `antigravity` (§4.13) — experimental, quarantine-only, migrated-copy detection
-- [ ] Secret masking for titles (simple rules now; full scanner in v1)
-- [ ] `kipple ai` views (per tool, per project, sessions with filters)
+- [x] `claude-code` (§4.10)
+- [x] `codex` (§4.11) — native delete only; mock the `codex` binary in tests
+- [x] `cursor` (§4.12) — read-only stats by key prefix, backup-copy item, guarded VACUUM, orphan workspaceStorage
+- [x] `antigravity` (§4.13) — experimental, quarantine-only, migrated-copy detection
+- [x] Secret masking for titles (simple rules now; full scanner in v1)
+- [x] `kipple ai` views (per tool, per project, sessions with filters)
 - **Done when:** fixtures for each tool's format exist (generated, fake content), and no adapter opens third-party DBs writable during scan (asserted in tests).
 
 ### M7 — TUI

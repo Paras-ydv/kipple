@@ -77,6 +77,8 @@ pub enum Command {
         /// Item id (or its first characters) or path.
         item: String,
     },
+    /// AI chat history: per tool, per project or per session.
+    Ai(AiArgs),
     /// Make a plan, confirm it, and reclaim the space.
     Clean(CleanArgs),
     /// Put back everything the last clean moved to quarantine.
@@ -144,6 +146,35 @@ pub struct ItemsArgs {
     #[arg(long)]
     pub limit: Option<usize>,
     /// Include items marked keep.
+    #[arg(long)]
+    pub all: bool,
+}
+
+#[derive(Debug, Args)]
+pub struct AiArgs {
+    #[command(subcommand)]
+    pub view: Option<AiView>,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum AiView {
+    /// AI history per project, including projects you've deleted.
+    Projects,
+    /// Every saved session or conversation.
+    Sessions(AiSessionsArgs),
+}
+
+#[derive(Debug, Args)]
+pub struct AiSessionsArgs {
+    /// Only this tool (claude-code, codex, cursor, antigravity).
+    #[arg(long, value_name = "ID")]
+    pub tool: Option<String>,
+    #[arg(long, value_enum, default_value_t = SortKey::Size)]
+    pub sort: SortKey,
+    /// Show at most this many.
+    #[arg(long)]
+    pub limit: Option<usize>,
+    /// Include sessions marked keep.
     #[arg(long)]
     pub all: bool,
 }
