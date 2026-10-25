@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SizePoint",
+  "description": "Reclaimable bytes at one point in time.",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string"
+    },
+    "reclaimable": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0
+    },
+    "scope": {
+      "$ref": "#/$defs/SizeScope"
+    },
+    "ts": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "ts",
+    "scope",
+    "key",
+    "reclaimable"
+  ],
+  "$defs": {
+    "SizeScope": {
+      "type": "string",
+      "enum": [
+        "total",
+        "category",
+        "integration",
+        "project"
+      ]
+    }
+  }
+}

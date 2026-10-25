@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "IntegrationStatusReport",
+  "description": "An integration and whether it was detected on this machine.",
+  "type": "object",
+  "properties": {
+    "category": {
+      "$ref": "#/$defs/Category"
+    },
+    "description": {
+      "type": "string"
+    },
+    "detection": {
+      "$ref": "#/$defs/Detection"
+    },
+    "docs_url": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "id": {
+      "$ref": "#/$defs/IntegrationId"
+    },
+    "in_use_processes": {
+      "description": "Process names that make this integration's data in use.",
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "string"
+      }
+    },
+    "kind": {
+      "$ref": "#/$defs/IntegrationKind"
+    },
+    "name": {
+      "type": "string"
+    },
+    "os": {
+      "description": "Empty means every OS.",
+      "type": "array",
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Os"
+      }
+    },
+    "status": {
+      "$ref": "#/$defs/IntegrationStatus",
+      "default": "stable"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "kind",
+    "category",
+    "description",
+    "enabled",
+    "detection"
+  ],
+  "$defs": {
+    "Category": {
+      "description": "What kind of junk an item is. Drives grouping and colors.",
+      "type": "string",
+      "enum": [
+        "project-artifact",
+        "package-cache",
+        "toolchain",
+        "container",
+        "mobile",
+        "ai-history",
+        "model",
+        "ide-cache",
+        "build-cache",
+        "logs",
+        "system"
+      ]
+    },
+    "Detection": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "type": "string",
+              "const": "not_present"
+            }
+          },
+          "required": [
+            "state"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "type": "string",
+              "const": "present"
+            },
+            "version": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "state"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "reason": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string",
+              "const": "unsupported"
+            }
+          },
+          "required": [
+            "state",
+            "reason"
+          ]
+        }
+      ]
+    },
+    "IntegrationId": {
+      "description": "Stable integration id, e.g. `npm-cache`, `docker`, `codex`.",
+      "type": "string"
+    },
+    "IntegrationKind": {
+      "type": "string",
+      "enum": [
+        "pack",
+        "adapter"
+      ]
+    },
+    "IntegrationStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "stable"
+          ]
+        },
+        {
+          "description": "Paths not yet verified on every OS; items capped at Review.",
+          "type": "string",
+          "const": "experimental"
+        }
+      ]
+    },
+    "Os": {
+      "type": "string",
+      "enum": [
+        "macos",
+        "linux",
+        "windows",
+        "wsl"
+      ]
+    }
+  }
+}

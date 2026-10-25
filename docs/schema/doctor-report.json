@@ -1,0 +1,297 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DoctorReport",
+  "type": "object",
+  "properties": {
+    "config_exists": {
+      "type": "boolean"
+    },
+    "config_path": {
+      "type": "string"
+    },
+    "data_dir": {
+      "type": "string"
+    },
+    "integrations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/DoctorIntegration"
+      }
+    },
+    "platform": {
+      "$ref": "#/$defs/PlatformInfo"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "platform",
+    "config_path",
+    "config_exists",
+    "data_dir",
+    "integrations",
+    "warnings"
+  ],
+  "$defs": {
+    "Category": {
+      "description": "What kind of junk an item is. Drives grouping and colors.",
+      "type": "string",
+      "enum": [
+        "project-artifact",
+        "package-cache",
+        "toolchain",
+        "container",
+        "mobile",
+        "ai-history",
+        "model",
+        "ide-cache",
+        "build-cache",
+        "logs",
+        "system"
+      ]
+    },
+    "Detection": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "type": "string",
+              "const": "not_present"
+            }
+          },
+          "required": [
+            "state"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "type": "string",
+              "const": "present"
+            },
+            "version": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "state"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "reason": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string",
+              "const": "unsupported"
+            }
+          },
+          "required": [
+            "state",
+            "reason"
+          ]
+        }
+      ]
+    },
+    "DoctorIntegration": {
+      "type": "object",
+      "properties": {
+        "detection": {
+          "$ref": "#/$defs/Detection"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "fixes": {
+          "description": "Actionable fixes, one sentence each.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "info": {
+          "$ref": "#/$defs/IntegrationInfo"
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/LocationCheck"
+          }
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ToolCheck"
+          }
+        }
+      },
+      "required": [
+        "info",
+        "enabled",
+        "detection",
+        "locations",
+        "tools",
+        "fixes"
+      ]
+    },
+    "IntegrationId": {
+      "description": "Stable integration id, e.g. `npm-cache`, `docker`, `codex`.",
+      "type": "string"
+    },
+    "IntegrationInfo": {
+      "description": "Static description of an integration.",
+      "type": "object",
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/Category"
+        },
+        "description": {
+          "type": "string"
+        },
+        "docs_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/IntegrationId"
+        },
+        "in_use_processes": {
+          "description": "Process names that make this integration's data in use.",
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string"
+          }
+        },
+        "kind": {
+          "$ref": "#/$defs/IntegrationKind"
+        },
+        "name": {
+          "type": "string"
+        },
+        "os": {
+          "description": "Empty means every OS.",
+          "type": "array",
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Os"
+          }
+        },
+        "status": {
+          "$ref": "#/$defs/IntegrationStatus",
+          "default": "stable"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "kind",
+        "category",
+        "description"
+      ]
+    },
+    "IntegrationKind": {
+      "type": "string",
+      "enum": [
+        "pack",
+        "adapter"
+      ]
+    },
+    "IntegrationStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "stable"
+          ]
+        },
+        {
+          "description": "Paths not yet verified on every OS; items capped at Review.",
+          "type": "string",
+          "const": "experimental"
+        }
+      ]
+    },
+    "LocationCheck": {
+      "type": "object",
+      "properties": {
+        "exists": {
+          "type": "boolean"
+        },
+        "path": {
+          "type": "string"
+        },
+        "readable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "path",
+        "exists",
+        "readable"
+      ]
+    },
+    "Os": {
+      "type": "string",
+      "enum": [
+        "macos",
+        "linux",
+        "windows",
+        "wsl"
+      ]
+    },
+    "PlatformInfo": {
+      "type": "object",
+      "properties": {
+        "arch": {
+          "type": "string"
+        },
+        "os": {
+          "$ref": "#/$defs/Os"
+        },
+        "trash_available": {
+          "type": "boolean"
+        },
+        "wsl": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "os",
+        "arch",
+        "wsl",
+        "trash_available"
+      ]
+    },
+    "ToolCheck": {
+      "type": "object",
+      "properties": {
+        "found": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    }
+  }
+}

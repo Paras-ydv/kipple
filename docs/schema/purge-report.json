@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PurgeReport",
+  "type": "object",
+  "properties": {
+    "errors": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "string"
+      }
+    },
+    "freed": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0
+    },
+    "purged": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/QuarantineId"
+      }
+    }
+  },
+  "required": [
+    "purged",
+    "freed"
+  ],
+  "$defs": {
+    "QuarantineId": {
+      "description": "ULID of a quarantine entry.",
+      "type": "string"
+    }
+  }
+}

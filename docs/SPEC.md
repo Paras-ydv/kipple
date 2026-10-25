@@ -343,12 +343,15 @@ Nested projects (monorepo packages) roll up to the **outermost git root** for th
 
 ### 7.3 Reason codes (stable)
 
-`REGENERABLE`, `REDOWNLOADABLE`, `INACTIVE_PROJECT`, `RECENTLY_USED`, `RECENTLY_WRITTEN`, `ACTIVE_WRITER`, `TOOL_RUNNING`, `IN_USE_BY_CONTAINER`, `UNUSED_BY_ANY_EMULATOR`, `USED_BY_EMULATOR`, `CONTAINS_USER_DATA`, `CHAT_HISTORY`, `MAY_CONTAIN_SECRETS`, `LARGE_REDOWNLOAD`, `ORPHANED_PROJECT`, `MIGRATED_COPY`, `BACKUP_COPY`, `FREE_PAGES`, `PROTECTED_PATH`, `OUTSIDE_ROOTS`, `UNKNOWN_FORMAT`, `NEEDS_ELEVATION`, `NATIVE_TOOL_MISSING`, `SHARED_HARDLINKS`, `PINNED_BY_PROJECT`.
+`REGENERABLE`, `REDOWNLOADABLE`, `INACTIVE_PROJECT`, `RECENTLY_USED`, `RECENTLY_WRITTEN`, `ACTIVE_WRITER`, `TOOL_RUNNING`, `IN_USE_BY_CONTAINER`, `UNUSED_BY_ANY_EMULATOR`, `USED_BY_EMULATOR`, `CONTAINS_USER_DATA`, `CHAT_HISTORY`, `MAY_CONTAIN_SECRETS`, `LARGE_REDOWNLOAD`, `ORPHANED_PROJECT`, `MIGRATED_COPY`, `BACKUP_COPY`, `FREE_PAGES`, `PROTECTED_PATH`, `OUTSIDE_ROOTS`, `UNKNOWN_FORMAT`, `NEEDS_ELEVATION`, `NATIVE_TOOL_MISSING`, `SHARED_HARDLINKS`, `PINNED_BY_PROJECT`, `EXPERIMENTAL` (integration not yet verified; capped at Review), `USER_OVERRIDE` (a config override set the level), `CONTAINS_SOURCE` (folder holds source or a repository).
 Each code has a default English sentence template with placeholders (`{days}`, `{project}`, `{tool}`), stored in `kipple-core/src/safety/reasons.rs`. Integrations MAY override the text.
 
 ### 7.4 Protected locations (always `Keep`)
 
-`~/.ssh`, `~/.gnupg`, `~/.aws/credentials`, `~/.config/gcloud` credentials, `~/.kube/config`, macOS Keychains, `~/Documents`, `~/Desktop`, `~/Pictures`, `~/Movies`, `~/Music` (unless a specific integration such as `old-installers` targets an exact file and the user enabled that integration), kipple's own config/data/quarantine, any path listed in `protect = [...]` in config, and the root of every scan root itself.
+- **Fully protected (subtree):** `~/.ssh`, `~/.gnupg`, `~/.aws/credentials`, `~/.config/gcloud`, `~/.kube/config`, other credential files, macOS Keychains, iCloud Drive, system folders, kipple's own config/data/quarantine, and any path listed in `protect = [...]` in config.
+- **Personal folders:** `~/Documents`, `~/Desktop`, `~/Pictures`, `~/Movies`, `~/Music`, `~/Videos`, `~/Downloads`. The folder itself and anything not positively identified are `Keep`; project artifacts and build caches inside them (and items of opt-in integrations such as `old-installers` the user enabled) follow the normal rules (decision 0005).
+- **Exact:** every scan root and the home folder itself.
+- Any path that *contains* a protected location is `Keep`.
 
 ### 7.5 Defaults by category
 
@@ -490,7 +493,7 @@ pub trait Adapter: Send + Sync {
 
 ## 10. Index, config and directories
 
-### 10.1 Directories (via `directories` crate, qualifier `dev`, org `kipple`, app `kipple`)
+### 10.1 Directories (layout of the `directories` crate, qualifier `dev`, org `kipple`, app `kipple`; resolved from the injected environment so tests can sandbox it — decision 0001)
 
 | | macOS | Linux | Windows |
 |---|---|---|---|

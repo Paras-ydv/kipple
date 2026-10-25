@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ScanResult",
+  "type": "object",
+  "properties": {
+    "scan": {
+      "$ref": "#/$defs/ScanInfo"
+    },
+    "summary": {
+      "$ref": "#/$defs/Summary"
+    },
+    "warnings": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "scan",
+    "summary"
+  ],
+  "$defs": {
+    "Category": {
+      "description": "What kind of junk an item is. Drives grouping and colors.",
+      "type": "string",
+      "enum": [
+        "project-artifact",
+        "package-cache",
+        "toolchain",
+        "container",
+        "mobile",
+        "ai-history",
+        "model",
+        "ide-cache",
+        "build-cache",
+        "logs",
+        "system"
+      ]
+    },
+    "CategorySummary": {
+      "description": "One row of the per-category summary.",
+      "type": "object",
+      "properties": {
+        "by_safety": {
+          "$ref": "#/$defs/SafetyMix"
+        },
+        "category": {
+          "$ref": "#/$defs/Category"
+        },
+        "items": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "reclaimable": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "category",
+        "items",
+        "reclaimable",
+        "by_safety"
+      ]
+    },
+    "SafetyMix": {
+      "description": "Reclaimable bytes per safety level.",
+      "type": "object",
+      "properties": {
+        "keep": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "review": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "safe": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "safe",
+        "review",
+        "keep"
+      ]
+    },
+    "ScanId": {
+      "description": "ULID of a scan.",
+      "type": "string"
+    },
+    "ScanInfo": {
+      "type": "object",
+      "properties": {
+        "duration_ms": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "entries_seen": {
+          "description": "Directory entries visited by the walk.",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "finished_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/ScanId"
+        },
+        "kipple_version": {
+          "type": "string"
+        },
+        "roots": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "started_at": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/ScanStatus"
+        }
+      },
+      "required": [
+        "id",
+        "started_at",
+        "roots",
+        "kipple_version",
+        "status",
+        "entries_seen",
+        "duration_ms"
+      ]
+    },
+    "ScanStatus": {
+      "type": "string",
+      "enum": [
+        "running",
+        "complete",
+        "cancelled",
+        "failed"
+      ]
+    },
+    "Summary": {
+      "description": "Report numbers for one scan.",
+      "type": "object",
+      "properties": {
+        "by_safety": {
+          "$ref": "#/$defs/SafetyMix"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CategorySummary"
+          }
+        },
+        "items": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "quarantine_bytes": {
+          "description": "Bytes held in quarantine, not yet freed.",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "reclaimable": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "items",
+        "reclaimable",
+        "by_safety",
+        "categories",
+        "quarantine_bytes"
+      ]
+    }
+  }
+}

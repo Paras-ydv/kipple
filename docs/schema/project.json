@@ -1,0 +1,220 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ProjectSummary",
+  "description": "A source-code directory and the items attributed to it (SPEC §4.2).",
+  "type": "object",
+  "properties": {
+    "by_category": {
+      "description": "Reclaimable bytes per category.",
+      "type": "object",
+      "properties": {
+        "ai-history": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "build-cache": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "container": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "ide-cache": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "logs": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "mobile": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "model": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "package-cache": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "project-artifact": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "system": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "toolchain": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "exists": {
+      "description": "`false` when tool metadata points to a folder that no longer exists.",
+      "type": "boolean"
+    },
+    "id": {
+      "$ref": "#/$defs/ProjectId"
+    },
+    "item_count": {
+      "description": "Number of attributed items.",
+      "type": "integer",
+      "format": "uint64",
+      "default": 0,
+      "minimum": 0
+    },
+    "last_used": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LastUsed"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "markers": {
+      "description": "Marker files found at the root: `package.json`, `.git`, …",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "name": {
+      "description": "Package name if known, else folder name.",
+      "type": "string"
+    },
+    "root": {
+      "type": "string"
+    },
+    "safety_mix": {
+      "$ref": "#/$defs/SafetyMix"
+    },
+    "total": {
+      "description": "Sum of attributed items.",
+      "$ref": "#/$defs/Size"
+    }
+  },
+  "required": [
+    "id",
+    "root",
+    "name",
+    "markers",
+    "total",
+    "by_category",
+    "safety_mix",
+    "exists"
+  ],
+  "$defs": {
+    "LastUsed": {
+      "type": "object",
+      "properties": {
+        "at": {
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/LastUsedSource"
+        }
+      },
+      "required": [
+        "at",
+        "source"
+      ]
+    },
+    "LastUsedSource": {
+      "type": "string",
+      "enum": [
+        "git_commit",
+        "git_index",
+        "source_mtime",
+        "item_mtime",
+        "tool_metadata",
+        "atime"
+      ]
+    },
+    "ProjectId": {
+      "description": "`blake3(canonical project root)`, first 16 bytes, hex.",
+      "type": "string"
+    },
+    "SafetyMix": {
+      "description": "Reclaimable bytes per safety level.",
+      "type": "object",
+      "properties": {
+        "keep": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "review": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "safe": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "safe",
+        "review",
+        "keep"
+      ]
+    },
+    "Size": {
+      "description": "Honest sizes (SPEC §5.5).",
+      "type": "object",
+      "properties": {
+        "apparent": {
+          "description": "Sum of file lengths.",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "file_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint64",
+          "minimum": 0
+        },
+        "on_disk": {
+          "description": "Allocated blocks.",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "reclaimable": {
+          "description": "What deleting frees, after hardlink and shared-store accounting.",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "apparent",
+        "on_disk",
+        "reclaimable"
+      ]
+    }
+  }
+}

@@ -1,0 +1,258 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PlanRequest",
+  "type": "object",
+  "properties": {
+    "action_overrides": {
+      "description": "Use this action instead of the preferred one.",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/ActionKind"
+      },
+      "default": {}
+    },
+    "exclude_ids": {
+      "description": "Item ids to leave out.",
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "string"
+      }
+    },
+    "filter": {
+      "$ref": "#/$defs/ItemFilter",
+      "default": {
+        "exclude": [],
+        "ids": [],
+        "min_size": null,
+        "older_than_secs": null,
+        "only": [],
+        "project": null,
+        "roots": [],
+        "safe_only": false,
+        "safety": []
+      }
+    }
+  },
+  "$defs": {
+    "ActionKind": {
+      "description": "What to do with an item (SPEC §4.3).",
+      "oneOf": [
+        {
+          "description": "Move into kipple's quarantine (same volume). Default for paths.",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "quarantine"
+            }
+          },
+          "required": [
+            "type"
+          ]
+        },
+        {
+          "description": "OS trash; used when quarantine would cross volumes.",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "trash"
+            }
+          },
+          "required": [
+            "type"
+          ]
+        },
+        {
+          "description": "Integration-defined command, e.g. `docker.image.remove`, `codex.delete`.",
+          "type": "object",
+          "properties": {
+            "command_id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "native"
+            }
+          },
+          "required": [
+            "type",
+            "command_id"
+          ]
+        },
+        {
+          "description": "`sqlite_vacuum`, `docker_desktop_disk` [v1], `wsl_vhdx` [v1].",
+          "type": "object",
+          "properties": {
+            "method": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "compact"
+            }
+          },
+          "required": [
+            "type",
+            "method"
+          ]
+        },
+        {
+          "description": "[v1] tar+zstd to the archive dir, then quarantine the original.",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "archive"
+            }
+          },
+          "required": [
+            "type"
+          ]
+        },
+        {
+          "description": "[v1] Move to another volume and symlink back.",
+          "type": "object",
+          "properties": {
+            "target": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "relocate"
+            }
+          },
+          "required": [
+            "type",
+            "target"
+          ]
+        },
+        {
+          "description": "[v1] Edit a tool's own retention setting.",
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "set_retention"
+            },
+            "value": true
+          },
+          "required": [
+            "type",
+            "key",
+            "value"
+          ]
+        }
+      ]
+    },
+    "ItemFilter": {
+      "description": "Selects items. Shared by `items`, `plan`, the CLI and MCP.",
+      "type": "object",
+      "properties": {
+        "exclude": {
+          "description": "Glob patterns matched against item paths.",
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string"
+          }
+        },
+        "ids": {
+          "description": "Item ids (or unique prefixes).",
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string"
+          }
+        },
+        "min_size": {
+          "description": "Reclaimable at least this many bytes.",
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint64",
+          "default": null,
+          "minimum": 0
+        },
+        "older_than_secs": {
+          "description": "Last used at least this many seconds ago.",
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint64",
+          "default": null,
+          "minimum": 0
+        },
+        "only": {
+          "description": "Integration ids or category ids.",
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string"
+          }
+        },
+        "project": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProjectId"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "roots": {
+          "description": "Only items under these roots.",
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string"
+          }
+        },
+        "safe_only": {
+          "type": "boolean",
+          "default": false
+        },
+        "safety": {
+          "description": "Restrict to these levels. Empty means all.",
+          "type": "array",
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Safety"
+          }
+        }
+      }
+    },
+    "ProjectId": {
+      "description": "`blake3(canonical project root)`, first 16 bytes, hex.",
+      "type": "string"
+    },
+    "Safety": {
+      "description": "How safe an item is to remove. Ordered from least to most strict.",
+      "oneOf": [
+        {
+          "description": "Regenerates automatically or holds no user data.",
+          "type": "string",
+          "const": "safe"
+        },
+        {
+          "description": "Probably fine; the user should look first.",
+          "type": "string",
+          "const": "review"
+        },
+        {
+          "description": "Protected, in use or unknown. Never actionable.",
+          "type": "string",
+          "const": "keep"
+        }
+      ]
+    }
+  }
+}

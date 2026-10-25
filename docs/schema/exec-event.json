@@ -1,0 +1,316 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ExecEvent",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "entries": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "event": {
+          "type": "string",
+          "const": "started"
+        },
+        "plan_id": {
+          "$ref": "#/$defs/PlanId"
+        }
+      },
+      "required": [
+        "event",
+        "plan_id",
+        "entries"
+      ]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "event": {
+          "type": "string",
+          "const": "entry_started"
+        },
+        "index": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "event",
+        "index",
+        "title"
+      ]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "entry": {
+          "$ref": "#/$defs/ExecEntry"
+        },
+        "event": {
+          "type": "string",
+          "const": "entry_finished"
+        },
+        "index": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "event",
+        "index",
+        "entry"
+      ]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "event": {
+          "type": "string",
+          "const": "warning"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "event",
+        "message"
+      ]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "event": {
+          "type": "string",
+          "const": "finished"
+        }
+      },
+      "required": [
+        "event"
+      ]
+    }
+  ],
+  "$defs": {
+    "ActionKind": {
+      "description": "What to do with an item (SPEC §4.3).",
+      "oneOf": [
+        {
+          "description": "Move into kipple's quarantine (same volume). Default for paths.",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "quarantine"
+            }
+          },
+          "required": [
+            "type"
+          ]
+        },
+        {
+          "description": "OS trash; used when quarantine would cross volumes.",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "trash"
+            }
+          },
+          "required": [
+            "type"
+          ]
+        },
+        {
+          "description": "Integration-defined command, e.g. `docker.image.remove`, `codex.delete`.",
+          "type": "object",
+          "properties": {
+            "command_id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "native"
+            }
+          },
+          "required": [
+            "type",
+            "command_id"
+          ]
+        },
+        {
+          "description": "`sqlite_vacuum`, `docker_desktop_disk` [v1], `wsl_vhdx` [v1].",
+          "type": "object",
+          "properties": {
+            "method": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "compact"
+            }
+          },
+          "required": [
+            "type",
+            "method"
+          ]
+        },
+        {
+          "description": "[v1] tar+zstd to the archive dir, then quarantine the original.",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "archive"
+            }
+          },
+          "required": [
+            "type"
+          ]
+        },
+        {
+          "description": "[v1] Move to another volume and symlink back.",
+          "type": "object",
+          "properties": {
+            "target": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "relocate"
+            }
+          },
+          "required": [
+            "type",
+            "target"
+          ]
+        },
+        {
+          "description": "[v1] Edit a tool's own retention setting.",
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "set_retention"
+            },
+            "value": true
+          },
+          "required": [
+            "type",
+            "key",
+            "value"
+          ]
+        }
+      ]
+    },
+    "ExecEntry": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/ActionKind"
+        },
+        "item_id": {
+          "$ref": "#/$defs/ItemId"
+        },
+        "outcome": {
+          "$ref": "#/$defs/Outcome"
+        },
+        "quarantine_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/QuarantineId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "item_id",
+        "title",
+        "action",
+        "outcome"
+      ]
+    },
+    "ItemId": {
+      "description": "`blake3(integration_id + \"\\0\" + canonical_locator)`, first 16 bytes, hex.",
+      "type": "string"
+    },
+    "Outcome": {
+      "description": "What happened to one plan entry.",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "freed": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0
+            },
+            "status": {
+              "type": "string",
+              "const": "done"
+            }
+          },
+          "required": [
+            "status",
+            "freed"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "reason": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string",
+              "const": "skipped"
+            }
+          },
+          "required": [
+            "status",
+            "reason"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "error": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string",
+              "const": "failed"
+            }
+          },
+          "required": [
+            "status",
+            "error"
+          ]
+        }
+      ]
+    },
+    "PlanId": {
+      "description": "ULID of a plan.",
+      "type": "string"
+    },
+    "QuarantineId": {
+      "description": "ULID of a quarantine entry.",
+      "type": "string"
+    }
+  }
+}

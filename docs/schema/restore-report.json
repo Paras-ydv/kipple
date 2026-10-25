@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RestoreReport",
+  "type": "object",
+  "properties": {
+    "restored": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/RestoredEntry"
+      }
+    },
+    "skipped": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SkippedRestore"
+      }
+    }
+  },
+  "required": [
+    "restored",
+    "skipped"
+  ],
+  "$defs": {
+    "QuarantineId": {
+      "description": "ULID of a quarantine entry.",
+      "type": "string"
+    },
+    "RestoredEntry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/QuarantineId"
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "paths"
+      ]
+    },
+    "SkippedRestore": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/QuarantineId"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "reason"
+      ]
+    }
+  }
+}

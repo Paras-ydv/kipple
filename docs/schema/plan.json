@@ -1,0 +1,712 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Plan",
+  "description": "An ordered list of (item, action) the user approves (SPEC §4.3, §8.1).",
+  "type": "object",
+  "properties": {
+    "created_at": {
+      "type": "string"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/PlanEntry"
+      }
+    },
+    "id": {
+      "$ref": "#/$defs/PlanId"
+    },
+    "scan_id": {
+      "$ref": "#/$defs/ScanId"
+    },
+    "totals": {
+      "$ref": "#/$defs/PlanTotals"
+    },
+    "warnings": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "id",
+    "created_at",
+    "scan_id",
+    "entries",
+    "totals"
+  ],
+  "$defs": {
+    "ActionKind": {
+      "description": "What to do with an item (SPEC §4.3).",
+      "oneOf": [
+        {
+          "description": "Move into kipple's quarantine (same volume). Default for paths.",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "quarantine"
+            }
+          },
+          "required": [
+            "type"
+          ]
+        },
+        {
+          "description": "OS trash; used when quarantine would cross volumes.",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "trash"
+            }
+          },
+          "required": [
+            "type"
+          ]
+        },
+        {
+          "description": "Integration-defined command, e.g. `docker.image.remove`, `codex.delete`.",
+          "type": "object",
+          "properties": {
+            "command_id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "native"
+            }
+          },
+          "required": [
+            "type",
+            "command_id"
+          ]
+        },
+        {
+          "description": "`sqlite_vacuum`, `docker_desktop_disk` [v1], `wsl_vhdx` [v1].",
+          "type": "object",
+          "properties": {
+            "method": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "compact"
+            }
+          },
+          "required": [
+            "type",
+            "method"
+          ]
+        },
+        {
+          "description": "[v1] tar+zstd to the archive dir, then quarantine the original.",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "archive"
+            }
+          },
+          "required": [
+            "type"
+          ]
+        },
+        {
+          "description": "[v1] Move to another volume and symlink back.",
+          "type": "object",
+          "properties": {
+            "target": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "relocate"
+            }
+          },
+          "required": [
+            "type",
+            "target"
+          ]
+        },
+        {
+          "description": "[v1] Edit a tool's own retention setting.",
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "set_retention"
+            },
+            "value": true
+          },
+          "required": [
+            "type",
+            "key",
+            "value"
+          ]
+        }
+      ]
+    },
+    "Category": {
+      "description": "What kind of junk an item is. Drives grouping and colors.",
+      "type": "string",
+      "enum": [
+        "project-artifact",
+        "package-cache",
+        "toolchain",
+        "container",
+        "mobile",
+        "ai-history",
+        "model",
+        "ide-cache",
+        "build-cache",
+        "logs",
+        "system"
+      ]
+    },
+    "Check": {
+      "description": "Result of one preflight check.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "ok": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "ok",
+        "message"
+      ]
+    },
+    "Identity": {
+      "description": "Filesystem identity captured at scan time; re-checked before acting.",
+      "oneOf": [
+        {
+          "description": "Device and inode (Unix).",
+          "type": "object",
+          "properties": {
+            "dev": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0
+            },
+            "ino": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0
+            },
+            "type": {
+              "type": "string",
+              "const": "inode"
+            }
+          },
+          "required": [
+            "type",
+            "dev",
+            "ino"
+          ]
+        },
+        {
+          "description": "Creation time in nanoseconds since the epoch (Windows fallback).",
+          "type": "object",
+          "properties": {
+            "nanos": {
+              "type": "integer",
+              "format": "int128"
+            },
+            "type": {
+              "type": "string",
+              "const": "created"
+            }
+          },
+          "required": [
+            "type",
+            "nanos"
+          ]
+        }
+      ]
+    },
+    "IntegrationId": {
+      "description": "Stable integration id, e.g. `npm-cache`, `docker`, `codex`.",
+      "type": "string"
+    },
+    "Item": {
+      "description": "One reclaimable thing reported by an integration.",
+      "type": "object",
+      "properties": {
+        "actions": {
+          "description": "Allowed actions, preferred first. Empty when `safety` is `Keep`.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ActionKind"
+          }
+        },
+        "category": {
+          "$ref": "#/$defs/Category"
+        },
+        "details": {
+          "description": "Integration-specific extras.",
+          "default": null
+        },
+        "id": {
+          "$ref": "#/$defs/ItemId"
+        },
+        "identity": {
+          "description": "Identity of the primary path at scan time.",
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Identity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "integration": {
+          "$ref": "#/$defs/IntegrationId"
+        },
+        "kind": {
+          "description": "Integration-specific kind, e.g. `node_modules`, `docker_image`.",
+          "type": "string"
+        },
+        "last_used": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LastUsed"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "locator": {
+          "$ref": "#/$defs/Locator"
+        },
+        "notes": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string"
+          }
+        },
+        "project": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProjectRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reasons": {
+          "description": "At least one.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Reason"
+          }
+        },
+        "restore_hint": {
+          "description": "Command that regenerates the item, shown by `explain`.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "safety": {
+          "$ref": "#/$defs/Safety"
+        },
+        "size": {
+          "$ref": "#/$defs/Size"
+        },
+        "title": {
+          "description": "Human label.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "integration",
+        "category",
+        "kind",
+        "title",
+        "locator",
+        "size",
+        "safety",
+        "reasons",
+        "actions"
+      ]
+    },
+    "ItemId": {
+      "description": "`blake3(integration_id + \"\\0\" + canonical_locator)`, first 16 bytes, hex.",
+      "type": "string"
+    },
+    "LastUsed": {
+      "type": "object",
+      "properties": {
+        "at": {
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/LastUsedSource"
+        }
+      },
+      "required": [
+        "at",
+        "source"
+      ]
+    },
+    "LastUsedSource": {
+      "type": "string",
+      "enum": [
+        "git_commit",
+        "git_index",
+        "source_mtime",
+        "item_mtime",
+        "tool_metadata",
+        "atime"
+      ]
+    },
+    "Locator": {
+      "description": "Where an item lives.",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "path"
+            }
+          },
+          "required": [
+            "type",
+            "path"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "paths": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "type": {
+              "type": "string",
+              "const": "paths"
+            }
+          },
+          "required": [
+            "type",
+            "paths"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "docker"
+            }
+          },
+          "required": [
+            "type",
+            "kind",
+            "id"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "store": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "logical"
+            }
+          },
+          "required": [
+            "type",
+            "store",
+            "key"
+          ]
+        }
+      ]
+    },
+    "PlanEntry": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/ActionKind"
+        },
+        "item": {
+          "$ref": "#/$defs/Item"
+        },
+        "preflight": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Check"
+          }
+        }
+      },
+      "required": [
+        "item",
+        "action"
+      ]
+    },
+    "PlanId": {
+      "description": "ULID of a plan.",
+      "type": "string"
+    },
+    "PlanTotals": {
+      "type": "object",
+      "properties": {
+        "by_action": {
+          "description": "Reclaimable bytes per action name.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0
+          }
+        },
+        "by_safety": {
+          "$ref": "#/$defs/SafetyMix"
+        },
+        "entries": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "freed_now": {
+          "description": "Freed when the plan runs (native commands, trash, compaction).",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "held_in_quarantine": {
+          "description": "Held in quarantine until purged.",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "reclaimable": {
+          "description": "Reclaimable bytes of all entries.",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "entries",
+        "reclaimable",
+        "by_safety",
+        "by_action",
+        "freed_now",
+        "held_in_quarantine"
+      ]
+    },
+    "ProjectId": {
+      "description": "`blake3(canonical project root)`, first 16 bytes, hex.",
+      "type": "string"
+    },
+    "ProjectRef": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "name": {
+          "type": "string"
+        },
+        "root": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "root",
+        "name"
+      ]
+    },
+    "Reason": {
+      "description": "Why an item has its safety level. One plain sentence.",
+      "type": "object",
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/ReasonCode"
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "text"
+      ]
+    },
+    "ReasonCode": {
+      "description": "Stable machine codes for reasons (SPEC §7.3).",
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "REGENERABLE",
+            "REDOWNLOADABLE",
+            "INACTIVE_PROJECT",
+            "RECENTLY_USED",
+            "RECENTLY_WRITTEN",
+            "ACTIVE_WRITER",
+            "TOOL_RUNNING",
+            "IN_USE_BY_CONTAINER",
+            "UNUSED_BY_ANY_EMULATOR",
+            "USED_BY_EMULATOR",
+            "CONTAINS_USER_DATA",
+            "CHAT_HISTORY",
+            "MAY_CONTAIN_SECRETS",
+            "LARGE_REDOWNLOAD",
+            "ORPHANED_PROJECT",
+            "MIGRATED_COPY",
+            "BACKUP_COPY",
+            "FREE_PAGES",
+            "PROTECTED_PATH",
+            "OUTSIDE_ROOTS",
+            "UNKNOWN_FORMAT",
+            "NEEDS_ELEVATION",
+            "NATIVE_TOOL_MISSING",
+            "SHARED_HARDLINKS",
+            "PINNED_BY_PROJECT"
+          ]
+        },
+        {
+          "description": "Integration is experimental; safety capped at Review.",
+          "type": "string",
+          "const": "EXPERIMENTAL"
+        },
+        {
+          "description": "A user override in config changed the safety.",
+          "type": "string",
+          "const": "USER_OVERRIDE"
+        },
+        {
+          "description": "Contains source files or a `.git` directory.",
+          "type": "string",
+          "const": "CONTAINS_SOURCE"
+        }
+      ]
+    },
+    "Safety": {
+      "description": "How safe an item is to remove. Ordered from least to most strict.",
+      "oneOf": [
+        {
+          "description": "Regenerates automatically or holds no user data.",
+          "type": "string",
+          "const": "safe"
+        },
+        {
+          "description": "Probably fine; the user should look first.",
+          "type": "string",
+          "const": "review"
+        },
+        {
+          "description": "Protected, in use or unknown. Never actionable.",
+          "type": "string",
+          "const": "keep"
+        }
+      ]
+    },
+    "SafetyMix": {
+      "description": "Reclaimable bytes per safety level.",
+      "type": "object",
+      "properties": {
+        "keep": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "review": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "safe": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "safe",
+        "review",
+        "keep"
+      ]
+    },
+    "ScanId": {
+      "description": "ULID of a scan.",
+      "type": "string"
+    },
+    "Size": {
+      "description": "Honest sizes (SPEC §5.5).",
+      "type": "object",
+      "properties": {
+        "apparent": {
+          "description": "Sum of file lengths.",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "file_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint64",
+          "minimum": 0
+        },
+        "on_disk": {
+          "description": "Allocated blocks.",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "reclaimable": {
+          "description": "What deleting frees, after hardlink and shared-store accounting.",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "apparent",
+        "on_disk",
+        "reclaimable"
+      ]
+    }
+  }
+}

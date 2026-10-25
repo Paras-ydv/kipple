@@ -16,7 +16,24 @@ categories.workspace = true
 test-support = ["dep:tempfile"]
 
 [dependencies]
+blake3.workspace = true
+globset.workspace = true
+jiff.workspace = true
+rusqlite.workspace = true
+schemars.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+strsim.workspace = true
+sysinfo.workspace = true
 tempfile = { workspace = true, optional = true }
+thiserror.workspace = true
+toml.workspace = true
+tracing.workspace = true
+trash.workspace = true
+ulid.workspace = true
+wait-timeout.workspace = true
 
 [dev-dependencies]
+insta.workspace = true
+proptest.workspace = true
 tempfile.workspace = true

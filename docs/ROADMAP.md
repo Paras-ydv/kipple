@@ -18,11 +18,11 @@ Spec references: `SPEC.md §n`, `INTEGRATIONS.md §n`, `UI.md §n`.
 - **Done when:** `cargo test` passes on all OSes and `kipple --version` prints.
 
 ### M1 — Core model, platform, config, index
-- [ ] Types from SPEC §4 with serde + JSON Schema export (`cargo xtask schema` → `docs/schema/`)
-- [ ] `platform`: OS/WSL detection, path expansion (`~`, `$VAR`, `%VAR%`, `{var}`), safe canonicalization, command runner (argv, timeout), process list via `sysinfo`, trash wrapper (SPEC §16)
-- [ ] Directories + config loading/validation with "did you mean" for unknown keys (SPEC §10.1, §10.3); `kipple config path|show|validate`
-- [ ] SQLite index with migrations (SPEC §10.2)
-- [ ] Protected-locations module + `is_actionable(path)` with property tests (SPEC §7.4, §8.3)
+- [x] Types from SPEC §4 with serde + JSON Schema export (`cargo xtask schema` → `docs/schema/`)
+- [x] `platform`: OS/WSL detection, path expansion (`~`, `$VAR`, `%VAR%`, `{var}`), safe canonicalization, command runner (argv, timeout), process list via `sysinfo`, trash wrapper (SPEC §16)
+- [x] Directories + config loading/validation with "did you mean" for unknown keys (SPEC §10.1, §10.3); `kipple config path|show|validate`
+- [x] SQLite index with migrations (SPEC §10.2)
+- [x] Protected-locations module + `is_actionable(path)` with property tests (SPEC §7.4, §8.3)
 - **Done when:** config round-trips, index migrates from empty, protected-path property tests pass.
 
 ### M2 — Scanner, pack engine, sizes, projects

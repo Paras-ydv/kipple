@@ -139,7 +139,12 @@ impl TestHome {
         {
             use std::os::unix::fs::PermissionsExt;
             let path = self.bin_dir().join(name);
-            fs::write(&path, format!("#!/bin/sh\n{script}\n"))?;
+            // System dirs are appended inside the script only, so mocks can use
+            // `sleep`, `cat`, … while kipple itself still sees just `bin/`.
+            fs::write(
+                &path,
+                format!("#!/bin/sh\nPATH=\"$PATH:/usr/bin:/bin\"\n{script}\n"),
+            )?;
             fs::set_permissions(&path, fs::Permissions::from_mode(0o755))?;
             Ok(path)
         }
