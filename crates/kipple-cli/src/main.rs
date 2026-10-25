@@ -4,6 +4,7 @@ mod args;
 mod cmd;
 mod context;
 mod output;
+mod tui;
 
 use std::process::ExitCode;
 
@@ -45,17 +46,26 @@ fn init_tracing(verbose: u8, quiet: bool) {
 fn main() -> ExitCode {
     let cli = Cli::parse();
     init_tracing(cli.global.verbose, cli.global.quiet);
-    let Some(command) = cli.command else {
-        // The TUI (UI.md §4) opens here once it exists.
-        let _ = Cli::command().print_help();
-        return ExitCode::SUCCESS;
-    };
     let mut ctx = match Context::new(cli.global, Env::from_process()) {
         Ok(ctx) => ctx,
         Err(e) => {
             eprintln!("error: {e:#}");
             return ExitCode::from(exit::ERROR);
         }
+    };
+    let Some(command) = cli.command else {
+        // In a terminal, `kipple` scans and opens the TUI (SPEC §11).
+        if !ctx.interactive() {
+            let _ = Cli::command().print_help();
+            return ExitCode::SUCCESS;
+        }
+        return match cmd::tui(&mut ctx, true) {
+            Ok(code) => code,
+            Err(e) => {
+                eprintln!("error: {e:#}");
+                ExitCode::from(exit::ERROR)
+            }
+        };
     };
     let result = match &command {
         Command::Scan => cmd::scan::scan(&mut ctx),

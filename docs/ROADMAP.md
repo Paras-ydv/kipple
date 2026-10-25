@@ -71,10 +71,10 @@ Spec references: `SPEC.md §n`, `INTEGRATIONS.md §n`, `UI.md §n`.
 - **Done when:** fixtures for each tool's format exist (generated, fake content), and no adapter opens third-party DBs writable during scan (asserted in tests).
 
 ### M7 — TUI
-- [ ] Screens per `UI.md §4`: Overview, Projects, Categories, AI history, Plan/Review, Quarantine
-- [ ] Streaming results during scan, keybindings, filter, sort, selection, explain panel
-- [ ] Theme module with color + monochrome + ASCII fallback; works at 80×24
-- [ ] Snapshot tests of rendered frames (ratatui `TestBackend`)
+- [x] Screens per `UI.md §4`: Overview, Projects, Categories, AI history, Plan/Review, Quarantine
+- [ ] Streaming results during scan, keybindings, filter, sort, selection, explain panel — all done except streaming: the TUI shows a live file count and items appear when the scan finishes
+- [x] Theme module with color + monochrome + ASCII fallback; works at 80×24
+- [x] Snapshot tests of rendered frames (ratatui `TestBackend`)
 - **Done when:** a new user can scan → select → clean → undo without reading docs.
 
 ### M8 — Doctor, share card, docs generation

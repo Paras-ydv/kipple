@@ -1,6 +1,7 @@
-# 0003 — `kipple clean` requires a selection until the TUI picker exists
+# 0003 — `kipple clean` without a selection
 
-**Status:** accepted · 2026-10-26 · answers SPEC §22 Q4 (for now)
+**Status:** accepted · 2026-10-26 · answers SPEC §22 Q4 · updated the same day when the TUI landed
 
 ## Decision
-`kipple clean` with no item ids and no filter (`--safe-only`, `--only`, `--older-than`, `--min-size`, `--root`) exits with a usage error (code 2) and a hint. This applies to TTY and non-TTY. When the TUI picker ships, a TTY run without a selection opens it; non-TTY keeps requiring a selection.
+- In a terminal, `kipple clean` with no item ids and no filter opens the TUI on the latest scan (scanning first if there is none), where items are picked and planned.
+- Outside a terminal (pipes, scripts, `--json`), it exits with a usage error (code 2) and a hint to pass item ids or a filter (`--safe-only`, `--only`, `--older-than`, `--min-size`, `--root`).

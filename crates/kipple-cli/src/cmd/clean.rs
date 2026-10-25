@@ -145,6 +145,11 @@ pub fn clean(ctx: &mut Context, args: &CleanArgs) -> Result<ExitCode> {
         None => {
             let mut filter = ctx.filter()?;
             filter.ids = args.items.clone();
+            if !filter.is_selective() && ctx.interactive() {
+                // No selection in a terminal: pick in the TUI (decision 0003).
+                drop(k);
+                return crate::cmd::tui(ctx, false);
+            }
             if !filter.is_selective() {
                 return Err(usage(
                     "Say what to clean: item ids, or a filter such as --safe-only, --only <integration>, --older-than 30d or --min-size 1GB.\nTry `kipple clean --safe-only` to see a plan of everything marked safe.",

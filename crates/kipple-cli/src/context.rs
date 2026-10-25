@@ -86,6 +86,20 @@ impl Context {
         }
     }
 
+    /// TUI theme: colors unless disabled, ASCII when the locale needs it.
+    pub fn theme(&self) -> crate::tui::theme::Theme {
+        crate::tui::theme::Theme {
+            color: !self.global.no_color && self.env.get("NO_COLOR").is_none(),
+            ascii: crate::tui::theme::wants_ascii(&self.env),
+        }
+    }
+
+    /// Whether stdin and stdout are terminals (TUI possible).
+    pub fn interactive(&self) -> bool {
+        use std::io::IsTerminal;
+        !self.global.json && std::io::stdin().is_terminal() && std::io::stdout().is_terminal()
+    }
+
     pub fn home(&self) -> Option<std::path::PathBuf> {
         self.env.home()
     }

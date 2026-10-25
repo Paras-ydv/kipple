@@ -173,3 +173,12 @@ mod clean {
             .stdout(predicate::str::contains("Quarantine is empty"));
     }
 }
+
+#[test]
+fn no_arguments_outside_a_terminal_prints_help() {
+    let home = TestHome::new().unwrap();
+    kipple(&home)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("Usage: kipple"));
+}
