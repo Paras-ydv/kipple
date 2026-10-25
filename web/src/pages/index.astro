@@ -1,0 +1,638 @@
+---
+// kipple.dev (Landing board, docs/UI.md §6). Numbers come from the same sample
+// data the app preview uses: one 512 GB MacBook.
+import { MockClient } from '@kipple/client/mock';
+import { categoryColor, formatAge, formatBytes, starPath } from '@kipple/design';
+import CopyCommand from '../components/CopyCommand.svelte';
+import StackArt from '../components/StackArt.svelte';
+import Base from '../layouts/Base.astro';
+
+const REPO = 'https://github.com/Paras-ydv/kipple';
+const client = new MockClient({ stepMs: 0 });
+const report = await client.report();
+const projects = await client.projects({ limit: 7 });
+const cats = report.summary.categories.filter((c) => c.reclaimable > 0);
+const bytesOf = (id: string) => cats.find((c) => c.category === id)?.reclaimable ?? 0;
+const rest = cats
+  .filter((c) => !['container', 'ai-history', 'package-cache'].includes(c.category))
+  .reduce((s, c) => s + c.reclaimable, 0);
+
+const found = [
+  { name: 'Docker', size: bytesOf('container'), color: categoryColor('container') },
+  { name: 'AI chat history', size: bytesOf('ai-history'), color: categoryColor('ai-history') },
+  { name: 'Package caches', size: bytesOf('package-cache'), color: categoryColor('package-cache') },
+  { name: 'Emulators and the rest', size: rest, color: categoryColor('mobile') },
+];
+
+const DAY = 86_400_000;
+const now = Date.now();
+const shelf = projects.map((p) => {
+  const days = p.last_used ? (now - Date.parse(p.last_used.at)) / DAY : 0;
+  const dull = !p.exists || days >= 180;
+  return {
+    key: p.id,
+    name: p.name,
+    dull,
+    detail: dull && p.last_used ? `${formatBytes(p.total.reclaimable)}, ${formatAge(p.last_used.at)}` : formatBytes(p.total.reclaimable),
+    layers: Object.entries(p.by_category).map(([category, bytes]) => ({ category, bytes: bytes ?? 0 })),
+  };
+});
+
+const points = [
+  {
+    t: 'Knows what is safe',
+    b: 'Every item comes with a reason: npm install brings it back, no emulator uses it, it holds database rows. You see Safe, Review or Keep before anything moves.',
+  },
+  {
+    t: 'Undo for 7 days',
+    b: 'Deletes go to quarantine first. Where a tool has its own cleanup command, like docker or codex delete, kipple uses it instead.',
+  },
+  {
+    t: 'Understands AI tools',
+    b: 'Codex sessions, Cursor chat databases, Claude Code transcripts and Antigravity history, cleaned the way each tool expects. It also flags API keys you pasted into chats.',
+  },
+];
+
+const tools = [
+  'node_modules', '.venv', 'target', 'Gradle', 'Docker', 'Android emulators', 'Xcode', 'Playwright', 'Homebrew',
+  'npm', 'pnpm', 'uv', 'pip', 'Claude Code', 'Codex', 'Cursor', 'Antigravity', 'Ollama', 'Hugging Face',
+];
+const links = [
+  { href: '#how', label: 'How it works' },
+  { href: '#covers', label: 'What it cleans' },
+  { href: `${REPO}#readme`, label: 'Docs' },
+  { href: `${REPO}/blob/main/CHANGELOG.md`, label: 'Changelog' },
+];
+const heroLayers = cats.map((c) => ({ category: c.category, bytes: c.reclaimable }));
+---
+
+<Base
+  title="kipple: find and safely reclaim the disk space your dev tools hoard"
+  description="kipple finds the node_modules, Docker layers, emulators and AI chat logs piling up on your machine, tells you what is safe to remove, and gives you the space back with a 7 day undo."
+>
+  <div class="page">
+    <section class="hero" aria-label="kipple">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="word" aria-hidden="true">kipple</div>
+      <StackArt
+        class="hero-stack"
+        stacks={[{ key: 'hero', layers: heroLayers }]}
+        width={520}
+        height={900}
+        slab={300}
+        top={170}
+        floor={810}
+        centres={[260]}
+        label={`A floating stack of glass slabs, one per kind of kipple, ${formatBytes(report.summary.reclaimable)} in all`}
+      />
+
+      <header class="top">
+        <a href="/" class="brand">kipple</a>
+        <nav class="nav desk k-glass" aria-label="Site">
+          {links.map((l, i) => <a href={l.href} class={i === 0 ? 'current' : ''}>{l.label}</a>)}
+        </nav>
+        <details class="menu">
+          <summary class="k-glass">Menu</summary>
+          <nav class="nav k-glass" aria-label="Site menu">
+            {links.map((l) => <a href={l.href}>{l.label}</a>)}
+          </nav>
+        </details>
+        <a href={REPO} class="star k-glass">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d={starPath}></path></svg>
+          Star on GitHub
+        </a>
+      </header>
+
+      <div class="copy">
+        <span class="badge k-glass">Open source. Mac, Linux and Windows.</span>
+        <h1>Your dev tools are hoarding.</h1>
+        <p>
+          kipple finds the node_modules, Docker layers, emulators and AI chat logs piling up on your machine, tells you what is
+          safe to remove, and gives you the space back with a 7 day undo.
+        </p>
+        <div class="ctas">
+          <a href={`${REPO}/releases/latest`} class="download k-warm">Download for Mac</a>
+          <CopyCommand client:visible command="brew install kipple" />
+        </div>
+      </div>
+
+      <aside class="found k-glass" aria-label="What kipple found on one Mac">
+        <span class="found-cap">Found on one 512 GB MacBook</span>
+        <span class="found-total">{formatBytes(report.summary.reclaimable)}</span>
+        <ul>
+          {
+            found.map((f) => (
+              <li>
+                <span class="dot" style={`background:${f.color}`} />
+                <span class="f-name">{f.name}</span>
+                <span class="f-size">{formatBytes(f.size)}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </aside>
+    </section>
+
+    <main>
+      <section id="how" class="how">
+        <div class="how-head">
+          <h2>Every project, as a stack.</h2>
+          <p>
+            Each glass slab is something kipple can measure: dependencies, build output, Docker data, emulators, models, chat
+            history. Projects you haven't opened in months turn dull.
+          </p>
+        </div>
+        <figure class="shelf">
+          <div class="shelf-stage">
+            <StackArt
+              stacks={shelf}
+              width={1176}
+              height={490}
+              slab={104}
+              top={90}
+              floor={400}
+              centres={shelf.map((_, i) => 1176 * 0.06 + ((1176 * 0.88) / 7) * (i + 0.5))}
+              label={`Seven stacks of glass slabs, one per project, as tall as the space each takes. ${shelf.filter((s) => s.dull).length} are dull because they have not been touched in months.`}
+            />
+          </div>
+          <figcaption>
+            {
+              shelf.map((s) => (
+                <span>
+                  <span class="s-name" style={s.dull ? 'color:#C9CFDA' : ''}>
+                    {s.name}
+                  </span>
+                  {s.detail}
+                </span>
+              ))
+            }
+          </figcaption>
+        </figure>
+        <div class="points">
+          {
+            points.map((p) => (
+              <div class="point">
+                <h3>{p.t}</h3>
+                <p>{p.b}</p>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <section id="covers" class="covers">
+        <div class="covers-text">
+          <h2>Knows where your tools hide things</h2>
+          <ul class="tools" aria-label="Supported tools">
+            {tools.map((t) => <li class="k-glass">{t}</li>)}
+          </ul>
+        </div>
+        <div class="term k-glass" role="img" aria-label="kipple scan, then kipple clean --safe-only, then kipple undo">
+          <div class="c"># see what's there. Nothing is touched.</div>
+          <div><span class="p">$</span> kipple scan</div>
+          <div class="c gap"># remove only what's safe, with undo</div>
+          <div><span class="p">$</span> kipple clean --safe-only</div>
+          <div><span class="p">$</span> kipple undo</div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>kipple is free and open source under MIT and Apache 2.0. No telemetry.</span>
+      <a href={REPO}>github.com/Paras-ydv/kipple</a>
+    </footer>
+  </div>
+</Base>
+
+<style>
+  .page {
+    width: 100%;
+    overflow: hidden;
+    font-variant-numeric: tabular-nums;
+  }
+  a {
+    text-decoration: none;
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    height: 900px;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(42% 46% at 50% 40%, rgba(52, 124, 255, 0.34), rgba(52, 124, 255, 0) 70%),
+      radial-gradient(40% 40% at 18% 96%, rgba(255, 132, 84, 0.34), rgba(255, 132, 84, 0) 70%),
+      radial-gradient(40% 44% at 86% 90%, rgba(178, 92, 255, 0.36), rgba(178, 92, 255, 0) 70%),
+      linear-gradient(180deg, #0a1030 0%, #06080f 70%);
+  }
+  .word {
+    position: absolute;
+    left: 50%;
+    top: 545px;
+    transform: translateX(-50%);
+    font-size: clamp(150px, 27vw, 440px);
+    font-stretch: 125%;
+    font-weight: 800;
+    letter-spacing: -0.055em;
+    line-height: 0.82;
+    white-space: nowrap;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.78) 55%, rgba(255, 255, 255, 0.08) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  :global(.hero-stack) {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    width: 520px;
+    height: 900px;
+  }
+  .top {
+    position: absolute;
+    top: 22px;
+    left: 24px;
+    right: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    z-index: 2;
+  }
+  .brand {
+    font-size: 22px;
+    font-stretch: 125%;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  .menu {
+    display: none;
+  }
+  .nav {
+    display: flex;
+    gap: 4px;
+    padding: 5px;
+    border-radius: 22px;
+  }
+  .nav a {
+    font-size: 14px;
+    padding: 8px 14px;
+    border-radius: 16px;
+    color: rgba(255, 255, 255, 0.75);
+  }
+  .nav a.current {
+    background: rgba(255, 255, 255, 0.12);
+    color: #f2f3f7;
+  }
+  .star {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 16px;
+    border-radius: 22px;
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .copy {
+    position: absolute;
+    left: 64px;
+    top: 176px;
+    width: min(420px, calc(100% - 128px));
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    z-index: 2;
+  }
+  .badge {
+    align-self: flex-start;
+    font-size: 13px;
+    padding: 7px 12px;
+    border-radius: 16px;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  h1 {
+    margin: 0;
+    font-size: 52px;
+    line-height: 1.02;
+    font-weight: 700;
+    font-stretch: 100%;
+    letter-spacing: -0.035em;
+  }
+  .copy p {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .ctas {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .download {
+    height: 46px;
+    padding: 0 22px;
+    border-radius: 23px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 15px;
+    font-weight: 700;
+    color: #2a1404;
+  }
+  .download:hover {
+    color: #2a1404;
+    filter: brightness(1.05);
+  }
+  .found {
+    position: absolute;
+    right: 56px;
+    top: 236px;
+    width: 268px;
+    border-radius: 22px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 2;
+  }
+  .found-cap {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .found-total {
+    font-size: 48px;
+    font-weight: 800;
+    font-stretch: 112%;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+  }
+  .found ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .found li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 34px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 14px;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    flex: none;
+  }
+  .f-name {
+    flex: 1;
+    color: rgba(255, 255, 255, 0.82);
+  }
+  .f-size {
+    font-weight: 600;
+  }
+
+  /* How it works */
+  .how {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 96px 32px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+  .how-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px 64px;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  h2 {
+    margin: 0;
+    font-size: 48px;
+    line-height: 1.04;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    max-width: 14ch;
+  }
+  .how-head p {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.68);
+    max-width: 46ch;
+  }
+  .shelf {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .shelf-stage {
+    width: 100%;
+    aspect-ratio: 2.4;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+    background:
+      radial-gradient(60% 50% at 50% 40%, rgba(70, 110, 255, 0.16), rgba(70, 110, 255, 0) 70%),
+      radial-gradient(70% 30% at 50% 84%, rgba(255, 132, 84, 0.1), rgba(255, 132, 84, 0) 70%),
+      linear-gradient(180deg, #0b0e1c 0%, #06080f 70%);
+  }
+  .shelf-stage :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+  figcaption {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    padding: 0 6%;
+    font-size: 13px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .s-name {
+    display: block;
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .points {
+    display: flex;
+    flex-wrap: wrap;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 24px;
+  }
+  .point {
+    flex: 1 1 300px;
+    padding: 28px 28px 8px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  h3 {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .point p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.64);
+    max-width: 38ch;
+  }
+
+  /* What it cleans */
+  .covers {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 56px 32px 72px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: flex-start;
+  }
+  .covers-text {
+    flex: 1 1 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .covers h2 {
+    font-size: 34px;
+    letter-spacing: -0.03em;
+    max-width: none;
+  }
+  .tools {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tools li {
+    font-size: 14px;
+    padding: 8px 13px;
+    border-radius: 16px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
+  .term {
+    flex: 1 1 380px;
+    border-radius: 22px;
+    padding: 22px 24px;
+    font-family: var(--k-font-mono);
+    font-size: 14px;
+    line-height: 1.9;
+  }
+  .term .c {
+    color: rgba(255, 255, 255, 0.55);
+  }
+  .term .gap {
+    margin-top: 8px;
+  }
+  .term .p {
+    color: #ffb36b;
+  }
+
+  footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 26px 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  /* Narrow screens: copy and panel stack above the art, nav behind a menu. */
+  @media (max-width: 900px) {
+    .hero {
+      height: auto;
+      padding: 96px 16px 380px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .copy,
+    .found {
+      position: relative;
+      left: auto;
+      right: auto;
+      top: auto;
+      width: 100%;
+      max-width: 520px;
+    }
+    h1 {
+      font-size: 40px;
+    }
+    .word {
+      top: auto;
+      bottom: 40px;
+    }
+    :global(.hero-stack) {
+      top: auto;
+      bottom: 0;
+      height: 420px;
+      width: 260px;
+    }
+    .top {
+      left: 16px;
+      right: 16px;
+    }
+    .desk {
+      display: none;
+    }
+    .star {
+      margin-left: auto;
+    }
+    .menu {
+      display: block;
+      position: relative;
+      order: 3;
+    }
+    .menu summary {
+      display: inline-flex;
+      list-style: none;
+      cursor: pointer;
+      padding: 9px 14px;
+      border-radius: 18px;
+      font-size: 14px;
+    }
+    .menu summary::-webkit-details-marker {
+      display: none;
+    }
+    .menu .nav {
+      position: absolute;
+      right: 0;
+      top: 46px;
+      flex-direction: column;
+      min-width: 200px;
+    }
+    .how,
+    .covers {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+    h2 {
+      font-size: 36px;
+    }
+    figcaption {
+      overflow-x: auto;
+      grid-template-columns: repeat(7, minmax(96px, 1fr));
+      padding: 0;
+    }
+  }
+</style>
