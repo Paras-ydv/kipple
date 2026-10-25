@@ -1,10 +1,12 @@
 //! Rust adapters, one module per integration (SPEC §9.2).
 
+pub mod ai;
 pub mod android;
 pub mod docker;
 pub mod huggingface;
 pub mod ollama;
 pub mod playwright;
+pub mod secrets;
 pub mod util;
 pub mod xcode;
 
