@@ -249,7 +249,12 @@ export function buildFixtures(now = Date.now()): Fixtures {
   const nodeModules: [FixtureProject, number][] = [
     [nomad, gb(1.9)], [llm, gb(0.8)], [shop, gb(1.8)], [kipple, gb(0.4)], [portal, gb(2.9)], [portfolio, gb(2.6)], [expense, gb(1.8)],
   ];
-  split(gb(2.7), 34, rand).forEach((b) => nodeModules.push([pickFiller(b), b]));
+  // One node_modules per project: 41 projects in all.
+  split(gb(2.7), 34, rand).forEach((b, i) => {
+    const p = general[i] as FixtureProject;
+    load.set(p, (load.get(p) ?? 0) + b);
+    nodeModules.push([p, b]);
+  });
   nodeModules.forEach(([p, b]) =>
     add({
       integration: 'node-modules', kind: 'node_modules', title: 'node_modules', bytes: b, safety: 'safe',
