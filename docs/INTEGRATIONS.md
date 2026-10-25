@@ -189,6 +189,7 @@ Commands are argv arrays (no shell), may reference only pack vars. They run with
 
 ### 4.5 `docker` (adapter)
 - Connect via `DOCKER_HOST`, then the active Docker context (`~/.docker/config.json` `currentContext` → `~/.docker/contexts/meta/*/meta.json`), then defaults: `/var/run/docker.sock`, `~/.docker/run/docker.sock` (Docker Desktop macOS), `npipe:////./pipe/docker_engine` (Windows). If unreachable: `doctor` says "Docker isn't running — start it to measure images and volumes."
+- Client: a small blocking HTTP client, API v1.41 paths (decision 0008).
 - Data: `GET /system/df` for sizes, plus `/images/json`, `/containers/json?all=1`, `/volumes`, build cache from `/system/df` `BuildCache`.
 - Items and safety:
   - Build cache (all non-in-use records as one item, plus "shared" note) → `Safe`, action `native:docker.builder.prune`.
@@ -197,7 +198,7 @@ Commands are argv arrays (no shell), may reference only pack vars. They run with
   - Volumes not mounted by any container → `Review`; mounted by running container → `Keep`. Show compose project if labelled.
 - Actions via API (remove image/container/volume by id, build cache prune). Never `--force` remove images used by containers.
 - `reclaimable` for images uses shared-size accounting from `/system/df` (`SharedSize`) — an image whose layers are shared reclaims only unique bytes.
-- **`docker-desktop-disk`** (report): macOS `~/Library/Containers/com.docker.docker/Data/vms/0/data/Docker.raw` (verify per Docker Desktop version), Windows `%LOCALAPPDATA%\Docker\wsl\disk\docker_data.vhdx` / `...\wsl\data\ext4.vhdx` (verify). Show logical vs allocated size and explain that pruning inside Docker frees space in the image; whether the host gets it back depends on the Docker Desktop version (v1: guided compaction).
+- **`docker-desktop-disk`** (report, opt-in — decision 0009): macOS `~/Library/Containers/com.docker.docker/Data/vms/0/data/Docker.raw` (verify per Docker Desktop version), Windows `%LOCALAPPDATA%\Docker\wsl\disk\docker_data.vhdx` / `...\wsl\data\ext4.vhdx` (verify). Show logical vs allocated size and explain that pruning inside Docker frees space in the image; whether the host gets it back depends on the Docker Desktop version (v1: guided compaction).
 
 ### 4.6 `android-avd`, `android-system-images` (adapter)
 - SDK root: `ANDROID_HOME` → `ANDROID_SDK_ROOT` → defaults `~/Library/Android/sdk` / `~/Android/Sdk` / `%LOCALAPPDATA%\Android\Sdk`.

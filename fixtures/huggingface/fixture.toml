@@ -1,0 +1,42 @@
+# HF_HOME is ~/.cache/huggingface in the test home.
+[[file]]
+path = ".cache/huggingface/hub/models--acme--tiny/refs/main"
+content = "rev2"
+[[file]]
+path = ".cache/huggingface/hub/models--acme--tiny/blobs/b-config"
+size = 500
+[[file]]
+path = ".cache/huggingface/hub/models--acme--tiny/blobs/b-weights-new"
+size = 40000
+[[file]]
+path = ".cache/huggingface/hub/models--acme--tiny/blobs/b-weights-old"
+size = 30000
+[[symlink]]
+path = ".cache/huggingface/hub/models--acme--tiny/snapshots/rev2/config.json"
+target = ".cache/huggingface/hub/models--acme--tiny/blobs/b-config"
+[[symlink]]
+path = ".cache/huggingface/hub/models--acme--tiny/snapshots/rev2/model.safetensors"
+target = ".cache/huggingface/hub/models--acme--tiny/blobs/b-weights-new"
+[[symlink]]
+path = ".cache/huggingface/hub/models--acme--tiny/snapshots/rev1/config.json"
+target = ".cache/huggingface/hub/models--acme--tiny/blobs/b-config"
+[[symlink]]
+path = ".cache/huggingface/hub/models--acme--tiny/snapshots/rev1/model.safetensors"
+target = ".cache/huggingface/hub/models--acme--tiny/blobs/b-weights-old"
+
+[[file]]
+path = ".cache/huggingface/hub/datasets--squad/refs/main"
+content = "r1"
+[[file]]
+path = ".cache/huggingface/hub/datasets--squad/blobs/d1"
+size = 8000
+[[symlink]]
+path = ".cache/huggingface/hub/datasets--squad/snapshots/r1/train.parquet"
+target = ".cache/huggingface/hub/datasets--squad/blobs/d1"
+
+[[file]]
+path = ".cache/huggingface/hub/.locks/models--acme--tiny/x.lock"
+content = ""
+[[file]]
+path = ".cache/huggingface/xet/env/chunk_cache/c1"
+size = 6000

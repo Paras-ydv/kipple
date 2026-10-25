@@ -1,0 +1,45 @@
+---
+source: crates/kipple-adapters/tests/platform.rs
+expression: "snapshot(\"android-system-images\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 70000,
+    "integration": "android-system-images",
+    "kind": "android_system_image",
+    "locator": [
+      "~/Android/Sdk/system-images/android-34/default/x86_64"
+    ],
+    "notes": 0,
+    "project": null,
+    "reasons": [
+      "UNUSED_BY_ANY_EMULATOR",
+      "REDOWNLOADABLE"
+    ],
+    "reclaimable_is_less": false,
+    "restore_hint": "sdkmanager \"system-images;android-34;default;x86_64\"",
+    "safety": "safe",
+    "title": "Android image android-34 default x86_64"
+  },
+  {
+    "actions": [],
+    "apparent": 80000,
+    "integration": "android-system-images",
+    "kind": "android_system_image",
+    "locator": [
+      "~/Android/Sdk/system-images/android-35/google_apis/arm64-v8a"
+    ],
+    "notes": 0,
+    "project": null,
+    "reasons": [
+      "USED_BY_EMULATOR"
+    ],
+    "reclaimable_is_less": false,
+    "restore_hint": "sdkmanager \"system-images;android-35;google_apis;arm64-v8a\"",
+    "safety": "keep",
+    "title": "Android image android-35 google_apis arm64-v8a"
+  }
+]

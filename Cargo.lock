@@ -1639,6 +1639,7 @@ dependencies = [
  "insta",
  "jiff",
  "kipple-core",
+ "kipple-packs",
  "rusqlite",
  "serde",
  "serde_json",

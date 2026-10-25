@@ -54,11 +54,11 @@ Spec references: `SPEC.md §n`, `INTEGRATIONS.md §n`, `UI.md §n`.
 - **Done when:** clean → undo round-trip works on fixtures on all three OSes.
 
 ### M5 — Platform adapters
-- [ ] `docker` + `docker-desktop-disk` (report) (`INTEGRATIONS.md §4.5`) — integration test against a real Docker service on Linux CI
-- [ ] `android-avd` + `android-system-images` (§4.6)
-- [ ] `xcode-derived-data` + `ios-device-support` (§4.7, macOS only)
-- [ ] `playwright` (§4.8)
-- [ ] `ollama`, `huggingface` (§4.14–4.15)
+- [x] `docker` + `docker-desktop-disk` (report) (`INTEGRATIONS.md §4.5`) — integration test against a real Docker service on Linux CI
+- [x] `android-avd` + `android-system-images` (§4.6)
+- [x] `xcode-derived-data` + `ios-device-support` (§4.7, macOS only)
+- [x] `playwright` (§4.8)
+- [x] `ollama`, `huggingface` (§4.14–4.15)
 - **Done when:** each adapter has fixtures, snapshots, action tests and a docs page.
 
 ### M6 — AI history adapters

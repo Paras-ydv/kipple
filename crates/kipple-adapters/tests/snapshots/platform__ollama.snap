@@ -1,0 +1,77 @@
+---
+source: crates/kipple-adapters/tests/platform.rs
+expression: "snapshot(\"ollama\")"
+---
+[
+  {
+    "actions": [],
+    "apparent": 4100,
+    "integration": "ollama",
+    "kind": "ollama_model",
+    "locator": "ollama:hf.co/someone/tiny:q4",
+    "notes": 0,
+    "project": null,
+    "reasons": [
+      "NATIVE_TOOL_MISSING",
+      "LARGE_REDOWNLOAD"
+    ],
+    "reclaimable_is_less": false,
+    "restore_hint": "ollama pull hf.co/someone/tiny:q4",
+    "safety": "keep",
+    "title": "hf.co/someone/tiny:q4 (Ollama)"
+  },
+  {
+    "actions": [],
+    "apparent": 57100,
+    "integration": "ollama",
+    "kind": "ollama_model",
+    "locator": "ollama:llama3:8b",
+    "notes": 1,
+    "project": null,
+    "reasons": [
+      "NATIVE_TOOL_MISSING",
+      "LARGE_REDOWNLOAD"
+    ],
+    "reclaimable_is_less": true,
+    "restore_hint": "ollama pull llama3:8b",
+    "safety": "keep",
+    "title": "llama3:8b (Ollama)"
+  },
+  {
+    "actions": [],
+    "apparent": 53100,
+    "integration": "ollama",
+    "kind": "ollama_model",
+    "locator": "ollama:llama3:latest",
+    "notes": 1,
+    "project": null,
+    "reasons": [
+      "NATIVE_TOOL_MISSING",
+      "LARGE_REDOWNLOAD"
+    ],
+    "reclaimable_is_less": true,
+    "restore_hint": "ollama pull llama3:latest",
+    "safety": "keep",
+    "title": "llama3:latest (Ollama)"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 9000,
+    "integration": "ollama",
+    "kind": "ollama_orphan_blobs",
+    "locator": [
+      "~/.ollama/models/blobs/sha256-dd"
+    ],
+    "notes": 0,
+    "project": null,
+    "reasons": [
+      "REGENERABLE"
+    ],
+    "reclaimable_is_less": false,
+    "restore_hint": null,
+    "safety": "safe",
+    "title": "Unused Ollama files (1)"
+  }
+]

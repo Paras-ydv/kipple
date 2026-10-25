@@ -1,0 +1,87 @@
+---
+source: crates/kipple-adapters/tests/platform.rs
+expression: "snapshot(\"huggingface\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 8125,
+    "integration": "huggingface",
+    "kind": "hf_dataset",
+    "locator": [
+      "~/.cache/huggingface/hub/datasets--squad"
+    ],
+    "notes": 0,
+    "project": null,
+    "reasons": [
+      "LARGE_REDOWNLOAD"
+    ],
+    "reclaimable_is_less": false,
+    "restore_hint": null,
+    "safety": "review",
+    "title": "squad (Hugging Face dataset)"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 71042,
+    "integration": "huggingface",
+    "kind": "hf_model",
+    "locator": [
+      "~/.cache/huggingface/hub/models--acme--tiny"
+    ],
+    "notes": 1,
+    "project": null,
+    "reasons": [
+      "LARGE_REDOWNLOAD"
+    ],
+    "reclaimable_is_less": true,
+    "restore_hint": null,
+    "safety": "review",
+    "title": "acme/tiny (Hugging Face model)"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 6000,
+    "integration": "huggingface",
+    "kind": "hf_xet_cache",
+    "locator": [
+      "~/.cache/huggingface/xet"
+    ],
+    "notes": 0,
+    "project": null,
+    "reasons": [
+      "LARGE_REDOWNLOAD"
+    ],
+    "reclaimable_is_less": false,
+    "restore_hint": null,
+    "safety": "review",
+    "title": "Hugging Face Xet cache"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 30000,
+    "integration": "huggingface",
+    "kind": "hf_old_revisions",
+    "locator": [
+      "~/.cache/huggingface/hub/models--acme--tiny/snapshots/rev1",
+      "~/.cache/huggingface/hub/models--acme--tiny/blobs/b-weights-old"
+    ],
+    "notes": 0,
+    "project": null,
+    "reasons": [
+      "REDOWNLOADABLE"
+    ],
+    "reclaimable_is_less": false,
+    "restore_hint": null,
+    "safety": "safe",
+    "title": "acme/tiny: 1 old revision"
+  }
+]

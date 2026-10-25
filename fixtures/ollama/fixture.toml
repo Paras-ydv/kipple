@@ -1,0 +1,36 @@
+# OLLAMA_MODELS is ~/.ollama/models in the test home.
+[[file]]
+path = ".ollama/models/manifests/registry.ollama.ai/library/llama3/latest"
+content = '{"schemaVersion":2,"mediaType":"application/vnd.docker.distribution.manifest.v2+json","config":{"digest":"sha256:c0"},"layers":[{"digest":"sha256:aa"},{"digest":"sha256:bb"}]}'
+[[file]]
+path = ".ollama/models/manifests/registry.ollama.ai/library/llama3/8b"
+content = '{"schemaVersion":2,"config":{"digest":"sha256:c0"},"layers":[{"digest":"sha256:aa"},{"digest":"sha256:cc"}]}'
+[[file]]
+path = ".ollama/models/manifests/hf.co/someone/tiny/q4"
+content = '{"schemaVersion":2,"config":{"digest":"sha256:c1"},"layers":[{"digest":"sha256:ee"}]}'
+[[file]]
+path = ".ollama/models/blobs/sha256-aa"
+size = 50000
+[[file]]
+path = ".ollama/models/blobs/sha256-bb"
+size = 3000
+[[file]]
+path = ".ollama/models/blobs/sha256-cc"
+size = 7000
+[[file]]
+path = ".ollama/models/blobs/sha256-c0"
+size = 100
+[[file]]
+path = ".ollama/models/blobs/sha256-c1"
+size = 100
+[[file]]
+path = ".ollama/models/blobs/sha256-ee"
+size = 4000
+# Not referenced by any manifest.
+[[file]]
+path = ".ollama/models/blobs/sha256-dd"
+size = 9000
+# A download in progress is never touched.
+[[file]]
+path = ".ollama/models/blobs/sha256-ff-partial"
+size = 1000

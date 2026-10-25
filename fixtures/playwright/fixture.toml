@@ -1,0 +1,16 @@
+# PLAYWRIGHT_BROWSERS_PATH is ~/.cache/ms-playwright in the test home.
+[[file]]
+path = ".cache/ms-playwright/chromium-1140/chrome-linux/chrome"
+size = 20000
+[[file]]
+path = ".cache/ms-playwright/chromium-1187/chrome-linux/chrome"
+size = 21000
+[[file]]
+path = ".cache/ms-playwright/chromium_headless_shell-1187/shell"
+size = 9000
+[[file]]
+path = ".cache/ms-playwright/firefox-1489/firefox"
+size = 15000
+[[file]]
+path = ".cache/ms-playwright/.links/abc123"
+content = "/some/project"

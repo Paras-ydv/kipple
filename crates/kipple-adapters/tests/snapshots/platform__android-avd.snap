@@ -1,0 +1,47 @@
+---
+source: crates/kipple-adapters/tests/platform.rs
+expression: "snapshot(\"android-avd\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 30000,
+    "integration": "android-avd",
+    "kind": "android_avd_snapshots",
+    "locator": [
+      "~/.android/avd/Pixel_8_API_35.avd/snapshots"
+    ],
+    "notes": 0,
+    "project": null,
+    "reasons": [
+      "REGENERABLE"
+    ],
+    "reclaimable_is_less": false,
+    "restore_hint": null,
+    "safety": "review",
+    "title": "Pixel 8 API 35 Quick Boot snapshots"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 90194,
+    "integration": "android-avd",
+    "kind": "android_avd",
+    "locator": [
+      "~/.android/avd/Pixel_8_API_35.ini",
+      "~/.android/avd/Pixel_8_API_35.avd"
+    ],
+    "notes": 1,
+    "project": null,
+    "reasons": [
+      "CONTAINS_USER_DATA"
+    ],
+    "reclaimable_is_less": true,
+    "restore_hint": null,
+    "safety": "review",
+    "title": "Pixel 8 API 35 emulator"
+  }
+]

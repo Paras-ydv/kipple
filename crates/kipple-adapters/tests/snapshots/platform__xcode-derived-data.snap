@@ -1,0 +1,47 @@
+---
+source: crates/kipple-adapters/tests/platform.rs
+expression: "snapshot(\"xcode-derived-data\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 5000,
+    "integration": "xcode-derived-data",
+    "kind": "xcode_derived_data",
+    "locator": [
+      "~/Library/Developer/Xcode/DerivedData/ModuleCache.noindex"
+    ],
+    "notes": 0,
+    "project": null,
+    "reasons": [
+      "REGENERABLE"
+    ],
+    "reclaimable_is_less": false,
+    "restore_hint": null,
+    "safety": "safe",
+    "title": "Xcode module cache"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 40162,
+    "integration": "xcode-derived-data",
+    "kind": "xcode_derived_data",
+    "locator": [
+      "~/Library/Developer/Xcode/DerivedData/Nomad-bhyzkqfjwuxgatcdomrnlfebpvsa"
+    ],
+    "notes": 0,
+    "project": "Nomad",
+    "reasons": [
+      "REGENERABLE",
+      "ORPHANED_PROJECT"
+    ],
+    "reclaimable_is_less": false,
+    "restore_hint": null,
+    "safety": "safe",
+    "title": "Nomad build data (Xcode)"
+  }
+]

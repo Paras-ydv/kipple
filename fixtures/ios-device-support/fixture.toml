@@ -1,0 +1,9 @@
+[[file]]
+path = "Library/Developer/Xcode/iOS DeviceSupport/17.4 (21E219)/Symbols/dyld"
+size = 30000
+[[file]]
+path = "Library/Developer/Xcode/iOS DeviceSupport/iPhone16,2 18.1 (22B83)/Symbols/dyld"
+size = 32000
+[[file]]
+path = "Library/Developer/Xcode/watchOS DeviceSupport/10.4 (21T216)/Symbols/dyld"
+size = 9000

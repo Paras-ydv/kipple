@@ -114,7 +114,7 @@ kipple/
 | Parallelism | `rayon` |
 | Serialization | `serde`, `serde_json`, `toml` |
 | SQLite | `rusqlite` with `bundled` feature |
-| Docker | `bollard` |
+| Docker | small blocking client over the socket (decision 0008) |
 | OS dirs | `directories` |
 | Trash | `trash` |
 | Processes | `sysinfo` |
