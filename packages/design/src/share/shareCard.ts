@@ -1,5 +1,8 @@
 // Reference implementation of the share card SVG (docs/UI.md §5).
 // kipple-share renders the same SVG with resvg; keep the two in step.
+// resvg does not apply variable-font axes, so the SVG names the static Mona Sans
+// families first (packages/design/fonts/*.ttf); browsers fall back to the
+// variable 'Mona Sans' with font-stretch.
 
 import { formatBytes } from '../format.ts';
 import { layoutStack, stackDefs, stackSvg, type StackLayer } from '../stack.ts';
@@ -107,8 +110,8 @@ export function renderShareCardSvg(input: ShareCardInput): string {
     '</defs>',
     `<rect width="${SHARE_WIDTH}" height="${SHARE_HEIGHT}" fill="#06080F"/>`,
     ['g1', 'g2', 'g3', 'g4'].map((g) => `<rect width="${SHARE_WIDTH}" height="${SHARE_HEIGHT}" fill="url(#${id}-${g})"/>`).join(''),
-    `<text x="64" y="86" font-size="26" font-weight="800" font-stretch="125%" letter-spacing="-0.78" fill="#F4F5F8">kipple</text>`,
-    `<text font-size="${size}" font-weight="800" font-stretch="108%" letter-spacing="${(-0.04 * size).toFixed(2)}" fill="#F4F5F8">`,
+    `<text x="64" y="86" font-family="'Mona Sans Expanded', 'Mona Sans', sans-serif" font-size="26" font-weight="800" font-stretch="125%" letter-spacing="-0.78" fill="#F4F5F8">kipple</text>`,
+    `<text font-family="'Mona Sans Display SemiExpanded', 'Mona Sans', sans-serif" font-size="${size}" font-weight="800" font-stretch="108%" letter-spacing="${(-0.04 * size).toFixed(2)}" fill="#F4F5F8">`,
     `<tspan x="64" y="${base1}">${esc(line1)}</tspan><tspan x="64" y="${base2}">${esc(line2)}</tspan></text>`,
     chips,
     `<text x="64" y="574" font-size="16" font-weight="400" fill="rgba(255,255,255,.62)">Found with kipple, an open-source disk cleaner for developers. <tspan fill="#FFFFFF">${SHARE_URL}</tspan></text>`,
