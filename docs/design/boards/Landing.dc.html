@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>kipple website</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+@font-face{font-family:'Mona Sans';src:url(/_blob/9d3bb58a8c83c662765171fbfd515175) format('woff2');font-weight:200 900;font-stretch:75% 125%;font-display:swap}
+body{margin:0;background:#06080f}
+a{color:inherit}a:hover{color:#fff}
+.hero-bg{background:#06080f url(/_blob/6e83fb0314e4664d91366706ff54bc64) center/cover no-repeat}
+.hero-cut{background:url(/_blob/6e83fb0314e4664d91366706ff54bc64) center/cover no-repeat;-webkit-mask:url(/_blob/b0e018c6fcf195a26b1e731f4ae64342) center/cover no-repeat;mask:url(/_blob/b0e018c6fcf195a26b1e731f4ae64342) center/cover no-repeat}
+.word{background:linear-gradient(180deg,rgba(255,255,255,.96) 0%,rgba(255,255,255,.78) 55%,rgba(255,255,255,.08) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.glass{background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04));-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.38),0 14px 40px rgba(0,0,0,.3)}
+.tint{background:linear-gradient(180deg,#ffd29a 0%,#ff9f4d 100%);border:1px solid rgba(255,255,255,.45);box-shadow:inset 0 1px 0 rgba(255,255,255,.8),inset 0 -3px 8px rgba(150,60,0,.3),0 10px 30px rgba(255,150,70,.35)}
+.shelf{background:#06080f url(/_blob/574fdca35dbaa58888cb2300c129f84a) center/cover no-repeat}
+</style>
+</helmet>
+<div style="width: 100%; background: #06080f; color: #F2F3F7; font-family: 'Mona Sans', -apple-system, 'Inter', sans-serif; font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased; overflow: hidden">
+
+  <section aria-label="kipple" style="position: relative; height: 900px; overflow: hidden">
+    <div class="hero-bg" aria-hidden="true" style="position: absolute; inset: 0"></div>
+    <div class="word" aria-hidden="true" style="position: absolute; left: 50%; top: 545px; transform: translateX(-50%); font-size: clamp(150px, 27vw, 440px); font-stretch: 125%; font-weight: 800; letter-spacing: -0.055em; line-height: 0.82; white-space: nowrap">kipple</div>
+    <div class="hero-cut" aria-hidden="true" style="position: absolute; inset: 0"></div>
+
+    <header style="position: absolute; top: 22px; left: 24px; right: 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap">
+      <a href="#" style="text-decoration: none; font-size: 22px; font-stretch: 125%; font-weight: 800; letter-spacing: -0.03em">kipple</a>
+      <nav class="glass" aria-label="Site" style="display: flex; gap: 4px; padding: 5px; border-radius: 22px">
+        <a href="#how" style="text-decoration: none; font-size: 14px; padding: 8px 14px; border-radius: 16px; background: rgba(255,255,255,.12)">How it works</a>
+        <a href="#covers" style="text-decoration: none; font-size: 14px; padding: 8px 14px; color: rgba(255,255,255,.75)">What it cleans</a>
+        <a href="#" style="text-decoration: none; font-size: 14px; padding: 8px 14px; color: rgba(255,255,255,.75)">Docs</a>
+        <a href="#" style="text-decoration: none; font-size: 14px; padding: 8px 14px; color: rgba(255,255,255,.75)">Changelog</a>
+      </nav>
+      <a href="https://github.com/Paras-ydv/kipple" class="glass" style="text-decoration: none; font-size: 14px; font-weight: 600; padding: 10px 16px; border-radius: 22px; display: inline-flex; gap: 8px; align-items: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"></path></svg>Star on GitHub</a>
+    </header>
+
+    <div style="position: absolute; left: 64px; top: 176px; width: min(400px, calc(100% - 128px)); display: flex; flex-direction: column; gap: 18px">
+      <span class="glass" style="align-self: flex-start; font-size: 13px; padding: 7px 12px; border-radius: 16px; color: rgba(255,255,255,.85)">Open source. Mac, Linux and Windows.</span>
+      <h1 style="margin: 0; font-size: 52px; line-height: 1.02; font-weight: 700; font-stretch: 100%; letter-spacing: -0.035em">Your dev tools are hoarding.</h1>
+      <p style="margin: 0; font-size: 17px; line-height: 1.55; color: rgba(255,255,255,.7)">kipple finds the node_modules, Docker layers, emulators and AI chat logs piling up on your machine, tells you what is safe to remove, and gives you the space back with a 7 day undo.</p>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px">
+        <a href="#" class="tint" style="text-decoration: none; height: 46px; padding: 0 22px; border-radius: 23px; display: inline-flex; align-items: center; font-size: 15px; font-weight: 700; color: #2a1404">Download for Mac</a>
+        <button type="button" class="glass" style="font: inherit; color: inherit; height: 46px; padding: 0 16px; border-radius: 23px; display: inline-flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer"><span style="font-family: ui-monospace, 'SF Mono', Menlo, monospace">brew install kipple</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" aria-label="Copy"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"></path></svg></button>
+      </div>
+    </div>
+
+    <aside class="glass" aria-label="What kipple found on one Mac" style="position: absolute; right: 56px; top: 236px; width: 268px; border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 4px">
+      <span style="font-size: 13px; color: rgba(255,255,255,.6)">Found on one 512 GB MacBook</span>
+      <span style="font-size: 48px; font-weight: 800; font-stretch: 112%; letter-spacing: -0.04em; line-height: 1.05">184 GB</span>
+      <sc-for list="{{found}}" as="f" hint-placeholder-count="4">
+        <div style="display: flex; align-items: center; gap: 10px; height: 34px; border-top: 1px solid rgba(255,255,255,.1); font-size: 14px">
+          <span style="width: 8px; height: 8px; border-radius: 4px; background: {{f.color}}"></span>
+          <span style="flex: 1; color: rgba(255,255,255,.82)">{{f.name}}</span>
+          <span style="font-weight: 600">{{f.size}}</span>
+        </div>
+      </sc-for>
+    </aside>
+  </section>
+
+  <section id="how" style="max-width: 1240px; margin: 0 auto; padding: 96px 32px 40px; display: flex; flex-direction: column; gap: 36px">
+    <div style="display: flex; flex-wrap: wrap; gap: 24px 64px; align-items: flex-end; justify-content: space-between">
+      <h2 style="margin: 0; font-size: 48px; line-height: 1.04; font-weight: 700; letter-spacing: -0.035em; max-width: 14ch">Every project, as a stack.</h2>
+      <p style="margin: 0; font-size: 17px; line-height: 1.55; color: rgba(255,255,255,.68); max-width: 46ch">Each glass slab is something kipple can measure: dependencies, build output, Docker data, emulators, models, chat history. Projects you haven't opened in months turn dull.</p>
+    </div>
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 14px">
+      <div class="shelf" role="img" aria-label="Seven stacks of glass slabs, one per project, as tall as the space each takes. Three are dull because they have not been touched in months." style="width: 100%; aspect-ratio: 2.4; border-radius: 28px; box-shadow: 0 0 0 1px rgba(255,255,255,.08)"></div>
+      <figcaption style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); padding: 0 6%; font-size: 13px; text-align: center; color: rgba(255,255,255,.6)">
+        <sc-for list="{{shelf}}" as="s" hint-placeholder-count="7"><span><span style="display: block; color: {{s.c}}; font-weight: 600; font-size: 14px">{{s.n}}</span>{{s.d}}</span></sc-for>
+      </figcaption>
+    </figure>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 0; border-top: 1px solid rgba(255,255,255,.1); margin-top: 24px">
+      <sc-for list="{{points}}" as="p" hint-placeholder-count="3">
+        <div style="flex: 1 1 300px; padding: 28px 28px 8px 0; display: flex; flex-direction: column; gap: 10px">
+          <h3 style="margin: 0; font-size: 21px; font-weight: 700; letter-spacing: -0.02em">{{p.t}}</h3>
+          <p style="margin: 0; font-size: 15px; line-height: 1.55; color: rgba(255,255,255,.64); max-width: 38ch">{{p.b}}</p>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="covers" style="max-width: 1240px; margin: 0 auto; padding: 56px 32px 72px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+    <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 18px">
+      <h2 style="margin: 0; font-size: 34px; font-weight: 700; letter-spacing: -0.03em">Knows where your tools hide things</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+        <sc-for list="{{tools}}" as="t" hint-placeholder-count="18"><span class="glass" style="font-size: 14px; padding: 8px 13px; border-radius: 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,.25)">{{t}}</span></sc-for>
+      </div>
+    </div>
+    <div class="glass" style="flex: 1 1 380px; border-radius: 22px; padding: 22px 24px; font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 14px; line-height: 1.9">
+      <div style="color: rgba(255,255,255,.45)"># see what's there. Nothing is touched.</div>
+      <div><span style="color: #ffb36b">$</span> kipple scan</div>
+      <div style="color: rgba(255,255,255,.45); margin-top: 8px"># remove only what's safe, with undo</div>
+      <div><span style="color: #ffb36b">$</span> kipple clean --safe-only</div>
+      <div><span style="color: #ffb36b">$</span> kipple undo</div>
+    </div>
+  </section>
+
+  <footer style="border-top: 1px solid rgba(255,255,255,.08); padding: 26px 32px; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; font-size: 13px; color: rgba(255,255,255,.5)">
+    <span>kipple is free and open source under MIT and Apache 2.0. No telemetry.</span>
+    <a href="https://github.com/Paras-ydv/kipple">github.com/Paras-ydv/kipple</a>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1880}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      found: [
+        { name: 'Docker', size: '61.2 GB', color: '#2f6bff' },
+        { name: 'AI chat history', size: '38.9 GB', color: '#8b5cf6' },
+        { name: 'Package caches', size: '27.5 GB', color: '#ffb020' },
+        { name: 'Emulators and the rest', size: '56.4 GB', color: '#12c8c2' }
+      ],
+      shelf: [
+        { n: 'nomad-app', d: '14.2 GB, 7 months', c: '#c9cfda' }, { n: 'llm-bench', d: '9.7 GB', c: '#fff' },
+        { n: 'android-shop', d: '8.4 GB', c: '#fff' }, { n: 'kipple', d: '6.1 GB', c: '#fff' },
+        { n: 'client-portal', d: '5.8 GB', c: '#fff' }, { n: 'portfolio-v3', d: '3.9 GB, 1 year', c: '#c9cfda' },
+        { n: 'rn-expense', d: '3.4 GB, 9 months', c: '#c9cfda' }
+      ],
+      points: [
+        { t: 'Knows what is safe', b: 'Every item comes with a reason: npm install brings it back, no emulator uses it, it holds database rows. You see Safe, Review or Keep before anything moves.' },
+        { t: 'Undo for 7 days', b: 'Deletes go to quarantine first. Where a tool has its own cleanup command, like docker or codex delete, kipple uses it instead.' },
+        { t: 'Understands AI tools', b: 'Codex sessions, Cursor chat databases, Claude Code transcripts and Antigravity history, cleaned the way each tool expects. It also flags API keys you pasted into chats.' }
+      ],
+      tools: ['node_modules', '.venv', 'target', 'Gradle', 'Docker', 'Android emulators', 'Xcode', 'Playwright', 'Homebrew', 'npm', 'pnpm', 'uv', 'pip', 'Claude Code', 'Codex', 'Cursor', 'Antigravity', 'Ollama', 'Hugging Face']
+    };
+  }
+}
+</script>
+</body>
+</html>

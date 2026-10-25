@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>kipple terminal UI</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1120px; height: 700px; box-sizing: border-box; background: #1A1F26; color: #D9DEE3; font-family: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace; font-size: 14px; line-height: 20px; padding: 18px 22px; display: flex; flex-direction: column; gap: 0; white-space: pre; border-radius: 12px; border: 1px solid #323A45; overflow: hidden">
+
+  <div style="display: flex; justify-content: space-between; background: #E9ECEF; color: #1A1F26; padding: 0 8px; font-weight: 700"><span> kipple   184 GB reclaimable   76.5 GB safe   107.5 GB review</span><span style="font-weight: 500">scanned 2m ago </span></div>
+  <div style="display: flex; gap: 24px; padding: 4px 8px 0; color: #8E99A6"><span style="color: #E9ECEF; font-weight: 700; text-decoration: underline; text-underline-offset: 4px">1 Overview</span><span>2 Projects</span><span>3 AI history</span><span>4 Plan</span><span>5 Quarantine</span></div>
+  <div> </div>
+
+  <div style="display: flex; height: 20px; gap: 2px; padding: 0 8px" aria-hidden="true">
+    <span style="width: 33.3%; background: #2f6bff"></span>
+    <span style="width: 21.1%; background: #8b5cf6"></span>
+    <span style="width: 14.9%; background: #ffb020"></span>
+    <span style="width: 13.0%; background: #3ccb5a"></span>
+    <span style="width: 11.8%; background: #12c8c2"></span>
+    <span style="width: 5.9%; background: #ff5c8a"></span>
+  </div>
+  <div style="display: flex; gap: 22px; padding: 2px 8px 0; color: #8E99A6"><span><span style="color: #2f6bff">█</span> containers</span><span><span style="color: #8b5cf6">█</span> ai history</span><span><span style="color: #ffb020">█</span> caches</span><span><span style="color: #3ccb5a">█</span> artifacts</span><span><span style="color: #12c8c2">█</span> mobile</span><span><span style="color: #ff5c8a">█</span> models</span></div>
+  <div> </div>
+
+  <div style="display: flex; gap: 20px; flex: 1; min-height: 0">
+    <div style="flex: 0 0 470px; border: 1px solid #3A4350; border-radius: 6px; padding: 6px 0; display: flex; flex-direction: column">
+      <div style="padding: 0 12px; color: #8E99A6"> Category          Items   Reclaimable      Safe</div>
+      <sc-for list="{{cats}}" as="c" hint-placeholder-count="6">
+        <div style="padding: 0 12px; background: {{c.bg}}; color: {{c.fg}}">{{c.line}}</div>
+      </sc-for>
+      <div style="margin-top: auto; padding: 0 12px; color: #8E99A6"> 6 categories   568 items</div>
+    </div>
+
+    <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+      <div style="border: 1px solid #3A4350; border-radius: 6px; padding: 6px 0; display: flex; flex-direction: column">
+        <div style="padding: 0 12px; color: #8E99A6"> Containers                               Size   Safety</div>
+        <sc-for list="{{items}}" as="i" hint-placeholder-count="6">
+          <div style="padding: 0 12px; background: {{i.bg}}"><span style="color: {{i.boxColor}}">{{i.box}}</span>{{i.name}}<span style="color: {{i.safetyColor}}">{{i.safety}}</span></div>
+        </sc-for>
+      </div>
+      <div style="border: 1px solid #3A4350; border-radius: 6px; padding: 8px 12px; display: flex; flex-direction: column; white-space: normal">
+        <div style="color: #E9ECEF; font-weight: 700">Volume nomad_pgdata   6.1 GB   <span style="color: #E6A740">review</span></div>
+        <div style="color: #A3ADB8">Docker volume from the nomad-app compose project. No container mounts it.</div>
+        <div style="color: #A3ADB8">It holds Postgres data, so removing it deletes those database rows for good.</div>
+        <div style="color: #8E99A6; margin-top: 6px">Action: docker volume rm (no undo)</div>
+      </div>
+    </div>
+  </div>
+
+  <div> </div>
+  <div style="display: flex; justify-content: space-between; padding: 0 8px; color: #A3ADB8"><span>Selected <span style="color: #6FC08F; font-weight: 700">22.1 GB</span> in 2 items</span><span>press <span style="color: #E9ECEF; font-weight: 700">c</span> to make a plan</span></div>
+  <div style="display: flex; gap: 22px; padding: 4px 8px 0; color: #8E99A6; border-top: 1px solid #323A45; margin-top: 6px">
+    <sc-for list="{{keys}}" as="k" hint-placeholder-count="8"><span><span style="color: #E9ECEF; font-weight: 700">{{k.key}}</span> {{k.label}}</span></sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1120,"height":700}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const pad = (s, n) => (s + ' '.repeat(n)).slice(0, n);
+    const lpad = (s, n) => (' '.repeat(n) + s).slice(-n);
+    const rows = [
+      ['Containers', '31', '61.2 GB', '22.1 GB'],
+      ['AI history', '412', '38.9 GB', '—'],
+      ['Package caches', '14', '27.5 GB', '27.5 GB'],
+      ['Project artifacts', '96', '24.0 GB', '18.7 GB'],
+      ['Mobile', '9', '21.6 GB', '8.2 GB'],
+      ['Models', '6', '10.8 GB', '—']
+    ];
+    const cats = rows.map(([n, i, r, s], idx) => ({
+      line: (idx === 0 ? '▸' : ' ') + pad(n, 17) + lpad(i, 6) + lpad(r, 14) + lpad(s, 10),
+      bg: idx === 0 ? '#2E3742' : 'transparent',
+      fg: idx === 0 ? '#FFFFFF' : '#D9DEE3'
+    }));
+    const it = [
+      [true, 'Docker build cache', '14.3 GB', 'safe'],
+      [true, '19 dangling images', '7.8 GB', 'safe'],
+      [false, 'volume nomad_pgdata', '6.1 GB', 'review'],
+      [false, 'volume shop_redis', '2.3 GB', 'review'],
+      [false, 'image postgres:16 (unused)', '0.4 GB', 'review'],
+      [false, '7 stopped containers', '1.2 GB', 'review']
+    ];
+    const items = it.map(([sel, n, s, saf], idx) => ({
+      box: sel ? ' [x] ' : ' [ ] ',
+      boxColor: sel ? '#6FC08F' : '#8E99A6',
+      name: pad(n, 30) + lpad(s, 10) + '   ',
+      safety: saf,
+      safetyColor: saf === 'safe' ? '#6FC08F' : '#E6A740',
+      bg: idx === 2 ? '#2E3742' : 'transparent'
+    }));
+    const keys = [
+      { key: 'space', label: 'select' }, { key: 'a', label: 'all safe' }, { key: 'e', label: 'explain' },
+      { key: 'c', label: 'make plan' }, { key: '/', label: 'filter' }, { key: 's', label: 'sort' },
+      { key: '?', label: 'help' }, { key: 'q', label: 'quit' }
+    ];
+    return { cats, items, keys };
+  }
+}
+</script>
+</body>
+</html>

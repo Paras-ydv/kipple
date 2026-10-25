@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>kipple share card</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+@font-face{font-family:'Mona Sans';src:url(/_blob/9d3bb58a8c83c662765171fbfd515175) format('woff2');font-weight:200 900;font-stretch:75% 125%;font-display:swap}
+body{margin:0}
+.bg{background:#06080f url(/_blob/ac440e39e65a50df3ddbf822b76bc55d) center/cover no-repeat}
+.chip{background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04));-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+</style>
+</helmet>
+<div class="bg" style="width: 1200px; height: 630px; position: relative; overflow: hidden; color: #F4F5F8; font-family: 'Mona Sans', -apple-system, sans-serif; font-variant-numeric: tabular-nums">
+  <div style="position: absolute; left: 64px; top: 56px; bottom: 52px; width: 600px; display: flex; flex-direction: column">
+    <span style="font-size: 26px; font-stretch: 125%; font-weight: 800; letter-spacing: -0.03em">kipple</span>
+    <h1 style="margin: 44px 0 0; font-size: 64px; line-height: 1.02; font-weight: 800; font-stretch: 108%; letter-spacing: -0.04em">My Mac was hiding {{total}} of kipple.</h1>
+    <div style="display: flex; gap: 10px; margin-top: auto; flex-wrap: wrap">
+      <span class="chip" style="display: inline-flex; align-items: center; gap: 9px; padding: 10px 14px; border-radius: 18px; font-size: 17px"><span style="width: 10px; height: 10px; border-radius: 5px; background: #2f6bff"></span><b style="font-weight: 700">61.2 GB</b> Docker</span>
+      <span class="chip" style="display: inline-flex; align-items: center; gap: 9px; padding: 10px 14px; border-radius: 18px; font-size: 17px"><span style="width: 10px; height: 10px; border-radius: 5px; background: #8b5cf6"></span><b style="font-weight: 700">38.9 GB</b> AI chat history</span>
+      <span class="chip" style="display: inline-flex; align-items: center; gap: 9px; padding: 10px 14px; border-radius: 18px; font-size: 17px"><span style="width: 10px; height: 10px; border-radius: 5px; background: #ffb020"></span><b style="font-weight: 700">27.5 GB</b> caches</span>
+    </div>
+    <span style="margin-top: 22px; font-size: 16px; color: rgba(255,255,255,.62)">Found with kipple, an open-source disk cleaner for developers. <span style="color: #fff">github.com/Paras-ydv/kipple</span></span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"total":{"editor":"text","default":"184 GB"},"$preview":{"width":1200,"height":630}}'>
+class Component extends DCLogic { renderVals() { return { total: this.props.total ?? '184 GB' }; } }
+</script>
+</body>
+</html>

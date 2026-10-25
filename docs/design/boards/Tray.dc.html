@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>kipple menu bar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&amp;display=swap">
+<style>
+@font-face{font-family:'Mona Sans';src:url(/_blob/9d3bb58a8c83c662765171fbfd515175) format('woff2');font-weight:200 900;font-stretch:75% 125%;font-display:swap}
+body{margin:0}
+.wall{background:radial-gradient(70% 55% at 18% 92%,rgba(255,132,84,.62),rgba(255,132,84,0) 62%),radial-gradient(60% 50% at 88% 86%,rgba(178,92,255,.6),rgba(178,92,255,0) 62%),radial-gradient(80% 60% at 55% -8%,rgba(52,124,255,.75),rgba(52,124,255,0) 62%),linear-gradient(180deg,#0c1d52 0%,#1a2462 46%,#3a2662 76%,#62305a 100%)}
+.pop{background:linear-gradient(180deg,rgba(30,34,56,.5),rgba(18,20,34,.58));-webkit-backdrop-filter:blur(40px) saturate(180%);backdrop-filter:blur(40px) saturate(180%);border:1px solid rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 30px 80px rgba(0,0,0,.5)}
+.clear{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.24);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 6px 18px rgba(0,0,0,.22)}
+.tint{background:linear-gradient(180deg,#5ba9ff 0%,#1677ff 100%);border:1px solid rgba(255,255,255,.38);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),inset 0 -3px 8px rgba(0,50,150,.35),0 10px 28px rgba(22,119,255,.45)}
+.pill{background:rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
+.thumb{background:#06080f url(/_blob/8e95f5031c656c45a22f1c2ee542390c) 30% 45%/cover no-repeat}
+</style>
+</helmet>
+<div class="wall" style="width: 1100px; height: 700px; position: relative; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Helvetica Neue', sans-serif; color: #F5F6FA; font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased">
+  <div style="height: 30px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; font-size: 13px; text-shadow: 0 1px 2px rgba(0,0,0,.3)">
+    <div style="display: flex; gap: 18px"><span style="font-weight: 700">Finder</span><span>File</span><span>Edit</span><span>View</span><span>Go</span><span>Window</span><span>Help</span></div>
+    <div style="display: flex; gap: 14px; align-items: center">
+      <span class="pill" style="height: 22px; padding: 0 8px; border-radius: 11px; display: inline-flex; align-items: center; gap: 6px">
+        <svg width="10" height="16" viewBox="0 0 10 16" aria-hidden="true"><rect x="0.5" y="1.5" width="9" height="2.6" rx="1" fill="#fff" opacity="0.7"></rect><rect x="0.5" y="5.6" width="9" height="3.4" rx="1" fill="#fff" opacity="0.85"></rect><rect x="0.5" y="10.5" width="9" height="4.5" rx="1.2" fill="#fff"></rect></svg>
+        <span style="font-size: 12px; font-weight: 600">184 GB</span>
+      </span>
+      <span>Mon 26 Oct  9:41</span>
+    </div>
+  </div>
+
+  <div class="pop" role="dialog" aria-label="kipple" style="position: absolute; right: 120px; top: 40px; width: 380px; border-radius: 24px; padding: 18px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px">
+    <div style="display: flex; justify-content: space-between; align-items: baseline">
+      <span style="font-family: 'Mona Sans', sans-serif; font-stretch: 125%; font-weight: 800; font-size: 17px; letter-spacing: -0.02em">kipple</span>
+      <span style="font-size: 12px; color: rgba(255,255,255,.55)">Checked 1 hour ago</span>
+    </div>
+    <div style="display: flex; gap: 16px; align-items: stretch">
+      <div class="thumb" role="img" aria-label="Your kipple as a stack of glass slabs" style="width: 104px; height: 140px; border-radius: 16px; flex: none; box-shadow: 0 0 0 1px rgba(255,255,255,.14)"></div>
+      <div style="display: flex; flex-direction: column; justify-content: center; gap: 4px">
+        <span style="font-family: -apple-system, 'SF Pro Display', 'Inter', sans-serif; font-size: 46px; line-height: 1; font-weight: 700; letter-spacing: -0.045em">184 GB</span>
+        <span style="font-size: 13px; color: rgba(255,255,255,.66)">of kipple on Macintosh HD</span>
+        <span style="font-size: 13px; color: #8CF0A6; font-weight: 600; margin-top: 6px">76.5 GB safe to remove</span>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column">
+      <div style="display: flex; justify-content: space-between; font-size: 13px; padding-bottom: 6px"><span style="color: rgba(255,255,255,.62)">Grew this week</span><span style="color: #FFC46B; font-weight: 650">+10.7 GB</span></div>
+      <div style="display: flex; align-items: center; gap: 10px; height: 34px; border-top: 1px solid rgba(255,255,255,.09); font-size: 13px"><span style="width: 8px; height: 8px; border-radius: 4px; background: #8b5cf6"></span><span style="flex: 1">Codex sessions</span><span style="color: rgba(255,255,255,.75)">+6.2 GB</span></div>
+      <div style="display: flex; align-items: center; gap: 10px; height: 34px; border-top: 1px solid rgba(255,255,255,.09); font-size: 13px"><span style="width: 8px; height: 8px; border-radius: 4px; background: #2f6bff"></span><span style="flex: 1">Docker build cache</span><span style="color: rgba(255,255,255,.75)">+3.1 GB</span></div>
+      <div style="display: flex; align-items: center; gap: 10px; height: 34px; border-top: 1px solid rgba(255,255,255,.09); font-size: 13px"><span style="width: 8px; height: 8px; border-radius: 4px; background: #8b5cf6"></span><span style="flex: 1">Cursor chat database</span><span style="color: rgba(255,255,255,.75)">+1.4 GB</span></div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <button type="button" class="tint" style="font: inherit; height: 42px; border-radius: 21px; font-size: 14px; font-weight: 650; color: #fff; cursor: pointer">Review 76.5 GB of safe items</button>
+      <div style="display: flex; gap: 8px">
+        <button type="button" class="clear" style="font: inherit; color: #fff; flex: 1; height: 38px; border-radius: 19px; font-size: 13px; cursor: pointer">Open kipple</button>
+        <button type="button" class="clear" style="font: inherit; color: #fff; flex: 1; height: 38px; border-radius: 19px; font-size: 13px; cursor: pointer">Scan now</button>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1100,"height":700}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

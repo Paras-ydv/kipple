@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>kipple app icon</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&amp;display=swap">
+<style>
+@font-face{font-family:'Mona Sans';src:url(/_blob/9d3bb58a8c83c662765171fbfd515175) format('woff2');font-weight:200 900;font-stretch:75% 125%;font-display:swap}
+body{margin:0}
+.wall{background:radial-gradient(70% 55% at 18% 92%,rgba(255,132,84,.62),rgba(255,132,84,0) 62%),radial-gradient(60% 50% at 88% 86%,rgba(178,92,255,.6),rgba(178,92,255,0) 62%),radial-gradient(80% 60% at 55% -8%,rgba(52,124,255,.75),rgba(52,124,255,0) 62%),linear-gradient(180deg,#0c1d52 0%,#1a2462 46%,#3a2662 76%,#62305a 100%)}
+.icon{background:#0a0b26 url(/_blob/2cd5f119cdb7fc7c52f9844d086df45b) center/cover no-repeat}
+.rim{background:linear-gradient(160deg,rgba(255,255,255,.34) 0%,rgba(255,255,255,0) 32%,rgba(255,255,255,0) 70%,rgba(255,255,255,.12) 100%);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.6),inset 0 0 0 1px rgba(255,255,255,.18),inset 0 -2px 6px rgba(0,0,0,.25)}
+.shelf{background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04));-webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,.17);box-shadow:inset 0 1px 0 rgba(255,255,255,.42),0 14px 40px rgba(0,0,0,.26)}
+</style>
+</helmet>
+<div class="wall" style="width: 760px; height: 700px; position: relative; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', sans-serif; color: #F5F6FA; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px">
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 18px">
+    <div style="position: relative; width: 340px; height: 340px; border-radius: 76px; overflow: hidden; box-shadow: 0 40px 80px rgba(0,0,0,.45), 0 10px 24px rgba(0,0,0,.3)">
+      <div class="icon" role="img" aria-label="kipple app icon: a floating stack of colored glass slabs in front of a warm ring" style="position: absolute; inset: 0"></div>
+      <div class="rim" aria-hidden="true" style="position: absolute; inset: 0; border-radius: 76px"></div>
+    </div>
+    <span style="font-size: 15px; font-weight: 600; text-shadow: 0 1px 3px rgba(0,0,0,.35)">kipple</span>
+  </div>
+  <div class="shelf" style="display: flex; align-items: flex-end; gap: 28px; padding: 18px 28px; border-radius: 28px">
+    <div style="position: relative; width: 128px; height: 128px; border-radius: 29px; overflow: hidden; box-shadow: 0 12px 24px rgba(0,0,0,.35)"><div class="icon" style="position: absolute; inset: 0"></div><div class="rim" style="position: absolute; inset: 0; border-radius: 29px"></div></div>
+    <div style="position: relative; width: 64px; height: 64px; border-radius: 14px; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,.35)"><div class="icon" style="position: absolute; inset: 0"></div><div class="rim" style="position: absolute; inset: 0; border-radius: 14px"></div></div>
+    <div style="position: relative; width: 32px; height: 32px; border-radius: 7px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,.35)"><div class="icon" style="position: absolute; inset: 0"></div><div class="rim" style="position: absolute; inset: 0; border-radius: 7px"></div></div>
+    <div style="display: flex; flex-direction: column; gap: 4px; padding-left: 8px; border-left: 1px solid rgba(255,255,255,.15)">
+      <span style="font-size: 13px; font-weight: 600">Dock, Finder and menu bar sizes</span>
+      <span style="font-size: 12px; color: rgba(255,255,255,.62)">The menu bar uses a one-color three-slab glyph.</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":760,"height":700}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

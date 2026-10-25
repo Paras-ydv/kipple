@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>kipple Overview</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&amp;display=swap">
+<style>
+@font-face{font-family:'Mona Sans';src:url(/_blob/9d3bb58a8c83c662765171fbfd515175) format('woff2');font-weight:200 900;font-stretch:75% 125%;font-display:swap}
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+.wall{background:radial-gradient(70% 55% at 18% 92%,rgba(255,132,84,.62),rgba(255,132,84,0) 62%),radial-gradient(60% 50% at 88% 86%,rgba(178,92,255,.6),rgba(178,92,255,0) 62%),radial-gradient(80% 60% at 55% -8%,rgba(52,124,255,.75),rgba(52,124,255,0) 62%),linear-gradient(180deg,#0c1d52 0%,#1a2462 46%,#3a2662 76%,#62305a 100%)}
+.win{background:rgba(15,17,29,.56);-webkit-backdrop-filter:blur(48px) saturate(170%);backdrop-filter:blur(48px) saturate(170%);border:1px solid rgba(255,255,255,.14);box-shadow:0 60px 140px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.1)}
+.glass{background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.045));-webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,.17);box-shadow:inset 0 1px 0 rgba(255,255,255,.42),inset 0 -1px 0 rgba(255,255,255,.05),0 14px 40px rgba(0,0,0,.26)}
+.clear{background:rgba(255,255,255,.07);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(255,255,255,.24);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 0 14px rgba(255,255,255,.05),0 6px 18px rgba(0,0,0,.22)}
+.tint{background:linear-gradient(180deg,#5ba9ff 0%,#1677ff 100%);border:1px solid rgba(255,255,255,.38);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),inset 0 -3px 8px rgba(0,50,150,.35),0 10px 28px rgba(22,119,255,.45)}
+.sel{background:rgba(255,255,255,.15);box-shadow:inset 0 1px 0 rgba(255,255,255,.32),inset 0 0 0 1px rgba(255,255,255,.06)}
+.chip{background:rgba(12,14,26,.42);-webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 6px 16px rgba(0,0,0,.3)}
+</style>
+</helmet>
+<div class="wall" style="width: 1440px; height: 900px; position: relative; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Helvetica Neue', sans-serif; color: #F5F6FA; font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased">
+
+  <div class="win" style="position: absolute; left: 56px; top: 40px; width: 1328px; height: 820px; border-radius: 26px; box-sizing: border-box; padding: 10px; display: flex; gap: 10px">
+
+    <nav class="glass" aria-label="Sidebar" style="width: 236px; flex: none; border-radius: 17px; box-sizing: border-box; padding: 16px 10px 14px; display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; gap: 8px; padding: 2px 8px" aria-hidden="true">
+        <span style="width: 12px; height: 12px; border-radius: 6px; background: #FF5F57; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,.25)"></span>
+        <span style="width: 12px; height: 12px; border-radius: 6px; background: #FEBC2E; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,.25)"></span>
+        <span style="width: 12px; height: 12px; border-radius: 6px; background: #28C840; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,.25)"></span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <span style="font-size: 11px; font-weight: 600; color: rgba(255,255,255,.45); padding: 4px 10px">Library</span>
+        <sc-for list="{{nav}}" as="n" hint-placeholder-count="6">
+          <a href="{{n.href}}" class="{{n.cls}}" style="text-decoration: none; display: flex; align-items: center; gap: 10px; height: 32px; padding: 0 10px; border-radius: 9px; font-size: 13px; font-weight: {{n.weight}}">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="{{n.iconColor}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg>
+            <span style="flex: 1">{{n.label}}</span>
+            <span style="font-size: 12px; color: rgba(255,255,255,.55)">{{n.badge}}</span>
+          </a>
+        </sc-for>
+      </div>
+      <div style="margin-top: auto; padding: 0 10px; display: flex; align-items: baseline; justify-content: space-between">
+        <span style="font-family: 'Mona Sans', sans-serif; font-stretch: 125%; font-weight: 800; font-size: 17px; letter-spacing: -0.02em">kipple</span>
+        <span style="font-size: 11px; color: rgba(255,255,255,.45)">0.1.0</span>
+      </div>
+    </nav>
+
+    <main style="flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 6px 14px 14px 18px; box-sizing: border-box">
+      <div style="height: 44px; display: flex; align-items: center; justify-content: space-between">
+        <div style="display: flex; flex-direction: column">
+          <span style="font-size: 15px; font-weight: 650">Overview</span>
+          <span style="font-size: 11px; color: rgba(255,255,255,.55)">Macintosh HD</span>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center">
+          <div class="clear" style="display: flex; height: 36px; border-radius: 18px; padding: 0 4px; align-items: center">
+            <button type="button" aria-label="Search" style="width: 36px; height: 30px; border: 0; background: transparent; cursor: pointer; display: grid; place-items: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg></button>
+            <button type="button" aria-label="Filter" style="width: 36px; height: 30px; border: 0; background: transparent; cursor: pointer; display: grid; place-items: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"></path></svg></button>
+            <button type="button" aria-label="Share card" style="width: 36px; height: 30px; border: 0; background: transparent; cursor: pointer; display: grid; place-items: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 14v5h14v-5"></path></svg></button>
+          </div>
+          <button type="button" class="clear" style="height: 36px; border-radius: 18px; padding: 0 16px 0 12px; display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; cursor: pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5"></path></svg>Scan</button>
+        </div>
+      </div>
+
+      <div style="flex: 1; display: flex; gap: 36px; padding-top: 12px; min-height: 0">
+        <figure style="margin: 0; position: relative; width: 552px; height: 690px; flex: none; border-radius: 22px; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,.12), 0 30px 60px rgba(0,0,0,.35)">
+          <img src="/_blob/8e95f5031c656c45a22f1c2ee542390c" alt="A floating stack of six glass slabs, one per kind of kipple, sized by how much space each takes" style="width: 552px; height: 690px; display: block; object-fit: cover">
+          <div aria-hidden="true" style="position: absolute; inset: 0; border-radius: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.25), inset 0 0 0 1px rgba(255,255,255,.06)"></div>
+          <sc-for list="{{chips}}" as="c" hint-placeholder-count="6">
+            <div style="position: absolute; left: 350px; top: {{c.y}}px; display: flex; align-items: center; gap: 6px">
+              <span style="width: 7px; height: 7px; border-radius: 4px; background: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.18)"></span>
+              <span style="width: 12px; height: 1px; background: rgba(255,255,255,.55)"></span>
+              <span class="chip" style="display: inline-flex; align-items: center; gap: 8px; height: 28px; padding: 0 11px 0 9px; border-radius: 14px; font-size: 12px; white-space: nowrap">
+                <span style="width: 8px; height: 8px; border-radius: 4px; background: {{c.color}}"></span>
+                <span style="font-weight: 600">{{c.name}}</span>
+                <span style="color: rgba(255,255,255,.7)">{{c.size}}</span>
+              </span>
+            </div>
+          </sc-for>
+        </figure>
+
+        <section style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 22px; padding-top: 18px">
+          <div style="display: flex; flex-direction: column; gap: 10px">
+            <span style="font-size: 13px; color: rgba(255,255,255,.58)">Scanned 2 minutes ago. 1.02 million files in 18 seconds.</span>
+            <h1 style="margin: 0; display: flex; align-items: baseline; gap: 10px; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif">
+              <span style="font-size: 132px; line-height: 0.9; font-weight: 700; letter-spacing: -0.05em">184</span>
+              <span style="font-size: 44px; font-weight: 600; letter-spacing: -0.02em; color: rgba(255,255,255,.72)">GB</span>
+            </h1>
+            <span style="font-size: 24px; font-weight: 600; letter-spacing: -0.01em; color: rgba(255,255,255,.88)">of kipple on this Mac</span>
+            <p style="margin: 4px 0 0; font-size: 15px; line-height: 1.5; color: rgba(255,255,255,.66); max-width: 40ch">76.5 GB is safe to remove right now. The rest is chat history, database volumes and emulators, so you decide.</p>
+          </div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap">
+            <a href="Review.dc.html" class="tint" style="text-decoration: none; height: 44px; padding: 0 22px; border-radius: 22px; display: inline-flex; align-items: center; font-size: 15px; font-weight: 650; color: #fff">Reclaim 76.5 GB</a>
+            <a href="Projects.dc.html" class="clear" style="text-decoration: none; height: 44px; padding: 0 20px; border-radius: 22px; display: inline-flex; align-items: center; font-size: 15px; font-weight: 550">Review everything</a>
+          </div>
+
+          <div class="glass" style="border-radius: 20px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px">
+            <div style="display: flex; justify-content: space-between; font-size: 13px"><span style="font-weight: 600">Macintosh HD</span><span style="color: rgba(255,255,255,.62)">41 GB free of 512 GB</span></div>
+            <div style="height: 14px; border-radius: 7px; background: rgba(255,255,255,.07); box-shadow: inset 0 1px 2px rgba(0,0,0,.35); display: flex; overflow: hidden; gap: 1px" role="img" aria-label="287 GB of your files, 184 GB of kipple, 41 GB free">
+              <span style="width: 56%; background: rgba(255,255,255,.3)"></span>
+              <sc-for list="{{bar}}" as="b" hint-placeholder-count="6"><span style="width: {{b.w}}; background: {{b.color}}"></span></sc-for>
+            </div>
+            <div style="display: flex; gap: 16px; font-size: 12px; color: rgba(255,255,255,.62)">
+              <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 8px; height: 8px; border-radius: 4px; background: rgba(255,255,255,.4)"></span>Your files 287 GB</span>
+              <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 8px; height: 8px; border-radius: 4px; background: linear-gradient(90deg,#2f6bff,#8b5cf6,#ffb020,#3ccb5a)"></span>kipple 184 GB</span>
+              <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 8px; height: 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,.4); box-sizing: border-box"></span>Free 41 GB</span>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 8px">
+              <span style="font-size: 15px; font-weight: 650">Grew this week</span>
+              <span style="font-size: 15px; font-weight: 650; color: #FFC46B">+10.7 GB</span>
+            </div>
+            <sc-for list="{{growth}}" as="g" hint-placeholder-count="3">
+              <div style="display: flex; align-items: center; gap: 10px; height: 36px; border-top: 1px solid rgba(255,255,255,.09); font-size: 13px">
+                <span style="width: 8px; height: 8px; border-radius: 4px; background: {{g.color}}"></span>
+                <span style="flex: 1">{{g.name}}</span>
+                <span style="color: rgba(255,255,255,.72)">{{g.delta}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const I = {
+      gauge: 'M4 15a8 8 0 1 1 16 0M12 15l4-5',
+      folder: 'M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z',
+      bubble: 'M4 5h16v11H9l-5 4z',
+      check: 'M9 6h11M9 12h11M9 18h11M4 6l1 1 1.5-2M4 12l1 1 1.5-2M4 18l1 1 1.5-2',
+      box: 'M3 7l9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4M12 11v10',
+      gear: 'M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM19 12l2-1-1-3-2 .3-1.3-1.3.3-2-3-1-1 2h-2l-1-2-3 1 .3 2L5.7 7.3 3.7 7l-1 3 2 1v2l-2 1 1 3 2-.3 1.3 1.3-.3 2 3 1 1-2h2l1 2 3-1-.3-2 1.3-1.3 2 .3 1-3-2-1z'
+    };
+    const item = (label, icon, href, active, badge) => ({ label, icon: I[icon], href, badge: badge || '', cls: active ? 'sel' : '', weight: active ? 600 : 500, iconColor: active ? '#7FB8FF' : 'rgba(255,255,255,0.8)' });
+    const nav = [
+      item('Overview', 'gauge', 'Main.dc.html', true),
+      item('Projects', 'folder', 'Projects.dc.html'),
+      item('AI history', 'bubble', 'AiHistory.dc.html', false, '38.9 GB'),
+      item('Review plan', 'check', 'Review.dc.html', false, '76.5 GB'),
+      item('Quarantine', 'box', '#'),
+      item('Settings', 'gear', '#')
+    ];
+    const chips = [
+      ['Models', '10.8 GB', '#ff5c8a', 183], ['Mobile', '21.6 GB', '#12c8c2', 219], ['Project artifacts', '24.0 GB', '#3ccb5a', 267],
+      ['Package caches', '27.5 GB', '#ffb020', 317], ['AI history', '38.9 GB', '#8b5cf6', 379], ['Containers', '61.2 GB', '#2f6bff', 463]
+    ].map(([name, size, color, y]) => ({ name, size, color, y: y - 14 }));
+    const parts = [['#2f6bff', 61.2], ['#8b5cf6', 38.9], ['#ffb020', 27.5], ['#3ccb5a', 24.0], ['#12c8c2', 21.6], ['#ff5c8a', 10.8]];
+    const bar = parts.map(([color, gb]) => ({ color, w: (gb / 512 * 100).toFixed(2) + '%' }));
+    const growth = [
+      { name: 'Codex sessions', delta: '+6.2 GB', color: '#8b5cf6' },
+      { name: 'Docker build cache', delta: '+3.1 GB', color: '#2f6bff' },
+      { name: 'Cursor chat database', delta: '+1.4 GB', color: '#8b5cf6' }
+    ];
+    return { nav, chips, bar, growth };
+  }
+}
+</script>
+</body>
+</html>
