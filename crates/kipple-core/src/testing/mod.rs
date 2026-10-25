@@ -34,6 +34,7 @@ const SANDBOXED_VARS: &[(&str, &str)] = &[
     ("KIPPLE_CONFIG", ".config/kipple/config.toml"),
     ("KIPPLE_DATA_DIR", ".local/share/kipple"),
     ("CODEX_HOME", ".codex"),
+    ("DOCKER_CONFIG", ".docker"),
     ("CLAUDE_CONFIG_DIR", ".claude"),
     ("ANDROID_HOME", "Android/Sdk"),
     ("ANDROID_SDK_ROOT", "Android/Sdk"),
@@ -92,6 +93,11 @@ impl TestHome {
         fs::create_dir_all(&bin)?;
         fs::create_dir_all(root.join("tmp"))?;
         env.set("PATH", bin.clone().into_os_string());
+        // A socket that doesn't exist: tests never reach a real Docker daemon.
+        env.set(
+            "DOCKER_HOST",
+            format!("unix://{}", root.join("docker.sock").display()),
+        );
         // Marks the sandbox; debug builds refuse filesystem changes outside it.
         env.set("KIPPLE_TEST_SANDBOX", root.clone().into_os_string());
         env.set("NO_COLOR", "1");
