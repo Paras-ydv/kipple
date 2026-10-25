@@ -16,7 +16,8 @@ import {
 } from '@kipple/client';
 import { client } from '../client.ts';
 
-export type LoadStatus = 'loading' | 'ready' | 'unavailable' | 'error';
+/** `empty`: the core works but nothing has been scanned yet. */
+export type LoadStatus = 'loading' | 'ready' | 'empty' | 'unavailable' | 'error';
 
 class DataStore {
   status: LoadStatus = $state('loading');
@@ -103,6 +104,10 @@ class DataStore {
       this.volume = volume;
       this.quarantine = quarantine;
       this.journal = journal;
+      if (this.status !== 'ready') {
+        // First scan finished: load the rest too.
+        await this.load();
+      }
     } catch (err) {
       this.fail(err);
     }
@@ -148,6 +153,11 @@ class DataStore {
   private fail(err: unknown) {
     if (isUnavailable(err)) {
       this.status = 'unavailable';
+      return;
+    }
+    if (KippleError.from(err).code === 'no_scan') {
+      this.status = 'empty';
+      this.error = null;
       return;
     }
     this.status = this.report ? 'ready' : 'error';

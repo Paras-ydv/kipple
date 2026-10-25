@@ -1,7 +1,7 @@
 <script lang="ts">
   // Menu bar popover (docs/UI.md §3.7). In Tauri this is its own window under the
   // tray icon; in the browser preview it is drawn under a fake menu bar.
-  import type { Report, SizePoint } from '@kipple/client';
+  import { KippleError, type Report, type SizePoint } from '@kipple/client';
   import { Button, Dot, StackSlabs, Wordmark, categoryColor, formatAgo, formatBytes, formatDelta, layoutStack } from '@kipple/design';
   import { client, native } from '../lib/client.ts';
   import { growth } from '../lib/derive.ts';
@@ -11,6 +11,7 @@
   let history = $state<SizePoint[]>([]);
   let volume = $state('');
   let failed = $state(false);
+  let noScan = $state(false);
   let scanning = $state(false);
 
   async function load() {
@@ -19,8 +20,11 @@
       report = r;
       history = h;
       volume = v.name;
-    } catch {
-      failed = true;
+      failed = false;
+      noScan = false;
+    } catch (err) {
+      if (KippleError.from(err).code === 'no_scan') noScan = true;
+      else failed = true;
     }
   }
 
@@ -85,7 +89,10 @@
       <span class="checked">{checked}</span>
     </div>
 
-    {#if failed}
+    {#if noScan}
+      <p class="fail">kipple hasn't scanned this Mac yet. Scanning only reads; nothing is changed.</p>
+      <Button variant="clear" size="md" block disabled={scanning} onclick={scanNow}>{scanning ? 'Scanning…' : 'Scan now'}</Button>
+    {:else if failed}
       <p class="fail">kipple can't read its data yet. Open kipple to see why.</p>
       <Button variant="clear" size="md" block onclick={() => go('#/')}>Open kipple</Button>
     {:else}

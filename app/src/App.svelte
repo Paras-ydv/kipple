@@ -52,6 +52,18 @@
     <main id="main" tabindex="-1">
       {#if data.status === 'loading'}
         <div class="loading" role="status">Loading</div>
+      {:else if data.status === 'empty' && data.scanning}
+        <Notice
+          title="Scanning…"
+          body={`${data.scanFiles.toLocaleString('en-US')} files looked at so far. Nothing is changed.`}
+          action={{ label: 'Stop', onclick: () => data.cancelScan() }}
+        />
+      {:else if data.status === 'empty'}
+        <Notice
+          title="See what your dev tools are keeping."
+          body="kipple looks through your home folder for caches, build output, Docker data and more. Scanning only reads; nothing is changed until you review a plan."
+          action={{ label: 'Scan now', onclick: () => data.scan() }}
+        />
       {:else if data.status === 'unavailable'}
         <Notice
           title="This build can't talk to the kipple core yet."
