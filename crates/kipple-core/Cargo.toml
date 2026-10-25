@@ -13,11 +13,15 @@ categories.workspace = true
 
 [features]
 # Exposes `kipple_core::testing` (TestHome) to other crates' tests.
-test-support = ["dep:tempfile"]
+test-support = ["dep:tempfile", "dep:filetime"]
 
 [dependencies]
 blake3.workspace = true
+filetime = { workspace = true, optional = true }
+gix.workspace = true
 globset.workspace = true
+ignore.workspace = true
+rayon.workspace = true
 jiff.workspace = true
 rusqlite.workspace = true
 schemars.workspace = true
@@ -33,7 +37,15 @@ trash.workspace = true
 ulid.workspace = true
 wait-timeout.workspace = true
 
+[target.'cfg(unix)'.dependencies]
+libc.workspace = true
+
 [dev-dependencies]
+filetime.workspace = true
 insta.workspace = true
 proptest.workspace = true
 tempfile.workspace = true
+
+[[bench]]
+name = "walk"
+harness = false

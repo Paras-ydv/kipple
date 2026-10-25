@@ -13,6 +13,10 @@ use std::process::Command;
 
 use crate::platform::Env;
 
+mod fixture;
+
+pub use fixture::{Fixture, FixtureError, fixtures_dir};
+
 /// Environment variables that [`TestHome`] points into its temp directory.
 /// Each maps to a path relative to the temp home.
 const SANDBOXED_VARS: &[(&str, &str)] = &[

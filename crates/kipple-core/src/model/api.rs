@@ -230,7 +230,9 @@ pub enum ScanStatus {
 /// Report numbers for one scan.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
 pub struct Summary {
+    /// All items, including `Keep`.
     pub items: u64,
+    /// Bytes of `Safe` and `Review` items.
     pub reclaimable: u64,
     pub by_safety: SafetyMix,
     pub categories: Vec<CategorySummary>,

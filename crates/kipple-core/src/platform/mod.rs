@@ -4,6 +4,7 @@
 pub mod command;
 mod env;
 pub mod fsx;
+pub mod mounts;
 pub mod os;
 pub mod paths;
 pub mod process;
