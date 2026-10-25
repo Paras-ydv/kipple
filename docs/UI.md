@@ -221,7 +221,7 @@ Keyboard: `⌘1`–`⌘6` (Ctrl on Windows/Linux) open the six sidebar items in 
 
 Toolbar: "Overview" / volume name ("Macintosh HD"). Body: row, gap 36, padding-top 12.
 
-- **Stack figure** (left, 552 × 690, radius 22, stage background, figure shadow): the core sample (§3.9 `GlassStack`) of the six largest categories, largest at the bottom, centred at x = 215 with slab width 230. To the right of each slab a label (left edge 12 px after the stack): a 7 px white dot with a 3 px `rgba(255,255,255,.18)` ring, a 12 px × 1 px `rgba(255,255,255,.55)` leader, then a `chip` (28 tall, radius 14, padding 0 11 0 9, gap 8, 12 px): 8 px category dot, category label (600), size (`rgba(255,255,255,.7)`). Each label is vertically centred on its slab. Clicking a label opens that category (§3.8). Accessible name: "A floating stack of six glass slabs, one per kind of kipple, sized by how much space each takes".
+- **Stack figure** (left, 552 × 690, radius 22, stage background, figure shadow): the core sample (§3.9 `GlassStack`) of the six largest categories, largest at the bottom, centred at x = 190 with slab width 220, filling y 120 to 580. To the right of each slab a label (left edge 12 px after the stack): a 7 px white dot with a 3 px `rgba(255,255,255,.18)` ring, a 12 px × 1 px `rgba(255,255,255,.55)` leader, then a `chip` (28 tall, radius 14, padding 0 11 0 9, gap 8, 12 px): 8 px category dot, category label (600), size (`rgba(255,255,255,.7)`). Each label is vertically centred on its slab. Clicking a label opens that category (§3.8). Accessible name: "A floating stack of six glass slabs, one per kind of kipple, sized by how much space each takes".
 - **Summary column** (flex 1, gap 22, padding-top 18):
   1. Scan line (13, `rgba(255,255,255,.58)` → `text-3`): "Scanned 2 minutes ago. 1.02 million files in 18 seconds."
   2. `h1`: hero number "184" + unit "GB" (baseline aligned, gap 10).
@@ -232,16 +232,16 @@ Toolbar: "Overview" / volume name ("Macintosh HD"). Body: row, gap 36, padding-t
   7. **Grew this week**: header row (15 / 650) "Grew this week" and the total delta in `growth` ("+10.7 GB"), padding-bottom 8; then the top three growers, 36 tall rows with a top `line` border: 8 px dot, name, delta (`text-2`).
 
 States:
-- *Scanning*: the scan line reads "Scanning. 412,000 files so far." (counts from progress events), the hero shows the running total, slabs grow as categories appear, the Scan button is disabled and reads "Scanning".
+- *Scanning*: the scan line reads "Scanning. 412,000 files so far." (counts from progress events), the hero shows the running total, slabs grow as categories appear, the Scan button reads "Stop scan" and cancels the scan (the core finishes the current step, then stops).
 - *Empty*: hero "0 GB", line "Nothing to reclaim. kipple checked 1.02 million files.", no Reclaim button.
 - *Error*: an inline `glass` panel naming what failed and the fix ("Docker isn't running. Start Docker to measure images and volumes.").
 - *Not available yet* (Tauri build before the core is wired): the panel reads "This build can't talk to the kipple core yet." and the screen shows no numbers.
 
 ### 3.2 Projects
 
-Toolbar: "Projects" / "61 projects holding 112 GB". Controls: a segmented control (`clear` group 36 tall, radius 18, padding 3, gap 2; segments 30 tall, radius 15, padding 0 14, 13 px; selected `lens` 600, others `rgba(255,255,255,.8)`): **All** · **Untouched 30+ days** · **Folder deleted**; then a `clear` search field (36 tall, 190 wide, radius 18, padding 0 14, gap 8, 15 px magnifier, placeholder "Search").
+Toolbar: "Projects" / "61 projects holding 112 GB". Controls: a segmented control (`clear` group 36 tall, radius 18, padding 3, gap 2; segments 30 tall, radius 15, padding 0 14, 13 px; selected `lens` 600, others `rgba(255,255,255,.8)`): **All** · **Untouched 30+ days** · **Folder deleted** (with the count, 11 px `rgba(255,255,255,.6)`); then a `clear` search field (36 tall, 190 wide, radius 18, padding 0 14, gap 8, 15 px magnifier, placeholder "Search").
 
-- **Shelf figure** (full width × 429, radius 22, stage background): one stack per project for the seven largest matching projects, slabs per category, stack height proportional to the project's size (tallest 210 px), bottoms on one floor line at y = 300. Stacks are centred at x = 170 + 115·i (scaled to the figure width) and are 92 px wide. Projects untouched for 90+ days, or whose folder is gone, are **dull**: `saturate(.25) brightness(.7)`. The selected project gets a frame 128 wide from y 64 to 300: radius 18, `1.5px solid rgba(127,184,255,.85)`, `0 0 0 4px rgba(127,184,255,.16), 0 0 40px rgba(80,150,255,.35)`. Labels under each stack (bottom 18): name (13 / 650; selected `#9FCBFF`), size (12, `text-2`), age (11; dull `growth`, otherwise `text-4`) "7 months ago" / "Today". Stacks are buttons in a `listbox`; ←/→ move the selection.
+- **Shelf figure** (full width × 429, radius 22, stage background): one stack per project for the seven largest matching projects, slabs per category, stack height proportional to the project's size (tallest 210 px), bottoms on one floor line at y = 300. Stacks are centred at x = 170 + 115·i (scaled to the figure width) and are 92 px wide. Projects untouched for 180 days or more, or whose folder is gone, are **dull**: `saturate(.25) brightness(.7)`. The selected project gets a frame 128 wide from y 64 to 300: radius 18, `1.5px solid rgba(127,184,255,.85)`, `0 0 0 4px rgba(127,184,255,.16), 0 0 40px rgba(80,150,255,.35)`. Labels under each stack (bottom 18): name (13 / 650; selected `#9FCBFF`), size (12, `text-2`), age (11; dull `growth`, otherwise `text-4`) "7 months ago" / "Today". Stacks are buttons in a `listbox`; ←/→ move the selection.
 - **Detail panel** (`glass`, radius 20, padding 18 20, gap 28, fills the rest):
   - Left column 220: project name (`title`), path in mono (12, `rgba(255,255,255,.6)`), last-used line in `growth` ("Last commit 7 months ago"; recent projects in `text-3`), and the total (`number-l`, display font) at the bottom.
   - Item list: two columns (gap 24), rows 38 tall with a bottom `line-soft` border: 8 px category dot, title (ellipsised), size (`text-2`), a 58 px safety tag (§2.3). Clicking a row opens the explain sheet (§3.9).
@@ -257,11 +257,12 @@ Toolbar: "AI history" / "38.9 GB across 4 tools". Controls: a segmented control 
 - **Sessions panel** (`glass`, radius 20, padding 10 18 14, flex 3): rows 46 tall with a bottom `line-soft` border: checkbox (16 px, accent `#1677FF`), title (13 / 600, ellipsised; masked first prompt) over "project, age" (11, `text-4`), an optional flag tag (§2.3), size (64 wide, right aligned, 13, `rgba(255,255,255,.8)`). Locked rows (session open in the tool) have a disabled checkbox and the "Open in Codex" tag. Footer: note (12, `text-4`) "Quit Codex first. The open session stays." and a `tint` button (38 tall) stating the exact action: **Delete 23 sessions with Codex (11.4 GB)**. AI history items are Review, so the button opens the confirmation dialog (§3.4).
 - **Side column** (flex 2, gap 12):
   - Secret panel (`amber`, radius 20, padding 16 18, gap 6): "3 sessions contain API keys" (14 / 700, `secret`), body (12 / 1.5, `secret-body`) "An OpenAI key and two GitHub tokens were pasted into chats. Rotate them, then remove the sessions.", link "Show the 3 sessions" (12 / 650, `secret`) which filters the list. Shown only when secrets were found.
-  - One `glass` panel per other tool: name + size (14 / 700), one or two sentences (12 / 1.5, `rgba(255,255,255,.68)`), an optional `clear` small button (32 tall). Cursor: "9.6 GB is chat data that only Cursor can remove safely. Run Delete Old Chats in Cursor, then compact the database here." + **Compact database, frees 1.9 GB**. Claude Code: "Cleans transcripts older than 30 days by itself. 41 sessions belong to folders you deleted." Antigravity: "Keeps an old copy of each conversation after it migrates them. The copies are safe to quarantine."
+  - One `glass` panel for each of the two largest other tools (the name links to its tab): name + size (14 / 700), one or two sentences (12 / 1.5, `rgba(255,255,255,.68)`), an optional `clear` small button (32 tall). Cursor: "9.6 GB is chat data that only Cursor can remove safely. Run Delete Old Chats in Cursor, then compact the database here." + **Compact database, frees 1.9 GB**. Claude Code: "Cleans transcripts older than 30 days by itself. 41 sessions belong to folders you deleted." Antigravity: "Keeps an old copy of each conversation after it migrates them. Support is experimental, so kipple asks before it moves them."
+- Pre-checked sessions are kipple's suggestion: for Codex the old, large sessions in projects you left (23 sessions, 11.4 GB in the sample); for Claude Code and Cursor the ones whose folder was deleted; for Antigravity every old copy. Footer notes: Claude Code "Transcripts are moved whole and never edited."; Cursor "Quit Cursor first."; Antigravity "Antigravity support is experimental." Buttons: "Move 41 sessions to quarantine (1.2 GB)", "Move 5 folders to quarantine (2.2 GB)", "Move 8 copies to quarantine (2.5 GB)".
 
 ### 3.4 Review plan ("Reclaim")
 
-Toolbar: "Review plan" / "13 safe items, picked by kipple". Control: `clear` **Edit selection** (opens the selection sheet: every item grouped by category with checkboxes; Keep items are listed but locked with their reason).
+Toolbar: "Review plan" / "13 safe items, picked by kipple" (the count is the number of rows in the two groups; after the user changes the selection it reads "N items you picked"). Control: `clear` **Edit selection** (opens the selection sheet: every item grouped by category with checkboxes; Keep items are listed but locked with their reason).
 
 - **Stage figure** (600 × 690, radius 22): two stacks on one floor. Left "Today" (all categories), right "After this plan" (each category minus what the plan removes; empty categories vanish). Chips (`chip`, radius 16, padding 7 14, centred above each stack): caption (11, `rgba(255,255,255,.65)`) and size (17 / 700). Between the stacks an arrow (54 × 14, stroke `rgba(255,255,255,.7)` 1.6) over a chip "76.5 GB out" (13 / 700, `positive`).
 - **Plan column** (flex 1, gap 16, padding-top 8):
@@ -270,9 +271,9 @@ Toolbar: "Review plan" / "13 safe items, picked by kipple". Control: `clear` **E
   3. Groups panel (`glass`, radius 18, padding 4 16): two groups, each padding 12 0 10 with a `line-soft` divider between them: title + total (13 / 650), the three largest rows (12, `text-2`: 6 px dot, name, size), then "and 4 more: uv, pip, Homebrew, pnpm" (12, `text-4`). Group 1 "Removed by the tool that made it" (native actions), group 2 "Moved to quarantine" (quarantine and trash). Rows group plan entries by integration ("node_modules in 41 projects").
   4. **Skip quarantine** switch (label 13 / 600, sub-line "Free all 76.5 GB now. No undo." in `text-4`; switch 42 × 26, radius 13, off `rgba(255,255,255,.16)`, on `#1677FF`, white 22 px knob).
   5. At the bottom (gap 10): `tint` **Reclaim 76.5 GB** (48 tall, 15 / 700) stating the exact bytes; `clear` **Save plan for later** (40 tall); a footnote link (12, `text-4`, centred): "107.5 GB needs your decision: database volumes, emulators, models and chat history." → AI history.
-- **Confirmation** (SPEC §8.2): a Safe-only plan runs after one click on the primary button. A plan that contains Review items, or Skip quarantine turned on, opens a dialog (`popover` material, 420 wide, radius 24): what will happen in two lines (freed now, held in quarantine), the Review items listed by name and size, a text field "Type reclaim to continue", and **Reclaim 76.5 GB** enabled only when the field equals `reclaim`. `Esc` cancels.
+- **Confirmation** (SPEC §8.2): a Safe-only plan runs after one click on the primary button. A plan that contains Review items, or Skip quarantine turned on, opens a dialog (`popover` material, 440 wide, radius 24, padding 20): what will happen in two lines (freed now, held in quarantine), the Review items listed by name and size, a text field "Type reclaim to continue", and **Reclaim 76.5 GB** enabled only when the field equals `reclaim`. `Esc` cancels.
 - **Running**: the primary button becomes a determinate line "Reclaiming 6 of 13. Docker build cache." from `ExecEvent`s; **Stop after this item** cancels.
-- **Result**: the column becomes "Reclaimed 76.5 GB" (`display-l`) with "43.0 GB is free now. 33.5 GB is in quarantine until 2 November." and buttons **Undo** (`clear`, restores this batch) and **Make a share card** (`tint`, §5). Skipped or failed entries are listed with their reason.
+- **Result**: the column becomes "This plan reclaimed" over the total (`display-l`), with "43.0 GB is free now. 33.5 GB is in quarantine until 2 November." and buttons **Make a share card** (`tint`, §5), **Undo** (`clear`, restores this batch) and a plain **Make another plan**. Skipped or failed entries are listed with their reason.
 
 ### 3.5 Quarantine & history (not drawn)
 
@@ -290,7 +291,7 @@ A single scrolling column of `glass` panels (max width 720), each with a 15 / 65
 - **Menu bar**: show in menu bar, check every (1 hour), notify when kipple grew more than (10 GB).
 - **Updates**: check for updates (off by default).
 
-Changes save immediately; there is no Save button.
+Changes save immediately; there is no Save button. The core has no settings API yet (SPEC §10.3 `config.toml`), so until it does the app keeps these values on the device.
 
 ### 3.7 Menu bar and popover
 
@@ -309,7 +310,7 @@ Reached from the Overview stack labels and from Overview search; it is not in th
 
 | Component | What it is |
 |---|---|
-| `GlassStack` | The core sample: SVG stack of glass slabs (geometry below). Props: layers (colour, bytes, label), width, height, dull, grow (scan animation). |
+| `GlassStack` | The core sample. `Stage` is the figure (stage background, floor plane, rim, an HTML overlay in the same coordinates); `StackSlabs` draws one stack from `layoutStack()` (geometry below). Props: layout, dull, glow, floor, grow (scan animation). |
 | `SizeText` | Formats bytes (§7) in tabular figures; optional unit split for display numbers. |
 | `SafetyTag` | Word + shape capsule per §2.3. |
 | `FlagTag` | Capsule for AI history flags. |
@@ -328,15 +329,16 @@ Reached from the Overview stack labels and from Overview search; it is not in th
 
 **GlassStack geometry** (used by the app, website, app icon and share card; all numbers in px of the SVG):
 - Input: layers ordered largest first (drawn at the bottom), stack centre x `cx`, slab width `w`, top `y0`, bottom `y1`.
-- Lid depth `d = round(w × 0.2)`, gap between slabs `g = round(d × 0.35)`, minimum front height `hmin = round(w × 0.08)`.
+- Lid depth `d = round(w × 0.13)`, gap between slabs `g = round(d × 0.4)`, minimum front height `hmin = round(w × 0.06)`.
 - Front heights: `h_i = max(hmin, bytes_i × s)` with `s` chosen so `Σh_i + n·d + (n−1)·g = y1 − y0` (solve iteratively: layers at `hmin` are fixed, `s` is recomputed over the rest).
 - Slab *i* occupies `[top_i, top_i + d + h_i]`, stacked bottom-up from `y1`.
-- Each slab, drawn bottom slab first:
+- Draw order: floor shadow, then the glows of all slabs, then each slab bottom slab first (body, lid, streak).
+- Each slab:
   1. Glow: ellipse centred on the slab, `rx = w × 0.55`, `ry = (d + h) × 0.6`, fill = colour, opacity .28, Gaussian blur σ 18.
   2. Body: rect `x = cx − w/2`, `y = top + d/2`, width `w`, height `h + d/2`, corner radius `r = min(14, w × 0.08)`; fill a vertical gradient from colour mixed 20% toward white (opacity .92) to colour mixed 38% toward black (opacity .92); stroke `rgba(255,255,255,.28)` 1 px.
   3. Lid: rect `y = top`, height `d`, radius `d / 2`, same x and width; fill colour mixed 45% toward white (opacity .96); stroke `rgba(255,255,255,.55)` 1 px.
   4. Specular streak: rect `x = cx − w/2 + w × 0.06`, `y = top + d + 4`, width `max(3, w × 0.025)`, height `max(0, h − d/2 − 10)`, radius 2, white gradient opacity .5 → 0 downwards.
-- Floor shadow under the bottom slab: ellipse `rx = w × 0.7`, `ry = d × 0.35`, black .45, blur σ 10.
+- Floor shadow under the bottom slab: ellipse centred `(cx, y1 + d × 0.35)`, `rx = w × 0.7`, `ry = d × 0.35`, black .45, blur σ 10.
 - Dull: the whole group gets `saturate(.25) brightness(.7)` (SVG `feColorMatrix` saturate .25 then multiply .7).
 
 **Explain sheet**: a right-side `popover` sheet (380 wide) for one item: title, size, safety tag, every reason sentence, "Action: docker volume rm (no undo)" in mono, notes, the restore hint, and **Add to plan** / **Remove from plan**.
@@ -422,7 +424,7 @@ Column 0 is the left edge; regions use a 1-column margin left and right unless s
 
 ## 5. Share card
 
-1200 × 630 PNG, rendered from an SVG by `kipple-share` with `resvg`. Fonts embedded: Mona Sans variable (`MonaSansVF[wdth,opsz,wght]`, from `packages/design/fonts/`). All coordinates are SVG user units = px. The reference implementation of this exact SVG is `packages/design/src/share/shareCard.ts` (`renderShareCardSvg`), used by the app's share preview.
+1200 × 630 PNG, rendered from an SVG by `kipple-share` with `resvg`. Fonts embedded: four static Mona Sans 2.0.27 instances in `packages/design/fonts/` (SIL OFL, `OFL.txt` next to them), because resvg does not apply variable-font axes: `MonaSansExpanded-ExtraBold.ttf` (family "Mona Sans Expanded", wordmark), `MonaSansDisplaySemiExpanded-ExtraBold.ttf` (family "Mona Sans Display SemiExpanded", headline), `MonaSans-Bold.ttf` and `MonaSans-Regular.ttf` (family "Mona Sans", chips and footer). The SVG lists the static family first and "Mona Sans" second, so browsers use the variable font with `font-stretch`. All coordinates are SVG user units = px. The reference implementation of this exact SVG is `packages/design/src/share/shareCard.ts` (`renderShareCardSvg`), used by the app's share preview.
 
 ### 5.1 Background
 
@@ -437,8 +439,8 @@ Column 0 is the left edge; regions use a 1-column margin left and right unless s
 
 | Element | Position | Type | Colour |
 |---|---|---|---|
-| Wordmark "kipple" | x 64, baseline y 86 | Mona Sans 26, weight 800, `wdth` 125, letter-spacing −0.78 | `#F4F5F8` |
-| Headline line 1 "My Mac was hiding" | x 64, baseline y 196 | Mona Sans 64, weight 800, `wdth` 108, letter-spacing −2.56 | `#F4F5F8` |
+| Wordmark "kipple" | x 64, baseline y 86 | Mona Sans Expanded ExtraBold 26 (weight 800, `wdth` 125), letter-spacing −0.78 | `#F4F5F8` |
+| Headline line 1 "My Mac was hiding" | x 64, baseline y 196 | Mona Sans Display SemiExpanded ExtraBold 64 (weight 800; `wdth` 108 in the variable font), letter-spacing −2.56 | `#F4F5F8` |
 | Headline line 2 "184 GB of kipple." | x 64, baseline y 261 | same | `#F4F5F8` |
 | Chips row | top y 496, height 42 | see below | |
 | Footer | x 64, baseline y 574 | Mona Sans 16, weight 400 | `rgba(255,255,255,.62)`, URL `#FFFFFF` |
@@ -449,8 +451,8 @@ Column 0 is the left edge; regions use a 1-column margin left and right unless s
 
 ### 5.3 Right: the stack
 
-- `GlassStack` (§3.9) of all categories with bytes, largest at the bottom: centre x 930, slab width 240 (so `d` = 48, `g` = 17, `hmin` = 19), from y 70 to y 556.
-- Floor shadow ellipse at (930, 584), rx 168, ry 17, black .45, blur σ 10.
+- `GlassStack` (§3.9) of all categories with bytes, largest at the bottom: centre x 930, slab width 240 (so `d` = 31, `g` = 12, `hmin` = 14), from y 70 to y 556.
+- Floor shadow ellipse at (930, 566.85), rx 168, ry 10.85, black .45, blur σ 10 (from §3.9: `cy = y1 + d × 0.35`, `ry = d × 0.35`).
 - Glow blur σ 18 as in §3.9 (resvg supports `feGaussianBlur`).
 
 ### 5.4 After a clean (within 24 h)
@@ -467,13 +469,13 @@ Never shows usernames, paths or project names. With `--with-projects` the chips 
 
 ## 6. Website (kipple.dev)
 
-Static site in `web/` (Astro, Svelte islands only where something is interactive). Background `#06080F`, text `#F2F3F7`, Mona Sans for all text, no tracking, no external requests at runtime.
+Static site in `web/` (Astro, Svelte islands only where something is interactive; the only island is the copy button). The sample numbers come from `MockClient` at build time. Background `#06080F`, text `#F2F3F7`, Mona Sans for all text, no tracking, no external requests at runtime.
 
 1. **Hero** (900 tall, full width):
-   - Background: stage colour with the wallpaper glows (§2.1) toned down to stage, and a large `GlassStack` (width 340, centred, from y 150 to y 820).
+   - Background: stage colour with the wallpaper glows (§2.1) toned down to stage, and a large `GlassStack` of the sample categories (slab width 300, centred, from y 170 to y 810).
    - The word "kipple" huge behind the stack: centred, top 545, `font-size: clamp(150px, 27vw, 440px)`, Mona Sans 800, `font-stretch: 125%`, letter-spacing −0.055em, line-height 0.82, filled with `linear-gradient(180deg, rgba(255,255,255,.96) 0%, rgba(255,255,255,.78) 55%, rgba(255,255,255,.08) 100%)` clipped to text. The stack is drawn in front of the word.
    - Header (top 22, left/right 24): wordmark (22, 800, `font-stretch: 125%`, −0.03em); a `glass` nav pill (padding 5, radius 22, gap 4) with links "How it works" (selected, `rgba(255,255,255,.12)`), "What it cleans", "Docs", "Changelog" (14, padding 8 14, `rgba(255,255,255,.75)`); a `glass` **Star on GitHub** link with a star icon (14 / 600, padding 10 16).
-   - Copy block (left 64, top 176, width up to 400, gap 18): `glass` badge "Open source. Mac, Linux and Windows." (13, padding 7 12, radius 16); `h1` "Your dev tools are hoarding." (52 / 1.02 / 700, −0.035em); paragraph (17 / 1.55, `rgba(255,255,255,.7)`) "kipple finds the node_modules, Docker layers, emulators and AI chat logs piling up on your machine, tells you what is safe to remove, and gives you the space back with a 7 day undo."; buttons: `warm` **Download for Mac** (46 tall, padding 0 22, 15 / 700) and a `glass` copy button "brew install kipple" in mono with a copy icon (46 tall, padding 0 16, 14), which copies the command and says "Copied" for 2 s.
+   - Copy block (left 64, top 176, width up to 420 so both buttons fit on one line, gap 18): `glass` badge "Open source. Mac, Linux and Windows." (13, padding 7 12, radius 16); `h1` "Your dev tools are hoarding." (52 / 1.02 / 700, −0.035em); paragraph (17 / 1.55, `rgba(255,255,255,.7)`) "kipple finds the node_modules, Docker layers, emulators and AI chat logs piling up on your machine, tells you what is safe to remove, and gives you the space back with a 7 day undo."; buttons: `warm` **Download for Mac** (46 tall, padding 0 22, 15 / 700) and a `glass` copy button "brew install kipple" in mono with a copy icon (46 tall, padding 0 16, 14), which copies the command and says "Copied" for 2 s.
    - Found panel (`glass`, right 56, top 236, width 268, radius 22, padding 18): "Found on one 512 GB MacBook" (13, `rgba(255,255,255,.6)`), "184 GB" (48 / 800, `font-stretch: 112%`, −0.04em), then four 34 tall rows with top borders `rgba(255,255,255,.1)`: Docker 61.2 GB, AI chat history 38.9 GB, Package caches 27.5 GB, Emulators and the rest 56.4 GB.
 2. **How it works** (`#how`, max 1240, padding 96 32 40, gap 36): `h2` "Every project, as a stack." (48 / 1.04 / 700, max 14ch) beside a paragraph (17 / 1.55, `rgba(255,255,255,.68)`, max 46ch) "Each glass slab is something kipple can measure: dependencies, build output, Docker data, emulators, models, chat history. Projects you haven't opened in months turn dull."; a shelf figure (aspect 2.4, radius 28, the Projects shelf with seven stacks, three dull) with a seven-column caption (14 / 600 name, 13 detail; dull names `#C9CFDA`); three points in a row with a top border (title 21 / 700, body 15 / 1.55 `rgba(255,255,255,.64)`): "Knows what is safe", "Undo for 7 days", "Understands AI tools".
 3. **What it cleans** (`#covers`, padding 56 32 72): `h2` "Knows where your tools hide things" (34 / 700) and tool pills (`glass`, 14, padding 8 13, radius 16); a `glass` terminal panel (mono 14 / 1.9): comments `rgba(255,255,255,.45)`, prompt `$` in `#FFB36B`: `# see what's there. Nothing is touched.` / `$ kipple scan` / `# remove only what's safe, with undo` / `$ kipple clean --safe-only` / `$ kipple undo`.
