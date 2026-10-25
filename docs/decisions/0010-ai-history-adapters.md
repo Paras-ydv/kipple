@@ -29,6 +29,12 @@ INTEGRATIONS.md §4.10–4.13 were written before the tools' current storage was
 - **Experimental.** Cursor doesn't document its storage; the key prefixes, command names and transcript folder come from Cursor staff forum replies and community tools. Every Cursor item is `Review` or `Keep` anyway.
 - **Backups are pruned by kipple itself.** Database copies in `<data>/backups/` older than 7 days are removed at the start of the next compaction (they're kipple's own files, not quarantine entries).
 
+### Antigravity (§4.13)
+
+- **`~/.gemini/antigravity` isn't simply "legacy".** On May 18, 2026 Google split Antigravity into a standalone 2.0 app and the IDE. The IDE moved to `~/.gemini/antigravity-ide`; the 2.0 app now uses `~/.gemini/antigravity`; the migration left a snapshot in `~/.gemini/antigravity-backup`. kipple scans all three and ranks them `antigravity-ide` > `antigravity` > `antigravity-backup` for migrated-copy detection. A flagged copy in `antigravity/` gets a note that the 2.0 app may still list it. Everything stays `Review`.
+- **Both apps count as in use.** The in-use pattern is `Antigravity*` (both apps and their helper processes).
+- **No titles from conversation files.** They're binary protobuf; titles are "Conversation <id> · <date>".
+
 ## Consequences
 
 - Snapshot tests cover each rule; `docs/integrations/claude-code.md` lists the verified sources.

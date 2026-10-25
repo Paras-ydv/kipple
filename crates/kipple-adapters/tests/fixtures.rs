@@ -18,4 +18,5 @@ fixture_tests! {
     claude_code => "claude-code",
     codex => "codex",
     cursor => "cursor",
+    antigravity => "antigravity",
 }

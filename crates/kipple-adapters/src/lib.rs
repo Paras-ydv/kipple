@@ -2,6 +2,7 @@
 
 pub mod ai;
 pub mod android;
+pub mod antigravity;
 pub mod claude_code;
 pub mod codex;
 pub mod cursor;
@@ -32,5 +33,6 @@ pub fn all() -> Vec<Arc<dyn Adapter>> {
         Arc::new(claude_code::ClaudeCode),
         Arc::new(codex::Codex::default()),
         Arc::new(cursor::Cursor::default()),
+        Arc::new(antigravity::Antigravity),
     ]
 }

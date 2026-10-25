@@ -253,10 +253,10 @@ Commands are argv arrays (no shell), may reference only pack vars. They run with
 - Status: `experimental` — Cursor doesn't document this storage.
 
 ### 4.13 `antigravity` (adapter) — `experimental`
-- Data roots (check both): `~/.gemini/antigravity-ide/` (current) and `~/.gemini/antigravity/` (legacy). Inside: `conversations/*.pb` (older) / `*.db` (newer), `brain/<id>/`, `code_tracker/`, `implicit/`, `context_state/`.
+- Data roots (check all): `~/.gemini/antigravity-ide/` (Antigravity IDE), `~/.gemini/antigravity/` (the standalone Antigravity 2.0 app since May 2026; the IDE before that), `~/.gemini/antigravity-backup/` (snapshot made by the 2.0 migration) — decision 0010. Inside: `conversations/*.pb` (verified) / `*.db` (verify), `brain/<id>/`, `code_tracker/`, `implicit/`, `context_state/`, `annotations/`.
 - App state DB (UI index): macOS `~/Library/Application Support/Antigravity IDE/User/globalStorage/state.vscdb` or `.../Antigravity/...` (verify), Linux `~/.config/Antigravity IDE/User/globalStorage/state.vscdb` or `~/.config/Antigravity/...`, Windows `%APPDATA%\Antigravity IDE\User\globalStorage\state.vscdb` or `%APPDATA%\antigravity\...`. **Read-only, never modified.**
 - Item per conversation: conversation file + matching `brain/<id>/` dir (sizes summed). Title only if cheaply available; otherwise "Conversation <short-id> · <date>".
-- **Migrated copies:** when the same conversation id exists in both legacy and current roots, the legacy copy is `Review` with `MIGRATED_COPY` (and only if the current copy is ≥ the legacy copy in size).
+- **Migrated copies:** when the same conversation id exists in more than one root, a copy is `Review` with `MIGRATED_COPY` when a more authoritative root (`antigravity-ide` > `antigravity` > `antigravity-backup`) has a copy ≥ it in size.
 - Safety `Review`; actions `quarantine` only; requires all Antigravity processes closed. No compaction, no DB edits.
 
 ### 4.14 `ollama` (adapter)

@@ -1,0 +1,246 @@
+---
+source: crates/kipple-adapters/tests/fixtures.rs
+expression: "common :: scan_fixture(\"antigravity\")"
+---
+[
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 9000,
+    "category": "ai-history",
+    "details": {
+      "conversation_id": "bbbb2222-0000-4000-8000-000000000002",
+      "data_root": "~/.gemini/antigravity-backup",
+      "has_brain": false,
+      "has_conversation_file": true
+    },
+    "files": 1,
+    "integration": "antigravity",
+    "kind": "antigravity_conversation",
+    "last_used_source": "item_mtime",
+    "notes": [],
+    "paths": [
+      "~/.gemini/antigravity-backup/conversations/bbbb2222-0000-4000-8000-000000000002.pb"
+    ],
+    "project": null,
+    "reasons": [
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 12288,
+    "safety": "review",
+    "title": "Conversation bbbb2222 · <date>"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 3000,
+    "category": "ai-history",
+    "details": {
+      "conversation_id": "cccc3333-0000-4000-8000-000000000003",
+      "data_root": "~/.gemini/antigravity-backup",
+      "has_brain": false,
+      "has_conversation_file": true
+    },
+    "files": 1,
+    "integration": "antigravity",
+    "kind": "antigravity_conversation",
+    "last_used_source": "item_mtime",
+    "notes": [],
+    "paths": [
+      "~/.gemini/antigravity-backup/conversations/cccc3333-0000-4000-8000-000000000003.pb"
+    ],
+    "project": null,
+    "reasons": [
+      "MIGRATED_COPY",
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 4096,
+    "safety": "review",
+    "title": "Conversation cccc3333 · <date>"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 1500,
+    "category": "ai-history",
+    "details": {
+      "conversation_id": "dddd4444-0000-4000-8000-000000000004",
+      "data_root": "~/.gemini/antigravity-ide",
+      "has_brain": true,
+      "has_conversation_file": false
+    },
+    "files": 1,
+    "integration": "antigravity",
+    "kind": "antigravity_conversation",
+    "last_used_source": "item_mtime",
+    "notes": [
+      "Only the agent's working files are left; the conversation itself is gone."
+    ],
+    "paths": [
+      "~/.gemini/antigravity-ide/brain/dddd4444-0000-4000-8000-000000000004"
+    ],
+    "project": null,
+    "reasons": [
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 4096,
+    "safety": "review",
+    "title": "Conversation dddd4444 · <date>"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 6000,
+    "category": "ai-history",
+    "details": {
+      "conversation_id": "eeee5555-0000-4000-8000-000000000005",
+      "data_root": "~/.gemini/antigravity-ide",
+      "has_brain": false,
+      "has_conversation_file": true
+    },
+    "files": 1,
+    "integration": "antigravity",
+    "kind": "antigravity_conversation",
+    "last_used_source": "item_mtime",
+    "notes": [],
+    "paths": [
+      "~/.gemini/antigravity-ide/conversations/eeee5555-0000-4000-8000-000000000005.db"
+    ],
+    "project": null,
+    "reasons": [
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 8192,
+    "safety": "review",
+    "title": "Conversation eeee5555 · <date>"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 8000,
+    "category": "ai-history",
+    "details": {
+      "conversation_id": "bbbb2222-0000-4000-8000-000000000002",
+      "data_root": "~/.gemini/antigravity",
+      "has_brain": false,
+      "has_conversation_file": true
+    },
+    "files": 1,
+    "integration": "antigravity",
+    "kind": "antigravity_conversation",
+    "last_used_source": "item_mtime",
+    "notes": [],
+    "paths": [
+      "~/.gemini/antigravity/conversations/bbbb2222-0000-4000-8000-000000000002.pb"
+    ],
+    "project": null,
+    "reasons": [
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 8192,
+    "safety": "review",
+    "title": "Conversation bbbb2222 · <date>"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 3000,
+    "category": "ai-history",
+    "details": {
+      "conversation_id": "cccc3333-0000-4000-8000-000000000003",
+      "data_root": "~/.gemini/antigravity",
+      "has_brain": false,
+      "has_conversation_file": true
+    },
+    "files": 1,
+    "integration": "antigravity",
+    "kind": "antigravity_conversation",
+    "last_used_source": "item_mtime",
+    "notes": [],
+    "paths": [
+      "~/.gemini/antigravity/conversations/cccc3333-0000-4000-8000-000000000003.pb"
+    ],
+    "project": null,
+    "reasons": [
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 4096,
+    "safety": "review",
+    "title": "Conversation cccc3333 · <date>"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 7000,
+    "category": "ai-history",
+    "details": {
+      "conversation_id": "aaaa1111-0000-4000-8000-000000000001",
+      "data_root": "~/.gemini/antigravity-ide",
+      "has_brain": true,
+      "has_conversation_file": true
+    },
+    "files": 2,
+    "integration": "antigravity",
+    "kind": "antigravity_conversation",
+    "last_used_source": "item_mtime",
+    "notes": [],
+    "paths": [
+      "~/.gemini/antigravity-ide/conversations/aaaa1111-0000-4000-8000-000000000001.pb",
+      "~/.gemini/antigravity-ide/brain/aaaa1111-0000-4000-8000-000000000001"
+    ],
+    "project": null,
+    "reasons": [
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 12288,
+    "safety": "review",
+    "title": "Conversation aaaa1111 · <date>"
+  },
+  {
+    "actions": [
+      "quarantine"
+    ],
+    "apparent": 5000,
+    "category": "ai-history",
+    "details": {
+      "conversation_id": "aaaa1111-0000-4000-8000-000000000001",
+      "data_root": "~/.gemini/antigravity",
+      "has_brain": true,
+      "has_conversation_file": true
+    },
+    "files": 2,
+    "integration": "antigravity",
+    "kind": "antigravity_conversation",
+    "last_used_source": "item_mtime",
+    "notes": [
+      "The Antigravity 2.0 app reads this folder, so it may still list this conversation."
+    ],
+    "paths": [
+      "~/.gemini/antigravity/conversations/aaaa1111-0000-4000-8000-000000000001.pb",
+      "~/.gemini/antigravity/brain/aaaa1111-0000-4000-8000-000000000001"
+    ],
+    "project": null,
+    "reasons": [
+      "MIGRATED_COPY",
+      "CHAT_HISTORY",
+      "MAY_CONTAIN_SECRETS"
+    ],
+    "reclaimable": 8192,
+    "safety": "review",
+    "title": "Conversation aaaa1111 · <date>"
+  }
+]

@@ -1,0 +1,57 @@
+# Antigravity data under ~/.gemini. Generated, fake content only: the
+# conversation files are filler bytes, never real protobuf.
+days_ago = 50
+
+# In the IDE's current root and, smaller, in the 2.0 app's root: the latter
+# is a migrated copy.
+[[file]]
+path = ".gemini/antigravity-ide/conversations/aaaa1111-0000-4000-8000-000000000001.pb"
+size = 5000
+[[file]]
+path = ".gemini/antigravity-ide/brain/aaaa1111-0000-4000-8000-000000000001/task.md"
+size = 2000
+[[file]]
+path = ".gemini/antigravity/conversations/aaaa1111-0000-4000-8000-000000000001.pb"
+size = 4000
+[[file]]
+path = ".gemini/antigravity/brain/aaaa1111-0000-4000-8000-000000000001/task.md"
+size = 1000
+
+# Only in the 2.0 app; the migration backup holds a bigger copy, so neither
+# is marked migrated.
+[[file]]
+path = ".gemini/antigravity/conversations/bbbb2222-0000-4000-8000-000000000002.pb"
+size = 8000
+[[file]]
+path = ".gemini/antigravity-backup/conversations/bbbb2222-0000-4000-8000-000000000002.pb"
+size = 9000
+
+# Same size in the 2.0 app and the backup: the backup copy is migrated.
+[[file]]
+path = ".gemini/antigravity/conversations/cccc3333-0000-4000-8000-000000000003.pb"
+size = 3000
+[[file]]
+path = ".gemini/antigravity-backup/conversations/cccc3333-0000-4000-8000-000000000003.pb"
+size = 3000
+
+# Newer `.db` conversation format, and working files without a conversation.
+[[file]]
+path = ".gemini/antigravity-ide/conversations/eeee5555-0000-4000-8000-000000000005.db"
+size = 6000
+[[file]]
+path = ".gemini/antigravity-ide/brain/dddd4444-0000-4000-8000-000000000004/plan.md"
+size = 1500
+
+# Ignored and never touched.
+[[file]]
+path = ".gemini/antigravity-ide/conversations/notes.txt"
+content = "fake"
+[[file]]
+path = ".gemini/antigravity/mcp_config.json"
+content = "{}"
+[[file]]
+path = ".gemini/antigravity-ide/code_tracker/active/x.txt"
+size = 100
+[[file]]
+path = "{config}/Antigravity IDE/User/globalStorage/state.vscdb"
+size = 4096

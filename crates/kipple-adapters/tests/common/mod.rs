@@ -42,6 +42,19 @@ fn relativize(home: &TestHome, v: &mut Value) {
     }
 }
 
+/// Titles ending in `· YYYY-MM-DD` (dates from fixture mtimes, which are
+/// relative to today) become `· <date>`.
+fn undated(title: &str) -> String {
+    match title.rsplit_once(" · ") {
+        Some((head, tail))
+            if tail.len() == 10 && tail.chars().filter(|c| *c == '-').count() == 2 =>
+        {
+            format!("{head} · <date>")
+        }
+        _ => title.to_owned(),
+    }
+}
+
 /// OS- and time-independent view of an item.
 pub fn project(home: &TestHome, item: &Item) -> Value {
     let paths: Vec<String> = item.locator.paths().iter().map(|p| rel(home, p)).collect();
@@ -51,7 +64,7 @@ pub fn project(home: &TestHome, item: &Item) -> Value {
         "integration": item.integration,
         "category": item.category,
         "kind": item.kind,
-        "title": item.title,
+        "title": undated(&item.title),
         "paths": paths,
         "project": item.project.as_ref().map(|p| json!({
             "name": p.name,
