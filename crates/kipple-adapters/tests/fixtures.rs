@@ -17,4 +17,5 @@ macro_rules! fixture_tests {
 fixture_tests! {
     claude_code => "claude-code",
     codex => "codex",
+    cursor => "cursor",
 }

@@ -14,7 +14,12 @@ use kipple_core::testing::{Fixture, TestHome};
 use kipple_core::{Kipple, OpenOptions};
 use serde_json::{Value, json};
 
+/// `~/…` with the OS's app settings folder shown as `{config}`, so
+/// snapshots are the same on every OS.
 pub fn rel(home: &TestHome, p: &Path) -> String {
+    if let Ok(r) = p.strip_prefix(home.join(kipple_core::testing::APP_CONFIG_DIR)) {
+        return format!("{{config}}/{}", r.display()).replace('\\', "/");
+    }
     let s = p
         .strip_prefix(home.path())
         .map(|r| format!("~/{}", r.display()))

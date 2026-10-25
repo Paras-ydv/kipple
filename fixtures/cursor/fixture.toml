@@ -1,0 +1,64 @@
+# Cursor data. `{config}` is the OS's app settings folder (Library/
+# Application Support, .config or AppData/Roaming). Generated, fake content
+# only: the database is built from SQL, with zero-filled values.
+days_ago = 30
+
+[[file]]
+path = "code/webshop/package.json"
+content = '{"name": "webshop"}'
+
+# Chat database: VS Code's ItemTable plus Cursor's cursorDiskKV. 3 MB of
+# deleted rows leave free pages (below the 256 MB compaction threshold).
+[[sqlite]]
+path = "{config}/Cursor/User/globalStorage/state.vscdb"
+sql = """
+CREATE TABLE ItemTable (key TEXT UNIQUE ON CONFLICT REPLACE, value BLOB);
+CREATE TABLE cursorDiskKV (key TEXT UNIQUE ON CONFLICT REPLACE, value BLOB);
+INSERT INTO ItemTable VALUES ('workbench.fake', '{}');
+INSERT INTO cursorDiskKV VALUES ('bubbleId:c1:b1', zeroblob(40000));
+INSERT INTO cursorDiskKV VALUES ('bubbleId:c1:b2', zeroblob(20000));
+INSERT INTO cursorDiskKV VALUES ('composerData:c1', zeroblob(5000));
+INSERT INTO cursorDiskKV VALUES ('agentKv:blob:1', zeroblob(30000));
+INSERT INTO cursorDiskKV VALUES ('checkpointId:c1:k1', zeroblob(2000));
+INSERT INTO cursorDiskKV VALUES ('inlineDiff:x', zeroblob(1000));
+INSERT INTO cursorDiskKV VALUES ('agentKv:deleted', zeroblob(3000000));
+DELETE FROM cursorDiskKV WHERE key = 'agentKv:deleted';
+"""
+
+[[file]]
+path = "{config}/Cursor/User/globalStorage/state.vscdb.backup"
+size = 9000
+
+# Workspace data for a deleted folder, a deleted .code-workspace file, a
+# folder that still exists and a remote workspace.
+[[file]]
+path = "{config}/Cursor/User/workspaceStorage/0a1b2c3d4e5f60718293a4b5c6d7e8f9/workspace.json"
+content = '{"folder": "file://{home}/code/old%20site"}'
+[[file]]
+path = "{config}/Cursor/User/workspaceStorage/0a1b2c3d4e5f60718293a4b5c6d7e8f9/state.vscdb"
+size = 6000
+[[file]]
+path = "{config}/Cursor/User/workspaceStorage/1b2c3d4e5f60718293a4b5c6d7e8f90a/workspace.json"
+content = '{"workspace": "file://{home}/code/mono.code-workspace"}'
+[[file]]
+path = "{config}/Cursor/User/workspaceStorage/2c3d4e5f60718293a4b5c6d7e8f90a1b/workspace.json"
+content = '{"folder": "file://{home}/code/webshop"}'
+[[file]]
+path = "{config}/Cursor/User/workspaceStorage/3d4e5f60718293a4b5c6d7e8f90a1b2c/workspace.json"
+content = '{"folder": "vscode-remote://ssh-remote%2Bbox/home/me/app"}'
+
+# Never offered.
+[[file]]
+path = "{config}/Cursor/User/settings.json"
+content = "{}"
+
+# Agent transcripts per project.
+[[file]]
+path = ".cursor/projects/Users-me-code-webshop/agent-transcripts/6f0e9d8c-0000-4000-8000-000000000001/6f0e9d8c-0000-4000-8000-000000000001.jsonl"
+size = 7000
+[[file]]
+path = ".cursor/projects/Users-me-code-webshop/mcps/fake.json"
+content = "{}"
+[[file]]
+path = ".cursor/extensions/fake.ext-1.0.0/package.json"
+content = "{}"

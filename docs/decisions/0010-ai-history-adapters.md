@@ -22,6 +22,13 @@ INTEGRATIONS.md §4.10–4.13 were written before the tools' current storage was
 - **State DB columns vary by version.** kipple selects only the columns that exist; it requires `id`, `rollout_path` and `cwd`, otherwise every session is `Keep`.
 - **The active-writer check runs once per scan,** only for rollouts modified in the last hour (one shared 1-second wait), and again in `preflight` right before `codex delete`.
 
+### Cursor (§4.12)
+
+- **Free space for compaction is 2 × the database size,** not 1 ×. The backup copy needs one database's worth, and SQLite's `VACUUM` writes a full temporary copy before replacing the file; Cursor staff confirm compaction can need up to 2 ×. Where free space can't be measured (Windows for now), kipple refuses to compact.
+- **Item 4 is also kept while Cursor runs.** The spec only names items 1–3. Agent transcripts are written by Cursor, so the stricter rule is simpler and safe.
+- **Experimental.** Cursor doesn't document its storage; the key prefixes, command names and transcript folder come from Cursor staff forum replies and community tools. Every Cursor item is `Review` or `Keep` anyway.
+- **Backups are pruned by kipple itself.** Database copies in `<data>/backups/` older than 7 days are removed at the start of the next compaction (they're kipple's own files, not quarantine entries).
+
 ## Consequences
 
 - Snapshot tests cover each rule; `docs/integrations/claude-code.md` lists the verified sources.

@@ -244,12 +244,13 @@ Commands are argv arrays (no shell), may reference only pack vars. They run with
 - Items:
   1. `globalStorage/state.vscdb.backup` → `Review` (`BACKUP_COPY`), action `quarantine` (requires Cursor closed).
   2. `globalStorage/state.vscdb` → report: total size, bytes by key prefix in table `cursorDiskKV` (`bubbleId:`, `composerData:`, `agentKv:`, `checkpointId:`, other) computed read-only with `SUM(length(value))`, and free pages (`PRAGMA freelist_count * page_size`).
-     - Action `compact:sqlite_vacuum` (`Review`, `FREE_PAGES`) only when free pages ≥ 256 MB: requires Cursor closed, copies the DB to `<data>/backups/cursor-<ts>.vscdb` first (needs free space ≥ DB size — check and refuse otherwise), runs `VACUUM`, verifies `PRAGMA integrity_check`, keeps the backup in quarantine for 7 days.
-     - **kipple MUST NOT delete rows** in MVP. For chat history, `explain` tells the user to use Cursor's own command palette action *"Developer: Delete Old Chats…"* (verify name per version) and then rescan.
-  3. `workspaceStorage/<hash>/` whose `workspace.json` points to a folder that no longer exists → `Review` (`ORPHANED_PROJECT`), quarantine.
-  4. `~/.cursor/projects/*/agent-transcripts` → per project items, `Review`.
+     - Action `compact:sqlite_vacuum` (`Review`, `FREE_PAGES`) only when free pages ≥ 256 MB: requires Cursor closed, copies the DB to `<data>/backups/cursor-<ts>.vscdb` first (needs free space ≥ 2 × DB size on both volumes — the backup plus SQLite's working copy during `VACUUM`, decision 0010 — check and refuse otherwise, and refuse where free space can't be measured), runs `VACUUM`, verifies `PRAGMA integrity_check`, keeps the backup for 7 days (pruned at the next compaction).
+     - **kipple MUST NOT delete rows** in MVP. For chat history, `explain` tells the user to use Cursor's own command palette actions *"Developer: Delete Old Chats"* then *"Developer: GC Agent KV Blobs"* (names verified 2026-10-25 from Cursor staff replies) and then rescan.
+  3. `workspaceStorage/<hash>/` whose `workspace.json` `folder` (or `workspace`) `file://` URI points to something that no longer exists → `Review` (`ORPHANED_PROJECT`), quarantine. Remote URIs are skipped.
+  4. `~/.cursor/projects/*/agent-transcripts` → per project items, `Review` (path from community sources — verify).
   5. `~/.cursor/extensions` older versions of the same extension → `Safe` (v1).
-- In use: Cursor process running → items 1–3 `Keep`.
+- In use: Cursor process running → items 1–4 `Keep` (kipple also keeps item 4, the stricter choice).
+- Status: `experimental` — Cursor doesn't document this storage.
 
 ### 4.13 `antigravity` (adapter) — `experimental`
 - Data roots (check both): `~/.gemini/antigravity-ide/` (current) and `~/.gemini/antigravity/` (legacy). Inside: `conversations/*.pb` (older) / `*.db` (newer), `brain/<id>/`, `code_tracker/`, `implicit/`, `context_state/`.

@@ -4,6 +4,7 @@ pub mod ai;
 pub mod android;
 pub mod claude_code;
 pub mod codex;
+pub mod cursor;
 pub mod docker;
 pub mod huggingface;
 pub mod ollama;
@@ -30,5 +31,6 @@ pub fn all() -> Vec<Arc<dyn Adapter>> {
         Arc::new(huggingface::HuggingFace),
         Arc::new(claude_code::ClaudeCode),
         Arc::new(codex::Codex::default()),
+        Arc::new(cursor::Cursor::default()),
     ]
 }
